@@ -8,6 +8,6 @@
         
         
     
-    "pages": [{"date":"2022-11-01","image":"","imageAlt":"","link":"https://idev-blog.web.app/posts/go-concurrency-pattern/","summary":"Golang Concurrency Pattern Fan-in Fan-out ","tags":["concurrency","go"],"text":"golang concurrency pattern fan-in fan-out ","title":"Golang Concurrency Pattern"}]
+    "pages": [{"date":"2022-11-01","image":"","imageAlt":"","link":"https://idev-blog.web.app/posts/go-concurrency-pattern/","summary":"Golang Concurrency Pattern Fan-in Fan-out ","tags":["concurrency","golang","patterns"],"text":"golang concurrency pattern fan-in fan-out ","title":"Golang Concurrency Pattern"}]
 }
 
