@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
+  <channel>
+    <title>NgocTD&#39;s Dev Log</title>
+    <link>https://idev-blog.web.app/</link>
+    <description>Recent content on NgocTD&#39;s Dev Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Tran Duc Ngoc - [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).</copyright>
+    <lastBuildDate>Tue, 01 Nov 2022 21:20:06 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.svg</icon>
+    
+    
+    <item>
+      <title>Golang Concurrency Pattern</title>
+      <link>https://idev-blog.web.app/posts/go-concurrency-pattern/</link>
+      <pubDate>Tue, 01 Nov 2022 21:20:06 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/go-concurrency-pattern/</guid>
+      <description><![CDATA[<h1 id="golang-concurrency-pattern">Golang Concurrency Pattern</h1>
+<h2 id="fan-in-fan-out">Fan-in Fan-out</h2>
+]]></description>
+      
+    </item>
+    
+    
+    
+    
+    
+    
+  </channel>
+</rss>

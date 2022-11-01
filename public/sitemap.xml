@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://idev-blog.web.app/posts/go-concurrency-pattern/</loc>
+    <lastmod>2022-11-01T21:20:06+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/</loc>
+    <lastmod>2022-11-01T21:20:06+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/</loc>
+    <lastmod>2022-11-01T21:20:06+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/categories/</loc>
+  </url><url>
+    <loc>https://idev-blog.web.app/manifest/index.json</loc>
+  </url><url>
+    <loc>https://idev-blog.web.app/search/</loc>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/</loc>
+  </url>
+</urlset>
