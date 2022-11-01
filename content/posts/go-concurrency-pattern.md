@@ -6,7 +6,7 @@ tags:
 - golang
 - concurrency
 - patterns
-image: "/images/post_pics/block_ads_webkit.png"
+image: "/images/post_pics/go-concurrency.png"
 ---
 
 # Golang Concurrency Pattern
