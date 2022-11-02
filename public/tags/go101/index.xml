@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>golang on NgocTD&#39;s Dev Log</title>
-    <link>https://idev-blog.web.app/tags/golang/</link>
-    <description>Recent content in golang on NgocTD&#39;s Dev Log</description>
+    <title>go101 on NgocTD&#39;s Dev Log</title>
+    <link>https://idev-blog.web.app/tags/go101/</link>
+    <description>Recent content in go101 on NgocTD&#39;s Dev Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc - [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).</copyright>
-    <lastBuildDate>Wed, 02 Nov 2022 07:33:22 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Nov 2022 07:33:22 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/go101/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang All in One</title>
       <link>https://idev-blog.web.app/posts/golang-all-in-one/</link>
@@ -15,15 +15,6 @@
       
       <guid>https://idev-blog.web.app/posts/golang-all-in-one/</guid>
       <description>All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be miscept in golang.</description>
-    </item>
-    
-    <item>
-      <title>Concurrency Pattern</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern/</link>
-      <pubDate>Tue, 01 Nov 2022 21:20:06 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern/</guid>
-      <description>Concurrency Pattern </description>
     </item>
     
   </channel>
