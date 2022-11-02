@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html class="" lang="en-us"><head>
     
-        <script>
-            if (location.host != new URL("https:\/\/idev-blog.web.app\/").host) location.href = "https:\/\/idev-blog.web.app\/"
-        </script>
-    
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=7" />
@@ -23,12 +19,6 @@
     href='/apple-touch-icon.png'
 />
 
-    <link
-        rel="icon"
-        href='/logo.svg'
-        type="image/svg+xml"
-    />
-
 <title>
         
             Golang All in One  &ndash;
@@ -40,13 +30,13 @@
     
     
     <link type="text/css" rel="stylesheet" href=https://idev-blog.web.app/css/styles.6f84514ad632600fba315252a38e35f30218f3d5ec268c1236f62782176917002e704c2b142a2d949bd831c6feabc3d6db35a3c6d6e151b839b9fe80cc19fa4f.css integrity="sha512-b4RRStYyYA&#43;6MVJSo4418wIY89XsJowSNvYnghdpFwAucEwrFCotlJvYMcb&#43;q8PW2zWjxtbhUbg5uf6AzBn6Tw==" />
-<meta name="author" content="Tran Duc Ngoc" />
+<meta name="author" content="" />
 
     
         <meta name="keywords" content='basic, golang' />
     
     
-        <meta name="description" content="basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept in golang." />
+        <meta name="description" content="basic level in one post." />
     
 
 <meta property="og:site_name"
@@ -56,7 +46,7 @@
     <meta property="og:type" content="article" />
     
     <meta
-        property="article:author" content="Tran Duc Ngoc" />
+        property="article:author" content="" />
     <meta
         property="article:published_time"
         content='2022-11-02T07:33:22Z&#43;0700' />
@@ -71,9 +61,9 @@
     
     
     <meta property="og:image"
-        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+        content="https://idev-blog.web.app/img/icon.svg" />
     
-        <meta property="og:description" content="All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept i" />
+        <meta property="og:description" content="All about golang at basic level in one post." />
     
 
 <meta name="twitter:card" content="summary_large_image" />
@@ -88,9 +78,9 @@
     
     
     <meta name="twitter:image"
-        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+        content="https://idev-blog.web.app/img/icon.svg" />
     
-        <meta name="twitter:description" content="All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept i" />
+        <meta name="twitter:description" content="All about golang at basic level in one post." />
     
 
 <link rel="manifest" href="/manifest/index.json" />
@@ -122,11 +112,13 @@
             <li><a href="/posts">Posts</a></li>
         
         
+            <li><a href="/talk">Talk</a></li>
+        
+            <li><a href="/review%20book">Review book</a></li>
         
         
         
         
-            <li><a href="/archguide">Arch guide</a></li>
         
         
             <li><a href="/tags">Tags</a></li>
@@ -169,22 +161,7 @@
 </a>
 
         
-        <a
-    
-        rel="noreferrer"
-    
-    target="_blank"
-    class="nerdlink"
-    href="https://github.com/ngoctd314">
-    
-    
-        &#xf296;
-    
-    <span>
-        GitLab
-    </span>
-</a>
-
+        
     </div>
     
 
@@ -234,107 +211,14 @@
     </p>
 
 
-    <a style="margin-bottom: 24px; display: inline-block;" class="shareBtn" onclick="openFediInstanceDialog();">
-        
-    </a>
-    <div id="fediInstanceDialog">
-        <div class="bg" onclick="closeFediInstanceDialog();"></div>
-        <div class="dialog">
-            <h2>Enter your instance&#39;s address</h2>
-            <input id="fediInstanceInput" placeholder='Eg. mastodon.social' type="text" />
-            <div class="buttons">
-                <a class="shareBtn" onclick="closeFediInstanceDialog();">Cancel</a>
-                <a class="shareBtn" onclick="shareOnFedi();">Share</a>
-            </div>
-        </div>
-    </div>
-    <script>
-        var articleTitle = 'Golang All in One';
-        var articleLink = 'https:\/\/idev-blog.web.app\/posts\/golang-all-in-one\/';
-        var fediInstanceDialog = document.getElementById('fediInstanceDialog');
-        var fediInstanceInput = document.getElementById('fediInstanceInput');
-        function openFediInstanceDialog() {
-            fediInstanceDialog.classList.add('open');
-        }
-        function closeFediInstanceDialog() {
-            fediInstanceDialog.classList.remove('open');
-        }
-        function fixURL(url) {
-            if (url.substr(0, 8) == 'https://') return url;
-            if (url.substr(0, 7) == 'http://') return url;
-            return 'https://' + url;
-        }
-        function shareOnFedi() {
-            let instance = fediInstanceInput.value.trim();
-            if (!instance) {
-                return;
-            }
-            instance = fixURL(instance);
-            window.open(
-                `${instance}/share?text=${articleTitle}%20${articleLink}`,
-                '__blank'
-            );
-            closeFediInstanceDialog();
-        }
-    </script>
 
 
-
-
-    
-    
-        
-        <div class="relatedArticlesContainer">
-            <hr />
-            <h2>More posts like this</h2>
-            <div class="postlist ">
-                <article class="card postlistitem">
-    <div>
-        <h2>
-            <a href="https://idev-blog.web.app/posts/concurrency-pattern/">Concurrency Pattern</a>
-        </h2>
-        <p class="date">
-            <span title='Date'> </span>
-    2022-11-01
-
-
-                | 
-                <span title='Tags'> </span>
-                
-                    <a href="/tags/concurrency">#concurrency</a>
-                
-                    <a href="/tags/golang">#golang</a>
-                
-                    <a href="/tags/patterns">#patterns</a>
-                
-            
-        </p>
-        
-            
-        
-        
-            <div class="articlePreview">
-                <p>
-                    
-                        Concurrency Pattern Hello world
-                    
-                </p>
-                <p><a href="https://idev-blog.web.app/posts/concurrency-pattern/">Continue reading </a></p>
-            </div>
-        
-    </div>
-    <hr />
-</article>
-
-            </div>
-        </div>
-    
 
 
                     </main><footer>
 
 <p><small>
-        2022 &copy; Tran Duc Ngoc - <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+        2022 &copy; Tran Duc Ngoc
     </small></p>
     <p><small>
         
