@@ -9,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
         <meta charset="UTF-8"/>
         
-        <link type="text/css" rel="stylesheet" href="https://idev-blog.web.app/css/styles.6f84514ad632600fba315252a38e35f30218f3d5ec268c1236f62782176917002e704c2b142a2d949bd831c6feabc3d6db35a3c6d6e151b839b9fe80cc19fa4f.css" integrity="sha512-b4RRStYyYA+6MVJSo4418wIY89XsJowSNvYnghdpFwAucEwrFCotlJvYMcb+q8PW2zWjxtbhUbg5uf6AzBn6Tw==" />
+        <link type="text/css" rel="stylesheet" href="https://idev-blog.web.app/css/styles.cf5dd1e4c39459998709e1f9870aa167c7baa043c5c838b0b5bc79869f81f621e275fec5e0b838789665c48edfc379bc9b64a93fcf1d2843e9e7e33f2550563a.css" integrity="sha512-z13R5MOUWZmHCeH5hwqhZ8e6oEPFyDiwtbx5hp+B9iHidf7F4Lg4eJZlxI7fw3m8m2SpP88dKEPp5+M/JVBWOg==" />
         <style>
           .aboutfeeds {
             margin: 24px 0; padding: 12px;
@@ -59,7 +59,7 @@
           </div>
           <div class="head">
             <div class="avatar">
-              <img class="logo" src="<no value>" alt="Site Logo"/>
+              <img class="logo" src="/logo.png" alt="Site Logo"/>
             </div>
             <div class="description">
               <p><xsl:value-of select="/rss/channel/description"/></p>
