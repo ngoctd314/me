@@ -9,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
         <meta charset="UTF-8"/>
         
-        <link type="text/css" rel="stylesheet" href="https://idev-blog.web.app/css/styles.cf5dd1e4c39459998709e1f9870aa167c7baa043c5c838b0b5bc79869f81f621e275fec5e0b838789665c48edfc379bc9b64a93fcf1d2843e9e7e33f2550563a.css" integrity="sha512-z13R5MOUWZmHCeH5hwqhZ8e6oEPFyDiwtbx5hp+B9iHidf7F4Lg4eJZlxI7fw3m8m2SpP88dKEPp5+M/JVBWOg==" />
+        <link type="text/css" rel="stylesheet" href="https://idev-blog.web.app/css/styles.9b53275cb4d8eaa20bdbb49c202ffdc504a19d2a26a8724d44e3ab30e790bf408f9945c440b56636adeb6aac088b0ce94240f32a3e22b4dd1c55f8bb05663c0a.css" integrity="sha512-m1MnXLTY6qIL27ScIC/9xQShnSomqHJNROOrMOeQv0CPmUXEQLVmNq3raqwIiwzpQkDzKj4itN0cVfi7BWY8Cg==" />
         <style>
           .aboutfeeds {
             margin: 24px 0; padding: 12px;

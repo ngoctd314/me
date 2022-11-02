@@ -27,10 +27,27 @@ summaryLength = 1
 
     logo = "/logo.png"
     favicon = "/favicon.png"
-    # faviconIco = "/favicon.ico"
-    # appletouch = "/apple-touch-icon.png"
-    # svgicon = "/logo.svg"
-    # icon512 = "/android-chrome-512x512.png"
+    faviconIco = "/favicon.ico"
+    appletouch = "/apple-touch-icon.png"
+    svgicon = "/logo.svg"
+    icon512 = "/android-chrome-512x512.png"
+
+    paperCards = false  # enable paper card style; default false
+    gridView = false
+    # buttonTags = true
+    tagsInArticlePreview = true
+    #navtype = "circles"
+    #enableShadow = true
+    menuStyle = "buttons" # standard, buttons
+
+    enableFeatured = true
+
+    underlineTitleLinks = false
+
+    enableSidebarLayout = true
+    tocInSidebar = true
+
+
     # commento = "https://cloud.techpills.technology:54321/js/commento.js"
     # cactusCommentsSiteName = "gabmus.org"
     # cactusCommentsServerName = "cactus.chat"
