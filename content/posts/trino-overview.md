@@ -1,7 +1,7 @@
 ---
 title: "Trino Overview"
 date: 2022-11-02T10:08:30+07:00
-draft: true
+draft: false
 tags:
 - trino
 ---
