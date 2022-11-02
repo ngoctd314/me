@@ -45,21 +45,13 @@ summaryLength = 1
     underlineTitleLinks = false
 
     enableSidebarLayout = true
-    tocInSidebar = true
+    tocInSidebar = true # if the sidebar is enabled, show the TOC in the sidebar
 
-
-    # commento = "https://cloud.techpills.technology:54321/js/commento.js"
-    # cactusCommentsSiteName = "gabmus.org"
-    # cactusCommentsServerName = "cactus.chat"
-    # cactusCommentsHomeserver = "https://matrix.cactus.chat:8448"
-    
-    # imageInArticlePreview = true
-
-    # enableShareOnFediverse = true
-
-    # enableRelatedArticles = true
-    # relatedArticlesNum = 2 
-    # forceRedirect = true
+    infiniteScrolling = false  # activates infinite scrolling instead of regular pagination
+    enableFooterColumns = false 
+    enableJumbotron = false
+    enableRelatedArticles = true
+    relatedArticlesNum = 2
 
 [markup]
     [markup.highlight]
@@ -75,13 +67,28 @@ summaryLength = 1
         startLevel = 1
 
 [menu]
-#    [[menu.main]]
-#        identifier = "archguide"
-#        name = "Arch guide"
-#        url = "/archguide"
-#        weight = 99
-#    [[menu.icons]]
-#        identifier = "gitlab"
-#        name = "GitLab"
-#        url = "https://github.com/ngoctd314"
-#        weight = 10
+    [[menu.icons]]
+        identifier = "facebook"
+        name = "Facebook"
+        url = "https://www.facebook.com/ngoctd314"
+        weight = 10
+    [[menu.icons]]
+        identifier = "github"
+        name = "GitHub"
+        url = "https://github.com/ngoctd314"
+        weight = 11
+    [[menu.icons]]
+        identifier = "linkedin"
+        name = "Email"
+        url = "https://github.com/ngoctd314"
+        weight = 12
+    [[menu.icons]]
+        identifier = "email"
+        name = "Email"
+        url = "mailto:tranngoc.contact@gmail.com"
+        weight = 13
+    [[menu.icons]]
+        identifier = "phone"
+        name = "Phone"
+        url = "tel:+84-33-9229-172"
+        weight = 14

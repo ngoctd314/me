@@ -6,6 +6,7 @@ tags:
 - golang
 - concurrency
 - patterns
+description: Concurrent pattern in golang
 ---
 
 # Concurrency Pattern

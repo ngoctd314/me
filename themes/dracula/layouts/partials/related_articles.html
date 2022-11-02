@@ -11,7 +11,7 @@
             {{ $postsList = shuffle $postsList }}
         {{ end }}
         <div class="relatedArticlesContainer">
-            <hr />
+            <!-- <hr /> -->
             <h2>{{ i18n "morePostsLikeThis" }}</h2>
             <div class="postlist {{ if .Site.Params.gridView }}gridView{{ end }}">
                 {{ range first (.Site.Params.relatedArticlesNum | default 2) $postsList }}
