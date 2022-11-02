@@ -6,61 +6,6 @@
     <description>Recent content in Tags on NgocTD&#39;s Dev Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>Tran Duc Ngoc - [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).</copyright>
-    <lastBuildDate>Wed, 02 Nov 2022 10:08:30 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>trino</title>
-      <link>https://idev-blog.web.app/tags/trino/</link>
-      <pubDate>Wed, 02 Nov 2022 10:08:30 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/trino/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>basic</title>
-      <link>https://idev-blog.web.app/tags/basic/</link>
-      <pubDate>Wed, 02 Nov 2022 07:33:22 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/basic/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>go101</title>
-      <link>https://idev-blog.web.app/tags/go101/</link>
-      <pubDate>Wed, 02 Nov 2022 07:33:22 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/go101/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>golang</title>
-      <link>https://idev-blog.web.app/tags/golang/</link>
-      <pubDate>Wed, 02 Nov 2022 07:33:22 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/golang/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>concurrency</title>
-      <link>https://idev-blog.web.app/tags/concurrency/</link>
-      <pubDate>Tue, 01 Nov 2022 21:20:06 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/concurrency/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>patterns</title>
-      <link>https://idev-blog.web.app/tags/patterns/</link>
-      <pubDate>Tue, 01 Nov 2022 21:20:06 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/patterns/</guid>
-      <description></description>
-    </item>
-    
+    <copyright>Tran Duc Ngoc - [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).</copyright><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

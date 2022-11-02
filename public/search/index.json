@@ -4,22 +4,6 @@
     
     
     
-        
-        
-            
-                
-            
-        
-        
-    
-        
-        
-            
-                
-            
-        
-        
-    
-    "pages": [{"date":"2022-11-02","image":"/images/post_pics/golang.png","imageAlt":"","link":"https://idev-blog.web.app/posts/golang-all-in-one/","summary":"All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be miscept in golang.","tags":["basic","go101","golang"],"text":"all about golang at basic level in one post. content in this post i have learned in go101 book and on the internet. at this time, i think it can be miscept in golang.\nbasic types and basic value literals rune value literals rune type (a.k.a int32 type), are special integer types. a rune value is intended to store a unicode point. a rune literal is expressed as one or more characters enclosed in a pair of quotes, for example \u0026lsquo;a\u0026rsquo; (the unicode value of character a is 97). we should know that some unicode characters are composed of more than one code points, for example \u0026lsquo;a\u0026rsquo;, \u0026lsquo;\\x61\u0026rsquo;, \u0026lsquo;\\141\u0026rsquo; are the same (the unicode value is 97).\nfunc main() { println(\u0026#39;a\u0026#39; == 97) println(\u0026#39;a\u0026#39; == \u0026#39;\\x61\u0026#39;) println(\u0026#39;a\u0026#39; == \u0026#39;\\141\u0026#39;) println(\u0026#39;a\u0026#39; == \u0026#39;\\u0061\u0026#39;) } ","title":"Golang All in One"},{"date":"2022-11-01","image":"/images/post_pics/go-concurrency.png","imageAlt":"","link":"https://idev-blog.web.app/posts/concurrency-pattern/","summary":"Concurrency Pattern ","tags":["concurrency","golang","patterns"],"text":"concurrency pattern ","title":"Concurrency Pattern"}]
+    "pages": []
 }
 

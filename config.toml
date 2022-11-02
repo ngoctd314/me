@@ -2,7 +2,7 @@ baseURL = "https://idev-blog.web.app/"
 languageCode = "en-us"
 title = "NgocTD's Dev Log"
 
-theme = "dark"
+theme = "dracula"
 
 author = "Tran Duc Ngoc"
 copyright = "Tran Duc Ngoc - [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/)."
