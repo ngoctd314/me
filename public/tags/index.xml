@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc - [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).</copyright>
-    <lastBuildDate>Wed, 02 Nov 2022 07:33:22 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Nov 2022 10:08:30 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>trino</title>
+      <link>https://idev-blog.web.app/tags/trino/</link>
+      <pubDate>Wed, 02 Nov 2022 10:08:30 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/trino/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>basic</title>
       <link>https://idev-blog.web.app/tags/basic/</link>
