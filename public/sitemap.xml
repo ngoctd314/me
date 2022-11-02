@@ -2,14 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://idev-blog.web.app/</loc>
+    <lastmod>2022-11-02T10:08:30+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/</loc>
+    <lastmod>2022-11-02T10:08:30+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/</loc>
+    <lastmod>2022-11-02T10:08:30+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/trino/</loc>
+    <lastmod>2022-11-02T10:08:30+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/trino-overview/</loc>
+    <lastmod>2022-11-02T10:08:30+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/basic/</loc>
+    <lastmod>2022-11-02T07:33:22+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/golang/</loc>
+    <lastmod>2022-11-02T07:33:22+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/golang-all-in-one/</loc>
+    <lastmod>2022-11-02T07:33:22+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/concurrency/</loc>
+    <lastmod>2022-11-01T21:20:06+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/concurrency-pattern/</loc>
+    <lastmod>2022-11-01T21:20:06+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/patterns/</loc>
+    <lastmod>2022-11-01T21:20:06+07:00</lastmod>
+  </url><url>
     <loc>https://idev-blog.web.app/categories/</loc>
   </url><url>
     <loc>https://idev-blog.web.app/manifest/index.json</loc>
   </url><url>
-    <loc>https://idev-blog.web.app/</loc>
-  </url><url>
     <loc>https://idev-blog.web.app/search/</loc>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/</loc>
   </url>
 </urlset>
