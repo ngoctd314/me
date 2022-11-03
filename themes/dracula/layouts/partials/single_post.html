@@ -17,7 +17,7 @@
                         {{ if site.Params.buttonTags | default false }}
                         class="buttonTag"
                         {{ end }}
-                        href="/authors/{{ . | urlize }}">{{ . }}</a>
+                        href="/authors/{{ . | urlize }}">#{{ . }}</a>
                 {{ end }}
             {{ end }}
             {{ if .Params.categories }}
