@@ -32,7 +32,6 @@
                 {{ if (site.Params.articleSummary | default true) }}
                     <div class="articlePreview">
                         <p>${article.summary}</p>
-                        <p><a href="${article.link}">{{ i18n "continueReading" | safeJS }} </a></p>
                     </div>
                 {{ end }}
             </div>
