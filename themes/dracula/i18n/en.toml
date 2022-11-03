@@ -61,6 +61,9 @@ other = "Tags:"
 [tagColumn]
 other = "Tag:"
 
+[categoriesColumn]
+other = "Categories:"
+
 [morePostsLikeThis]
 other = "More posts like this"
 

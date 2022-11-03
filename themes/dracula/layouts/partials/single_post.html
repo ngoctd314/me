@@ -4,25 +4,42 @@
         <h1>{{ .Title }}</h1>
     {{ end }}
 
-    {{ if .Params.authors }}
-        <!-- {{ if not .Site.Params.paperCards }}<hr />{{ end }} -->
-        <p class="articleTagsContainer">
-            <span> </span>
-            <strong>{{ i18n "authors" }}</strong>
-            {{ range sort .Params.authors }}
-                <a
-                    {{ if site.Params.buttonTags | default false }}
-                    class="buttonTag"
-                    {{ end }}
-                    href="/authors/{{ . | urlize }}">{{ . }}</a>
-            {{ end }}
-        </p>
-    {{ end }}
 
     {{ if (.Params.showDate | default true) }}
         <p class="date">
             <span title='{{ i18n "date" }}'> </span>
             {{- partial "date.html" .Date -}}
+            {{ if .Params.authors }}
+                <span>/ authors </span>
+                <!-- {{ if not .Site.Params.paperCards }}<hr />{{ end }} -->
+                {{ range .Params.authors }}
+                    <a
+                        {{ if site.Params.buttonTags | default false }}
+                        class="buttonTag"
+                        {{ end }}
+                        href="/authors/{{ . | urlize }}">{{ . }}</a>
+                {{ end }}
+            {{ end }}
+            {{ if .Params.categories }}
+                <span>/ categories </span>
+                {{ range sort .Params.categories }}
+                    <a
+                        {{ if site.Params.buttonTags | default false }}
+                        class="buttonTag"
+                        {{ end }}
+                        href="/categories/{{ . | urlize }}">#{{ . }}</a>
+                {{ end }}
+            {{ end }}
+            {{ if .Params.tags }}
+                <span>/ tags </span>
+                {{ range sort .Params.tags }}
+                    <a
+                        {{ if site.Params.buttonTags | default false }}
+                        class="buttonTag"
+                        {{ end }}
+                        href="/tags/{{ . | urlize }}">#{{ . }}</a>
+                {{ end }}
+            {{ end }}
         </p>
     {{ end }}
     {{ if and (.Params.toc | default false) (.Site.Params.tocBeforeImage | default false) }}
@@ -48,20 +65,21 @@
     <div>{{ .Content }}</div>
 </article>
 
-{{ if .Params.tags }}
+<!-- {{ if .Params.tags }} -->
     <!-- {{ if not .Site.Params.paperCards }}<hr />{{ end }} -->
-    <p class="articleTagsContainer">
-        <span> </span>
-        <strong>{{ i18n "tagsColumn" }}</strong>
-        {{ range sort .Params.tags }}
-            <a
-                {{ if site.Params.buttonTags | default false }}
-                class="buttonTag"
-                {{ end }}
-                href="/tags/{{ . | urlize }}">#{{ . }}</a>
-        {{ end }}
-    </p>
-{{ end }}
+    <!-- <p class="articleTagsContainer"> -->
+        <!-- <span> </span> -->
+        <!-- <strong>{{ i18n "tagsColumn" }}</strong> -->
+        <!-- {{ range sort .Params.tags }} -->
+            <!-- <a -->
+                <!-- {{ if site.Params.buttonTags | default false }} -->
+                <!-- class="buttonTag" -->
+                <!-- {{ end }} -->
+                <!-- href="/tags/{{ . | urlize }}">#{{ . }}</a> -->
+        <!-- {{ end }} -->
+    <!-- </p> -->
+<!-- {{ end }} -->
+
 {{- partial "inject/content-after.html" . -}}
 {{ if .Params.showShare | default true }}
     {{- partial "share_on_fediverse.html" . -}}
