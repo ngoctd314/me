@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Test on NgocTD&#39;s Dev Log</title>
+    <link>https://idev-blog.web.app/author/test/</link>
+    <description>Recent content in Test on NgocTD&#39;s Dev Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Tran Duc Ngoc</copyright>
+    <lastBuildDate>Wed, 02 Nov 2022 10:08:30 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/author/test/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Trino Overview</title>
+      <link>https://idev-blog.web.app/posts/trino-overview/</link>
+      <pubDate>Wed, 02 Nov 2022 10:08:30 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/trino-overview/</guid>
+      <description>Since Trino is being called a database by many members of the community, it makes sense to begin with a definition of what Trino is not.</description>
+    </item>
+    
+    <item>
+      <title>Golang All in One</title>
+      <link>https://idev-blog.web.app/posts/golang-all-in-one/</link>
+      <pubDate>Wed, 02 Nov 2022 07:33:22 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/golang-all-in-one/</guid>
+      <description>All about golang at basic level in one post.</description>
+    </item>
+    
+  </channel>
+</rss>

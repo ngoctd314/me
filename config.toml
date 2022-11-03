@@ -13,6 +13,9 @@ paginate = 5
 # 1 mean 1 tensen
 summaryLength = 1
 
+[taxonomies]
+    author = "author"
+
 [params]
     # author = "Tran Duc Ngoc"
     description = "NgocTD's blog about programming and other cool stuff"     # meta data

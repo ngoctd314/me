@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Author on NgocTD&#39;s Dev Log</title>
+    <link>https://idev-blog.web.app/author/</link>
+    <description>Recent content in Author on NgocTD&#39;s Dev Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Tran Duc Ngoc</copyright>
+    <lastBuildDate>Wed, 02 Nov 2022 10:08:30 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/author/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Test</title>
+      <link>https://idev-blog.web.app/author/test/</link>
+      <pubDate>Wed, 02 Nov 2022 10:08:30 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/author/test/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ngoc TD</title>
+      <link>https://idev-blog.web.app/author/ngoc-td/</link>
+      <pubDate>Tue, 01 Nov 2022 21:20:06 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/author/ngoc-td/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

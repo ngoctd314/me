@@ -23,6 +23,7 @@
             "title" .Title
             "date" (.Date.Format "2006-01-02")
             "tags" (sort (or .Params.tags slice))
+            "authors" "abc"
             "summary" (or .Params.description .Summary)
             "link" .Permalink
             "image" $image
