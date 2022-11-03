@@ -7,49 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Tue, 01 Nov 2022 21:20:06 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>concurrency</title>
-      <link>https://idev-blog.web.app/tags/concurrency/</link>
-      <pubDate>Tue, 01 Nov 2022 21:20:06 +0700</pubDate>
+      <title>concurrency pattern</title>
+      <link>https://idev-blog.web.app/tags/concurrency-pattern/</link>
+      <pubDate>Thu, 03 Nov 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/tags/concurrency/</guid>
+      <guid>https://idev-blog.web.app/tags/concurrency-pattern/</guid>
       <description></description>
     </item>
     
     <item>
       <title>golang</title>
       <link>https://idev-blog.web.app/tags/golang/</link>
-      <pubDate>Tue, 01 Nov 2022 21:20:06 +0700</pubDate>
+      <pubDate>Thu, 03 Nov 2022 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/golang/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>patterns</title>
-      <link>https://idev-blog.web.app/tags/patterns/</link>
-      <pubDate>Tue, 01 Nov 2022 21:20:06 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/patterns/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>trino</title>
-      <link>https://idev-blog.web.app/tags/trino/</link>
-      <pubDate>Sun, 02 Oct 2022 10:08:30 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/trino/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>basic</title>
-      <link>https://idev-blog.web.app/tags/basic/</link>
-      <pubDate>Sun, 02 Oct 2022 07:33:22 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/basic/</guid>
       <description></description>
     </item>
     

@@ -11,7 +11,7 @@ copyright = "Tran Duc Ngoc"
 paginate = 5
 # number of words for article sumaries
 # 1 mean 1 tensen
-summaryLength = 1
+summaryLength = 40
 
 [taxonomies]
     author = "authors"

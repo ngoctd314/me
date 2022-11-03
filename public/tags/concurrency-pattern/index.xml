@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>NgocTD on NgocTD&#39;s Dev Log</title>
-    <link>https://idev-blog.web.app/authors/ngoctd/</link>
-    <description>Recent content in NgocTD on NgocTD&#39;s Dev Log</description>
+    <title>concurrency pattern on NgocTD&#39;s Dev Log</title>
+    <link>https://idev-blog.web.app/tags/concurrency-pattern/</link>
+    <description>Recent content in concurrency pattern on NgocTD&#39;s Dev Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Thu, 03 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/authors/ngoctd/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/concurrency-pattern/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fan out, Fan in</title>
       <link>https://idev-blog.web.app/posts/fanin-fanout/</link>

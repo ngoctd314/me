@@ -5,11 +5,6 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=7" />
 
-    
-        
-          <link href="https://idev-blog.web.app/tags/golang/index.xml" rel="alternate" type="application/rss+xml" title="NgocTD&#39;s Dev Log" />
-          <link href="https://idev-blog.web.app/tags/golang/index.xml" rel="feed" type="application/rss+xml" title="NgocTD&#39;s Dev Log" />
-        
     <link
     rel="icon"
     href='/favicon.png'
@@ -32,7 +27,7 @@
 
 <title>
         
-            golang  &ndash;
+            Fan out, Fan in  &ndash;
         
         NgocTD&#39;s Dev Log
     </title>
@@ -44,35 +39,55 @@
 <meta name="author" content="" />
 
     
-        <meta name="description" content="NgocTD&#39;s blog about programming and other cool stuff" />
+        <meta name="keywords" content='concurrency pattern, golang' />
+    
+    
+        <meta name="description" content="ipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete." />
     
 
 <meta property="og:site_name"
     content='NgocTD&#39;s Dev Log' />
 
-    <meta property="og:title"
-        content='NgocTD&#39;s Dev Log' />
+    <meta property="og:title" content="Fan out, Fan in" />
+    <meta property="og:type" content="article" />
     
-        <meta property="og:description" content="NgocTD&#39;s blog about programming and other cool stuff" />
+    <meta
+        property="article:author" content="" />
+    <meta
+        property="article:published_time"
+        content='2022-11-03T00:00:00Z&#43;0000' />
     
-    <meta property="og:type" content="blog" />
+        
+            <meta property="article:tag" content="concurrency pattern" />
+        
+            <meta property="article:tag" content="golang" />
+        
+    
+    <meta property="og:url" content="https://idev-blog.web.app/posts/fanin-fanout/" />
+    
+    
     <meta property="og:image"
-        content='https://idev-blog.web.app/android-chrome-512x512.png' />
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="You&amp;rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When t" />
+    
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta property="twitter:domain"
       content='idev-blog.web.a'
 />
-<meta property="twitter:url" content="https://idev-blog.web.app/tags/golang/" />
+<meta property="twitter:url" content="https://idev-blog.web.app/posts/fanin-fanout/" />
 
 
-    <meta name="twitter:title"
-        content='NgocTD&#39;s Dev Log' />
+    <meta name="twitter:title" content="Fan out, Fan in" />
     
-        <meta name="twitter:description" content="NgocTD&#39;s blog about programming and other cool stuff" />
+    
     
     <meta name="twitter:image"
-        content='https://idev-blog.web.app/android-chrome-512x512.png' />
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="You&amp;rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When t" />
+    
 
 <link rel="manifest" href="/manifest/index.json" />
 </head>
@@ -270,31 +285,89 @@
 <div id="contentContainer">
                 <div id="content">
                     <main>
-    <h2>
+<article class="card single">
     
+        <h1>Fan out, Fan in</h1>
     
+
+
     
-    
-        Tag: #golang
-    
-</h2>
-<ul class="list">
-    
-        
-            <li>
-                <div>
-                    <span class="date">
+        <p class="date">
+            <span title='Date'> </span>
     2022-11-03
 
-</span>
-                    <span>
-                        <a href="https://idev-blog.web.app/posts/fanin-fanout/">Fan out, Fan in</a>
-                    </span>
-                </div>
-            </li>
+
+                <span>/ authors </span>
+                
+                
+                    <a
+                        
+                        href="/authors/ngoctd">#NgocTD</a>
+                
+            
+            
+                <span>/ categories </span>
+                
+                    <a
+                        
+                        href="/categories/programming">#programming</a>
+                
+            
+            
+                <span>/ tags </span>
+                
+                    <a
+                        
+                        href="/tags/concurrency-pattern">#concurrency pattern</a>
+                
+                    <a
+                        
+                        href="/tags/golang">#golang</a>
+                
+            
+        </p>
+    
+    
+    
+    
+    <div><p>You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</p>
+<p>One of the interesting properties of pipelines is the ability they give you to operate on the stream of data using a combination of separate, often <strong>reordered</strong> stages. Maybe that would help improve the performance of the pipeline. In fact, it turns out it can, and this pattern has a name: fan-out, fan-in.</p>
+<h2 id="fan-out">Fan out</h2>
+<p>Fan-out is a term to describe the process of starting multiple goroutines to handle input from the pipeline.</p>
+<p>You might consider fanning out one of your stages if both of the following apply:</p>
+<ul>
+<li>It doesn&rsquo;t rely on values that the state had calculated before.</li>
+<li>It takes a long time to run. (system call, a heavy cpu job, &hellip;)</li>
+</ul>
+<p><img src="../../images/fanin-fanout/fan-out.png" alt="fan-out"></p>
+<p>The property of order-independence is important because you have no guarantee in what order concurrent copies of your stage will run, nor in what order they will return.</p>
+<h2 id="fan-in">Fan in</h2>
+<p>Fan-in is a term to describe the process of combining multiple results into one channel.</p>
+</div>
+</article>
+
+
+    
+    
+        
+        
+        
+            
+                
+                
+        
+            
+                
+                
         
     
-</ul>
+
+
+
+
+
+    
+    
 
 
                     </main><footer>
