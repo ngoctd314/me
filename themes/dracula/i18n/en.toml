@@ -7,6 +7,15 @@ other = "Search"
 [tags]
 other = "Tags"
 
+[authors]
+other = "Authors"
+
+[series]
+other = "Series"
+
+[categories]
+other = "Categories"
+
 [date]
 other = "Date"
 

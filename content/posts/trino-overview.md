@@ -5,7 +5,6 @@ draft: false
 tags:
 - trino
 featured: false
-author: "Test"
 ---
 
 Since Trino is being called a database by many members of the community, it makes sense to begin with a definition of what Trino is not. Trino is not a general-purpose relation database. It is not a replacement for databases like MySQL, PostgreSQL or Oracle. 

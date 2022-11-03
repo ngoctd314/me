@@ -14,7 +14,10 @@ paginate = 5
 summaryLength = 1
 
 [taxonomies]
-    author = "author"
+    author = "authors"
+    category = "categories"
+    series = 'series'
+    tag = "tags"
 
 [params]
     # author = "Tran Duc Ngoc"
@@ -22,11 +25,17 @@ summaryLength = 1
 
     # posts = "posts"
     showPostsLink = true
-    extraContentDirs = ["talk", "book review"]
+    extraContentDirs = []
     # showcaseDir = "showcase"
 
     # showSinglePageAsHome = false
     # homeSinglePage = "/guitar"
+
+    # navigation
+    # showTags = false
+    showAuthor = true
+    showSeries = true
+    showCategories = true
 
     logo = "/logo.png"
     favicon = "/favicon.png"
@@ -38,7 +47,11 @@ summaryLength = 1
     paperCards = false  # enable paper card style; default false
     gridView = false
     # buttonTags = true
+
     tagsInArticlePreview = true
+    authorsInArticlePreview = true
+
+
     #navtype = "circles"
     #enableShadow = true
     menuStyle = "buttons" # standard, buttons
@@ -93,5 +106,5 @@ summaryLength = 1
     [[menu.icons]]
         identifier = "phone"
         name = "Phone"
-        url = "tel:+84-33-9229-172"
+        url = "tel:+84-33-9229-174"
         weight = 14

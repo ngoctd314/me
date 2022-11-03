@@ -3,7 +3,6 @@ title: "Golang All in One"
 date: 2022-11-02T07:33:22+07:00
 draft: false
 tags: ["golang", "basic"]
-author: "Test"
 ---
 
 All about golang at basic level in one post. Content in this post i have learned in [go101 book ](https://go101.org/) and on the internet. At this time, i think it can be misconcept in golang.

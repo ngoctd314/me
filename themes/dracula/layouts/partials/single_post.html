@@ -3,6 +3,22 @@
     {{ if .Params.showTitle | default true }}
         <h1>{{ .Title }}</h1>
     {{ end }}
+
+    {{ if .Params.authors }}
+        <!-- {{ if not .Site.Params.paperCards }}<hr />{{ end }} -->
+        <p class="articleTagsContainer">
+            <span> </span>
+            <strong>{{ i18n "authors" }}</strong>
+            {{ range sort .Params.authors }}
+                <a
+                    {{ if site.Params.buttonTags | default false }}
+                    class="buttonTag"
+                    {{ end }}
+                    href="/authors/{{ . | urlize }}">{{ . }}</a>
+            {{ end }}
+        </p>
+    {{ end }}
+
     {{ if (.Params.showDate | default true) }}
         <p class="date">
             <span title='{{ i18n "date" }}'> </span>
@@ -31,6 +47,7 @@
     {{ end }}
     <div>{{ .Content }}</div>
 </article>
+
 {{ if .Params.tags }}
     <!-- {{ if not .Site.Params.paperCards }}<hr />{{ end }} -->
     <p class="articleTagsContainer">

@@ -7,6 +7,15 @@ other = "Cerca"
 [tags]
 other = "Tag"
 
+[authors]
+other = "Author"
+
+[series]
+other = "Series"
+
+[categories]
+other = "Categories"
+
 [date]
 other = "Data"
 

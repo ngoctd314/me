@@ -7,7 +7,9 @@ tags:
 - concurrency
 - patterns
 description: Concurrent pattern in golang
-author: Ngoc TD
+authors: ["Ngoctd", "test"]
+categories: ["tech"]
+series: ["concurrency"]
 ---
 
 # Concurrency Pattern
