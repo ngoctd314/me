@@ -3,6 +3,7 @@ title: "Lửa Hồng"
 date: 2021-10-20
 author: "NgocTD"
 tags: ["thơ"]
+categories: ["linh tinh"]
 ---
 
 Có một đốm than nhỏ

@@ -3,6 +3,7 @@ title: "Hai Đứa Trẻ"
 date: 2022-10-13
 author: "NgocTD"
 tags: ["thơ"]
+categories: ["linh tinh"]
 ---
 
 Hai đứa trẻ lớn lên nơi rừng núi
