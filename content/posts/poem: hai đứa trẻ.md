@@ -1,7 +1,7 @@
 ---
 title: "Hai Đứa Trẻ"
 date: 2022-10-13
-author: "NgocTD"
+author: "ngoctd"
 tags: ["thơ"]
 ---
 

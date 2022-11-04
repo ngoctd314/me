@@ -1,7 +1,7 @@
 ---
 title: "Observer Pattern"
 date: 2022-11-03
-authors: ["NgocTD"]
+authors: ["ngoctd"]
 draft: true
 tags: ["design pattern"]
 series: ["head first design pattern"]

@@ -1,7 +1,7 @@
 ---
 title: "Decorator pattern"
 date: 2022-11-04
-authors: ["NgocTD"]
+authors: ["ngoctd"]
 draft: true
 tags: ["design pattern"]
 series: ["head first design pattern"]

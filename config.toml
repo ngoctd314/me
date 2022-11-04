@@ -97,13 +97,13 @@ summaryLength = 40
         name = "Email"
         url = "https://github.com/ngoctd314"
         weight = 12
-    [[menu.icons]]
-        identifier = "email"
-        name = "Email"
-        url = "mailto:tranngoc.contact@gmail.com"
-        weight = 13
-    [[menu.icons]]
-        identifier = "phone"
-        name = "Phone"
-        url = "tel:+84-33-9229-174"
-        weight = 14
+#    [[menu.icons]]
+#        identifier = "email"
+#        name = "Email"
+#        url = "mailto:tranngoc.contact@gmail.com"
+#        weight = 13
+#    [[menu.icons]]
+#        identifier = "phone"
+#        name = "Phone"
+#        url = "tel:+84-33-9229-174"
+#        weight = 14

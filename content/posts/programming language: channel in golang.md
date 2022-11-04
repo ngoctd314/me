@@ -1,7 +1,7 @@
 ---
 title: "Channel in Golang"
 date: 2022-11-03
-authors: ["NgocTD"]
+authors: ["ngoctd"]
 draft: true
 tags: ["basic", "golang"]
 ---
