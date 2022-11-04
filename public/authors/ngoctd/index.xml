@@ -10,10 +10,10 @@
     <lastBuildDate>Thu, 03 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/authors/ngoctd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/fanin-fanout/</link>
+      <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
       <pubDate>Thu, 03 Nov 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/posts/fanin-fanout/</guid>
+      <guid>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</guid>
       <description>You&amp;rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</description>
     </item>
     

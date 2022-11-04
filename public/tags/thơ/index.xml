@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on NgocTD&#39;s Dev Log</title>
-    <link>https://idev-blog.web.app/posts/</link>
-    <description>Recent content in Posts on NgocTD&#39;s Dev Log</description>
+    <title>thơ on NgocTD&#39;s Dev Log</title>
+    <link>https://idev-blog.web.app/tags/th%C6%A1/</link>
+    <description>Recent content in thơ on NgocTD&#39;s Dev Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Thu, 03 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
-      <pubDate>Thu, 03 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</guid>
-      <description>You&amp;rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</description>
-    </item>
-    
+    <lastBuildDate>Thu, 13 Oct 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/th%C6%A1/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hai Đứa Trẻ</title>
       <link>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</link>

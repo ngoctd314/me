@@ -15,4 +15,4 @@ Since Trino is being called a database by many members of the community, it make
 
 Trino is a tool designed to efficiently query vast amount of data using distributed queries. Trino was designed to handle data warehousing and analytics: data analysis, aggregating large amounts of data and producing reports.
 
-
+## Trino Components

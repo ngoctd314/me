@@ -14,7 +14,7 @@
     <loc>https://idev-blog.web.app/tags/concurrency-pattern/</loc>
     <lastmod>2022-11-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://idev-blog.web.app/posts/fanin-fanout/</loc>
+    <loc>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</loc>
     <lastmod>2022-11-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/golang/</loc>
@@ -37,6 +37,18 @@
   </url><url>
     <loc>https://idev-blog.web.app/tags/</loc>
     <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</loc>
+    <lastmod>2022-10-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/th%C6%A1/</loc>
+    <lastmod>2022-10-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/poem-l%E1%BB%ADa-h%E1%BB%93ng/</loc>
+    <lastmod>2021-10-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/poem-m%C6%B0a/</loc>
+    <lastmod>2021-03-11T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/manifest/index.json</loc>
   </url><url>

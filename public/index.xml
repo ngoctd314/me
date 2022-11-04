@@ -11,10 +11,10 @@
     
     <item>
       <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/fanin-fanout/</link>
+      <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
       <pubDate>Thu, 03 Nov 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/posts/fanin-fanout/</guid>
+      <guid>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</guid>
       <description><![CDATA[<p>You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</p>
 <p>One of the interesting properties of pipelines is the ability they give you to operate on the stream of data using a combination of separate, often <strong>reordered</strong> stages. Maybe that would help improve the performance of the pipeline. In fact, it turns out it can, and this pattern has a name: fan-out, fan-in.</p>
 <h2 id="fan-out">Fan out</h2>
@@ -28,6 +28,74 @@
 <p>The property of order-independence is important because you have no guarantee in what order concurrent copies of your stage will run, nor in what order they will return.</p>
 <h2 id="fan-in">Fan in</h2>
 <p>Fan-in is a term to describe the process of combining multiple results into one channel.</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Hai Đứa Trẻ</title>
+      <link>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</link>
+      <pubDate>Thu, 13 Oct 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</guid>
+      <description><![CDATA[<p>Hai đứa trẻ lớn lên nơi rừng núi</p>
+<p>Xung quanh nhà nào là cỏ, là cây</p>
+<p>Hai đứa trẻ là chị là em, và là bạn</p>
+<p>Bạn bè xung quanh, hiếm lắm ấy mà.</p>
+<p> </p>
+<p>Hai đứa trẻ nhiều đêm khó ngủ</p>
+<p>Bố mẹ đi rẫy mãi chưa về</p>
+<p>Hai đứa trẻ ngồi bên ngọn nến sáng</p>
+<p>Chỉ bóng trên tường, gọi mẹ xưng con.</p>
+<p> </p>
+<p>Hai đứa trẻ rời xa nơi nương náu</p>
+<p>Bố mẹ lo chuyện học hành mai sau</p>
+<p>Hai đứa trẻ là chị là em, không là bạn</p>
+<p>Nhảy dây, bị mắt, thú vị hơn nhiều.</p>
+<p> </p>
+<p>Hai đứa trẻ mai này rồi cũng lớn</p>
+<p>Đứa rời xóm làng, đứa tìm thủ đô</p>
+<p>Hai đứa trẻ hiếm nào khi hỏi chuyện</p>
+<p>Chuyện học hành, chuyện tương lai, chuyện mai sau</p>
+<p>Hai đứa trẻ, hai đứa trẻ ấy không còn&hellip;</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Lửa Hồng</title>
+      <link>https://idev-blog.web.app/posts/poem-l%E1%BB%ADa-h%E1%BB%93ng/</link>
+      <pubDate>Wed, 20 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/poem-l%E1%BB%ADa-h%E1%BB%93ng/</guid>
+      <description><![CDATA[<p>Có một đốm than nhỏ</p>
+<p>Thắp lên ngọn lửa hồng</p>
+<p>Dành trọn nhiệt huyết nồng</p>
+<p>Tháp sáng ước mơ to.</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Mưa</title>
+      <link>https://idev-blog.web.app/posts/poem-m%C6%B0a/</link>
+      <pubDate>Thu, 11 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/poem-m%C6%B0a/</guid>
+      <description><![CDATA[<p>Mưa,</p>
+<p>Mưa trên mái hiên nhà</p>
+<p>Đến tận cánh đồng xa</p>
+<p>Mưa,</p>
+<p>Mưa hoài, mưa xối xả</p>
+<p>Kìa ai đang thả thuyền lá</p>
+<p>Kí ức trôi</p>
+<p>Trôi mãi tận miền xa.</p>
 ]]></description>
       
     </item>
