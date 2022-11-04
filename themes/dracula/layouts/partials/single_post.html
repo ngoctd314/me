@@ -20,16 +20,6 @@
                         href="/authors/{{ . | urlize }}">#{{ . }}</a>
                 {{ end }}
             {{ end }}
-            {{ if .Params.categories }}
-                <span>/ categories </span>
-                {{ range sort .Params.categories }}
-                    <a
-                        {{ if site.Params.buttonTags | default false }}
-                        class="buttonTag"
-                        {{ end }}
-                        href="/categories/{{ . | urlize }}">#{{ . }}</a>
-                {{ end }}
-            {{ end }}
             {{ if .Params.tags }}
                 <span>/ tags </span>
                 {{ range sort .Params.tags }}

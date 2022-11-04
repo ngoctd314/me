@@ -4,7 +4,6 @@ date: 2022-11-03
 authors: ["NgocTD"]
 draft: false
 tags: ["concurrency pattern", "golang"]
-categories: ["programming"]
 series: ["concurrency"]
 ---
 

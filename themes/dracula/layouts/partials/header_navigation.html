@@ -26,9 +26,6 @@
         {{ if (.Site.Params.showSeries | default true) }}
             <li><a href="/series">{{ i18n "series" }}</a></li>
         {{ end }}
-        {{ if (.Site.Params.showCategories | default true) }}
-            <li><a href="/categories">{{ i18n "categories" }}</a></li>
-        {{ end }}
         {{ if (.Site.Params.showTags | default true) }}
             <li><a href="/tags">{{ i18n "tags" }}</a></li>
         {{ end }}

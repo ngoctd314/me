@@ -1,9 +1,8 @@
 ---
 title: "Mưa"
-date: 2021-03-11
+date: 2022-03-11
 author: "NgocTD"
 tags: ["thơ"]
-categories: ["linh tinh"]
 ---
 
 Mưa,

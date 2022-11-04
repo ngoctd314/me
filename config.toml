@@ -15,7 +15,6 @@ summaryLength = 40
 
 [taxonomies]
     author = "authors"
-    category = "categories"
     series = 'series'
     tag = "tags"
 
@@ -35,7 +34,7 @@ summaryLength = 40
     # showTags = false
     showAuthor = true
     showSeries = true
-    showCategories = true
+    showCategories = false
 
     logo = "/logo.png"
     favicon = "/favicon.png"

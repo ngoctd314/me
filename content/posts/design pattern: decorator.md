@@ -4,7 +4,6 @@ date: 2022-11-04
 authors: ["NgocTD"]
 draft: true
 tags: ["design pattern"]
-categories: ["programming"]
 series: ["head first design pattern"]
 ---
 

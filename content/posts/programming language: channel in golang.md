@@ -4,7 +4,6 @@ date: 2022-11-03
 authors: ["NgocTD"]
 draft: true
 tags: ["basic", "golang"]
-categories: ["programming"]
 ---
 
 Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described.

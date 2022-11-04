@@ -3,7 +3,6 @@ title: "Golang All in One"
 date: 2022-10-02T07:33:22+07:00
 draft: true
 tags: ["golang", "basic"]
-categories: ["programming"]
 authors: ["Ngoctd"]
 ---
 
