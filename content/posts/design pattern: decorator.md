@@ -15,3 +15,4 @@ Just call this chapter "Design Eye for Inheritance Guy." We'll re-examine the ty
 ## Welcome to Starbuzz Coffee
 
 Starbuzz Coffee has made a name for itself as the fastest-growing coffee shop. When they first went into business they designed their classes like this...
+
