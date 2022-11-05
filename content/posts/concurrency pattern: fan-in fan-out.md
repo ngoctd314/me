@@ -11,6 +11,24 @@ You've got a pipeline set up. Data is flowing through your system beautifully. S
 
 One of the interesting properties of pipelines is the ability they give you to operate on the stream of data using a combination of separate, often **reordered** stages. Maybe that would help improve the performance of the pipeline. In fact, it turns out it can, and this pattern has a name: fan-out, fan-in.
 
+## A generator function
+
+Generator (aka Iterator) Pattern is used to generate a sequence of values which is used to produce some output. This allows the consumer of the data producer by the generator to run in parallel when the generator function is busy computing the next value.
+
+```go
+func generator(data string) <- chan string {
+    channel := make(chan string)
+
+    go func(){
+        for {
+            channel <- data
+            time.Sleep(time.Duration(100*time.Millisecond))
+        }
+    }()
+    return channel
+}
+```
+
 ## Fan out
 
 Fan-out is a term to describe the process of starting multiple goroutines to handle input from the pipeline.
