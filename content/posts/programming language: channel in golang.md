@@ -47,15 +47,52 @@ We can think of each channel consistin of three queues internally:
 
 When a goroutine R tries to receive a value from a not-closed non-nil channel, the goroutine R will acquire the lock associated with the channel firstly, the do the following steps until one condition is satisfied.
 
+1. Check buffer, if the value buffer queue of the channel is not empty. The receiving goroutine queue of the channel must be empty ( buffer != empty => receiveing queue == emtpy ). The goroutine R will receive (by unshifting) a value from the value buffer queue. If the sending goroutine queue of the channel is also not empty, a sending goroutine will be unshifted out of the sending goroutine queue and resumed to running state again. The value the just unshifted sending goroutine trying to send will be pushed into the value buffer queue of the channel. The receiving goroutine R continues running. For this scenario, the channel receive operation is called a non-blocking operation.
+
+- The goroutine R will receive a value from the value buffer queue.
+
+![receive value from buffer, sending goroutine queue is empty](../../images/channel%20golang/receive1.png)
+
+- The goroutine R will recceive a value from the value buffer queue. Sending goroutine is not empty. Goroutine S send value to buffer and enter running state again.
+
+![receive value from buffer, sending goroutine is not emtpy](../../images/channel%20golang/receive2.png)
+
+**The receiving goroutine R continues running. The channel receive operation is called a non-blocking operation**
+
+2. Check buffer, the value buffer of the channel is empty. If the sending goroutine queue of the channel is not empty, in which case the channel must be an unbuffered channel, the receiving goroutine R will unshift value from a send goroutine. The just unshifted sending goroutine will get unblocked and resumed to running state again. 
+
+![receive value from buffer, sending goroutine is not emtpy](../../images/channel%20golang/receive3.png)
+
+**The receiving goroutine R continues running. The channel receive operation is called a non-blocking operation**
+
+3. If value buffer queue and the sending goroutine queue of the channel are both emtpy, the goroutine R will be pushed into the receiving goroutine queue of the channel and enter (and stay in) blocking state. It may be resumed to running state when another goroutine sends a value to the channel later.
+
+![receive value from buffer, sending goroutine is not emtpy](../../images/channel%20golang/receive4.png)
+
+**The receiving goroutine R enter blocking state. The channel receive operation is called a blocking operation**
+
 ### Channel operation: try to send
 
 When a goroutine S tries to send a value to a not-closed non-nil channel, the goroutine S will acquire the lock associated with the channel firstly, then do the following steps until one step condition is satisfied.
+
 
 ### Channel operation: try to close
 
 When a goroutine tries to close a not-closed non-nil channel, once the goroutine has acquired the lock of the channel, both of the following two steps will be performed by the following order.
 
-**After a non-nil channel ise closed, channel receive operations os the channel will never block**
+1. Check receiving goroutine queue. If the receiving goroutine queue of the channel is not empty, in which case the value buffer queue of the channel must be empty, the sending goroutine S will unshift a receiving goroutine from the receiving goroutine queue of the  channel and send the value to the just unshifted receiving goroutine. The just unshifted receiving goroutine will get unblocked and resumed to running state again.
+
+**The sending goroutine S continues running. The channel send operation is called a non-blocking operation**
+
+2. Check receiving goroutine queue (empty), check buffer queue ( not full ), in which case the sending goroutine queue must be also empty, the value the sending goroutine S trying to send will be pushed into the value buffer queue.
+
+**The sending goroutine S continues running. The channel send operation is called a non-blocking operation**
+
+3. Check receiving goroutine queue (empty), check buffer queue ( full ), the sending goroutine S will be pushed into the sending goroutine queue of the channel and enter (and stay in) blocking state. It may be resumed to running state when another goroutine receives a value from the channel later.
+
+**The sending goroutine S enter blocking. The channel send operation is called a blocking operation**
+
+**After a non-nil channel is closed, channel receive operations os the channel will never block**
 
 The values in the value buffer of the channel can still be received. The second optional bool return values are still true. Once all the values in the buffer are taken out and received, infinite zero values of the element type of the channel will be received by any of the following        receiving operations on the channel.
 
