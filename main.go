@@ -1,28 +1,45 @@
 package main
 
 import (
-	"fmt"
-	"time"
+	"io/ioutil"
+	"net/http"
 )
 
-func generator(data string) <-chan string {
-	channel := make(chan string)
+type data struct {
+    Body []byte
+    Error error
+}
 
-	go func() {
-		for {
-			channel <- data
-			time.Sleep(time.Duration(100 * time.Millisecond))
-		}
-	}()
-	return channel
+func futureDate(url string) <- chan data {
+    c := make(chan data, 1)
+
+    go func(){
+        resp, err := http.Get(url)
+        if err != nil {
+            c <- data{
+            	Body:  nil,
+            	Error: err,
+            }
+            return
+        }
+
+        body, err := ioutil.ReadAll(resp.Body)
+        resp.Body.Close()
+
+        if err != nil {
+            c <- data{
+            	Body:  nil,
+            	Error: err,
+            }
+            return
+        }
+
+        c <- 
+    }()
+
+    return nil
 }
 
 func main() {
-	ch := generator("ngoctd")
-	go func() {
-		for v := range ch {
-			fmt.Println(v)
-		}
-	}()
-	time.Sleep(time.Second * 5)
+
 }

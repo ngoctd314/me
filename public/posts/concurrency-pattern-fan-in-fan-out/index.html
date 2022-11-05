@@ -288,7 +288,20 @@
     
     <div><p>You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</p>
 <p>One of the interesting properties of pipelines is the ability they give you to operate on the stream of data using a combination of separate, often <strong>reordered</strong> stages. Maybe that would help improve the performance of the pipeline. In fact, it turns out it can, and this pattern has a name: fan-out, fan-in.</p>
-<h2 id="fan-out">Fan out</h2>
+<h2 id="a-generator-function">A generator function</h2>
+<p>Generator (aka Iterator) Pattern is used to generate a sequence of values which is used to produce some output. This allows the consumer of the data producer by the generator to run in parallel when the generator function is busy computing the next value.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">generator</span>(data <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>    channel <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> {
+</span></span><span style="display:flex;"><span>            channel <span style="color:#ff79c6">&lt;-</span> data
+</span></span><span style="display:flex;"><span>            time.<span style="color:#50fa7b">Sleep</span>(time.<span style="color:#50fa7b">Duration</span>(<span style="color:#bd93f9">100</span><span style="color:#ff79c6">*</span>time.Millisecond))
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> channel
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="fan-out">Fan out</h2>
 <p>Fan-out is a term to describe the process of starting multiple goroutines to handle input from the pipeline.</p>
 <p>You might consider fanning out one of your stages if both of the following apply:</p>
 <ul>
@@ -323,6 +336,48 @@
 
 
     
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/concurrency-pattern-generator-future/">Generator and Future Pattern</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-05
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/concurrency-pattern">#concurrency pattern</a>
+                
+                    <a href="/tags/golang">#golang</a>
+                
+            
+        </p>
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
+A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed.
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+
+            </div>
+        </div>
     
 
 

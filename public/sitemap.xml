@@ -3,33 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://idev-blog.web.app/authors/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/series/concurrency/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/concurrency-pattern/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <loc>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</loc>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/golang/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/authors/ngoctd/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/series/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/</loc>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</loc>
     <lastmod>2022-11-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</loc>
@@ -43,6 +46,10 @@
   </url><url>
     <loc>https://idev-blog.web.app/posts/poem-l%E1%BB%ADa-h%E1%BB%93ng/</loc>
     <lastmod>2021-10-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/tech-talk-concurrent-is-not-parallelism/</loc>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/tech-talk-reactive-programming-by-vertx/</loc>
   </url><url>
     <loc>https://idev-blog.web.app/manifest/index.json</loc>
   </url><url>

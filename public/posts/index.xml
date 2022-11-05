@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Thu, 03 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 05 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Generator and Future Pattern</title>
+      <link>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</link>
+      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</guid>
+      <description>Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
+A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed.</description>
+    </item>
+    
     <item>
       <title>Fan out, Fan in</title>
       <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
@@ -56,6 +66,24 @@ Trôi mãi tận miền xa.</description>
 Thắp lên ngọn lửa hồng
 Dành trọn nhiệt huyết nồng
 Tháp sáng ước mơ to.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://idev-blog.web.app/posts/tech-talk-concurrent-is-not-parallelism/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/tech-talk-concurrent-is-not-parallelism/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://idev-blog.web.app/posts/tech-talk-reactive-programming-by-vertx/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/tech-talk-reactive-programming-by-vertx/</guid>
+      <description></description>
     </item>
     
   </channel>

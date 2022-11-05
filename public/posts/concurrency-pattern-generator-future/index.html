@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head>
+    
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            Generator and Future Pattern  &ndash;
+        
+        NgocTD&#39;s Dev Log
+    </title>
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" />
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" />
+    
+    
+    <link type="text/css" rel="stylesheet" href=https://idev-blog.web.app/css/styles.9b53275cb4d8eaa20bdbb49c202ffdc504a19d2a26a8724d44e3ab30e790bf408f9945c440b56636adeb6aac088b0ce94240f32a3e22b4dd1c55f8bb05663c0a.css integrity="sha512-m1MnXLTY6qIL27ScIC/9xQShnSomqHJNROOrMOeQv0CPmUXEQLVmNq3raqwIiwzpQkDzKj4itN0cVfi7BWY8Cg==" />
+<meta name="author" content="" />
+
+    
+        <meta name="keywords" content='concurrency pattern, golang' />
+    
+    
+        <meta name="description" content="lows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
+A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed." />
+    
+
+<meta property="og:site_name"
+    content='NgocTD&#39;s Dev Log' />
+
+    <meta property="og:title" content="Generator and Future Pattern" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="" />
+    <meta
+        property="article:published_time"
+        content='2022-11-05T00:00:00Z&#43;0000' />
+    
+        
+            <meta property="article:tag" content="concurrency pattern" />
+        
+            <meta property="article:tag" content="golang" />
+        
+    
+    <meta property="og:url" content="https://idev-blog.web.app/posts/concurrency-pattern-generator-future/" />
+    
+    
+    <meta property="og:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
+A F" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='idev-blog.web.a'
+/>
+<meta property="twitter:url" content="https://idev-blog.web.app/posts/concurrency-pattern-generator-future/" />
+
+
+    <meta name="twitter:title" content="Generator and Future Pattern" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
+A F" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.png' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">NgocTD&#39;s Dev Log</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <a class="nerdlink" onclick="newSearch();">&#xf002;</a>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://www.facebook.com/ngoctd314">
+    
+    
+        &#xf09a;
+    
+    <span>
+        Facebook
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf09b;
+    
+    <span>
+        GitHub
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        Email
+    </span>
+</a>
+
+    </div>
+    
+        <div id="sidebar_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+        
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>Generator and Future Pattern</h1>
+    
+
+
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-05
+
+
+                <span>/ authors </span>
+                
+                
+                    <a
+                        
+                        href="/authors/ngoctd">#ngoctd</a>
+                
+            
+            
+                <span>/ tags </span>
+                
+                    <a
+                        
+                        href="/tags/concurrency-pattern">#concurrency pattern</a>
+                
+                    <a
+                        
+                        href="/tags/golang">#golang</a>
+                
+            
+        </p>
+    
+    
+    
+    
+    <div><p>Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.</p>
+<p>A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed.</p>
+<h2 id="generator">Generator</h2>
+<p>Generator Pattern is used to generator a sequence of values which is used to produce some output. This allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the text value.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">fib</span>(n <span style="color:#8be9fd">int</span>) <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// next state is depend on previous state
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">for</span> i, j <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>, <span style="color:#bd93f9">1</span>; i &lt; n; i, j = i<span style="color:#ff79c6">+</span>j, i {
+</span></span><span style="display:flex;"><span>			c <span style="color:#ff79c6">&lt;-</span> i
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(c)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> c
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">consumer</span>(c <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> c {
+</span></span><span style="display:flex;"><span>        fmt.<span style="color:#50fa7b">Println</span>(v)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The generator and the consumer can work concurrently (maybe in parallel) as the logic involved in both are different.</p>
+<h2 id="future">Future</h2>
+<p>A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed. Mostly, futures are used to send asynchronous http request.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> data <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    Body []<span style="color:#8be9fd">byte</span>
+</span></span><span style="display:flex;"><span>    Error <span style="color:#8be9fd">error</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">futureDate</span>(url <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">chan</span> data {
+</span></span><span style="display:flex;"><span>    c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> data, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>(){
+</span></span><span style="display:flex;"><span>        resp, err <span style="color:#ff79c6">:=</span> http.<span style="color:#50fa7b">Get</span>(url)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>            c <span style="color:#ff79c6">&lt;-</span> data{
+</span></span><span style="display:flex;"><span>            	Body:  <span style="color:#ff79c6">nil</span>,
+</span></span><span style="display:flex;"><span>            	Error: err,
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        body, err <span style="color:#ff79c6">:=</span> ioutil.<span style="color:#50fa7b">ReadAll</span>(resp.Body)
+</span></span><span style="display:flex;"><span>        resp.Body.<span style="color:#50fa7b">Close</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>            c <span style="color:#ff79c6">&lt;-</span> data{
+</span></span><span style="display:flex;"><span>            	Body:  <span style="color:#ff79c6">nil</span>,
+</span></span><span style="display:flex;"><span>            	Error: err,
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        c <span style="color:#ff79c6">&lt;-</span> data{
+</span></span><span style="display:flex;"><span>        	Body:  body,
+</span></span><span style="display:flex;"><span>        	Error: err,
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The actual http request is done asynchronously in a goroutine. The main function can continue doing other things. When the result is needed, we read the result from the channel. If the request isn&rsquo;t finished yet, the channel will block until the result is ready.</p>
+<h2 id="different-between-generator-and-future">Different Between Generator and Future</h2>
+<p>In generator pattern, we generate next state base on previous state (maybe not), but i purpose is compute many things in background. In future pattern, we use goroutine to execute an &ldquo;heavy job&rdquo; (only one job).</p>
+</div>
+</article>
+
+
+    
+    
+        
+        
+        
+            
+                
+                
+        
+            
+                
+                
+        
+    
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/">Fan out, Fan in</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-03
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/concurrency-pattern">#concurrency pattern</a>
+                
+                    <a href="/tags/golang">#golang</a>
+                
+            
+        </p>
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+
+<p><small>
+        2022 &copy; Tran Duc Ngoc
+    </small></p>
+    <p><small>
+        
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>
