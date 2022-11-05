@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head>
+    
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            Channel in Golang  &ndash;
+        
+        NgocTD&#39;s Dev Log
+    </title>
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" />
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" />
+    
+    
+    <link type="text/css" rel="stylesheet" href=https://idev-blog.web.app/css/styles.9b53275cb4d8eaa20bdbb49c202ffdc504a19d2a26a8724d44e3ab30e790bf408f9945c440b56636adeb6aac088b0ce94240f32a3e22b4dd1c55f8bb05663c0a.css integrity="sha512-m1MnXLTY6qIL27ScIC/9xQShnSomqHJNROOrMOeQv0CPmUXEQLVmNq3raqwIiwzpQkDzKj4itN0cVfi7BWY8Cg==" />
+<meta name="author" content="" />
+
+    
+        <meta name="keywords" content='basic, golang' />
+    
+    
+        <meta name="description" content="ant built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described." />
+    
+
+<meta property="og:site_name"
+    content='NgocTD&#39;s Dev Log' />
+
+    <meta property="og:title" content="Channel in Golang" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="" />
+    <meta
+        property="article:published_time"
+        content='2022-11-05T00:00:00Z&#43;0000' />
+    
+        
+            <meta property="article:tag" content="basic" />
+        
+            <meta property="article:tag" content="golang" />
+        
+    
+    <meta property="og:url" content="https://idev-blog.web.app/posts/programming-language-channel-in-golang/" />
+    
+    
+    <meta property="og:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the d" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='idev-blog.web.a'
+/>
+<meta property="twitter:url" content="https://idev-blog.web.app/posts/programming-language-channel-in-golang/" />
+
+
+    <meta name="twitter:title" content="Channel in Golang" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the d" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.png' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">NgocTD&#39;s Dev Log</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <a class="nerdlink" onclick="newSearch();">&#xf002;</a>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://www.facebook.com/ngoctd314">
+    
+    
+        &#xf09a;
+    
+    <span>
+        Facebook
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf09b;
+    
+    <span>
+        GitHub
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        Email
+    </span>
+</a>
+
+    </div>
+    
+        <div id="sidebar_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+        
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>Channel in Golang</h1>
+    
+
+
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-05
+
+
+                <span>/ authors </span>
+                
+                
+                    <a
+                        
+                        href="/authors/ngoctd">#ngoctd</a>
+                
+            
+            
+                <span>/ tags </span>
+                
+                    <a
+                        
+                        href="/tags/basic">#basic</a>
+                
+                    <a
+                        
+                        href="/tags/golang">#golang</a>
+                
+            
+        </p>
+    
+    
+    
+    
+    <div><p>Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described.</p>
+<h2 id="channel-introduction">Channel Introduction</h2>
+<p>Don&rsquo;t communicate by sharing memory, share memory by communicating.</p>
+<p>Communicating by sharing memory and sharing by communicating are two programming manners in concurrent programming. When goroutines communicate by sharing memory, we use traditional concurrency sychronization techniques, such as mutex locks, to protect the shared memory to prevent data racts.</p>
+<p>Go also provides another concurrency sychronization technique, channel. Channels make goroutines share memory by communicating. We can view a channel as an internal FIFO queu within a program. Some goroutines send values to the queue (the channel) and some other goroutines receive values from the queue.</p>
+<p>Along with transfering values (through channels), the ownership of some values may also be transferred between goroutines (ownership on logic view). When a goroutine send a value to a channel, we can view the goroutine releases the ownership of some values. When a goroutine receives a value from a channel, we can view the goroutine acquires the ownerships of some values.</p>
+<h2 id="channel-value-comparisons">Channel Value Comparisons</h2>
+<p>All channel types are comparable types.
+If one channel value is assigned to another, the two channels share the same underlying part(s). In other words, those two channels represent the same internal channel object. The result of comparing them is true.</p>
+<h2 id="detailed-explanations-for-channel-operations">Detailed Explanations for Channel Operations</h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>A Nil Channel</th>
+<th>A Closed Channel</th>
+<th>A Not-Closed Non-Nil Channel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Close</td>
+<td>panic</td>
+<td>panic</td>
+<td>success</td>
+</tr>
+<tr>
+<td>Send Value To</td>
+<td>block for ever</td>
+<td>panic</td>
+<td>block or succeed to send</td>
+</tr>
+<tr>
+<td>Receive value from</td>
+<td>block for ever</td>
+<td>never block</td>
+<td>block or success to receive</td>
+</tr>
+</tbody>
+</table>
+<p>To bettern understand channel types and values, and to make some explainations easier, looking in the raw internal structures of internal channel objects is very helpful.</p>
+<p>We can think of each channel consistin of three queues internally:</p>
+<ol>
+<li>
+<p>The receiving goroutine queue (generally FIFO). The queue is a linked list without size limitation. Goroutines in this queue are all in blocking state and waiting to receive values from that channel.</p>
+</li>
+<li>
+<p>The sending goroutine queue (generally FIFO). The queue is also a linked list without size limitation. Goroutines in this queue are all in blocking state and waiting to send values to that channel.</p>
+</li>
+<li>
+<p>The value buffer queue (absolutely FIFO). This is a circular queue. Its size is equal to the capacity of the channel. If the current number of values stored in the value buffer queue of the channel reaches the capacity of the channel, the channel is called in full status. If no values are store in the value buffer queue of the channel currently, the channel is called in empty status. For a zero-capacity (unbuffered) channel is also in both full and empty status.</p>
+</li>
+</ol>
+<p><strong>Each channel internally holds a mutex lock which is used to avoid data races in all kinds of operations</strong></p>
+<h3 id="channel-operation-try-to-receive">Channel operation: try to receive</h3>
+<p>When a goroutine R tries to receive a value from a not-closed non-nil channel, the goroutine R will acquire the lock associated with the channel firstly, the do the following steps until one condition is satisfied.</p>
+<ol>
+<li>Check buffer, if the value buffer queue of the channel is not empty. The receiving goroutine queue of the channel must be empty ( buffer != empty =&gt; receiveing queue == emtpy ). The goroutine R will receive (by unshifting) a value from the value buffer queue. If the sending goroutine queue of the channel is also not empty, a sending goroutine will be unshifted out of the sending goroutine queue and resumed to running state again. The value the just unshifted sending goroutine trying to send will be pushed into the value buffer queue of the channel. The receiving goroutine R continues running. For this scenario, the channel receive operation is called a non-blocking operation.</li>
+</ol>
+<ul>
+<li>The goroutine R will receive a value from the value buffer queue.</li>
+</ul>
+<p><img src="../../images/channel%20golang/receive1.png" alt="receive value from buffer, sending goroutine queue is empty"></p>
+<ul>
+<li>The goroutine R will recceive a value from the value buffer queue. Sending goroutine is not empty. Goroutine S send value to buffer and enter running state again.</li>
+</ul>
+<p><img src="../../images/channel%20golang/receive2.png" alt="receive value from buffer, sending goroutine is not emtpy"></p>
+<p><strong>-&gt; The receiving goroutine R continues running. The channel receive operation is called a non-blocking operation</strong></p>
+<ol start="2">
+<li>Check buffer, the value buffer of the channel is empty. If the sending goroutine queue of the channel is not empty, in which case the channel must be an unbuffered channel, the receiving goroutine R will unshift value from a send goroutine. The just unshifted sending goroutine will get unblocked and resumed to running state again.</li>
+</ol>
+<p><img src="../../images/channel%20golang/receive3.png" alt="receive value from buffer, sending goroutine is not emtpy"></p>
+<p><strong>-&gt; The receiving goroutine R continues running. The channel receive operation is called a non-blocking operation</strong></p>
+<ol start="3">
+<li>If value buffer queue and the sending goroutine queue of the channel are both emtpy, the goroutine R will be pushed into the receiving goroutine queue of the channel and enter (and stay in) blocking state. It may be resumed to running state when another goroutine sends a value to the channel later.</li>
+</ol>
+<p><img src="../../images/channel%20golang/receive4.png" alt="receive value from buffer, sending goroutine is not emtpy"></p>
+<p><strong>-&gt; The receiving goroutine R enter blocking state. The channel receive operation is called a blocking operation</strong></p>
+<h3 id="channel-operation-try-to-send">Channel operation: try to send</h3>
+<p>When a goroutine S tries to send a value to a not-closed non-nil channel, the goroutine S will acquire the lock associated with the channel firstly, then do the following steps until one step condition is satisfied.</p>
+<ol>
+<li>Check receiving goroutine queue. If the receiving goroutine queue of the channel is not empty, in which case the value buffer queue of the channel must be empty, the sending goroutine S will unshift a receiving goroutine from the receiving goroutine queue of the  channel and send the value to the just unshifted receiving goroutine. The just unshifted receiving goroutine will get unblocked and resumed to running state again.</li>
+</ol>
+<p><img src="../../images/channel%20golang/send1.png" alt="send value"></p>
+<p><strong>-&gt; The sending goroutine S continues running. The channel send operation is called a non-blocking operation</strong></p>
+<ol start="2">
+<li>Check receiving goroutine queue (empty), check buffer queue ( not full ), in which case the sending goroutine queue must be also empty, the value the sending goroutine S trying to send will be pushed into the value buffer queue.</li>
+</ol>
+<p><img src="../../images/channel%20golang/send2.png" alt="send value"></p>
+<p><strong>-&gt; The sending goroutine S continues running. The channel send operation is called a non-blocking operation</strong></p>
+<ol start="3">
+<li>Check receiving goroutine queue (empty), check buffer queue ( full ), the sending goroutine S will be pushed into the sending goroutine queue of the channel and enter (and stay in) blocking state. It may be resumed to running state when another goroutine receives a value from the channel later.</li>
+</ol>
+<p><img src="../../images/channel%20golang/send3.png" alt="send value"></p>
+<p><strong>-&gt; The sending goroutine S enter blocking. The channel send operation is called a blocking operation</strong></p>
+<p>Once a non-nil channel is closed, sending a value to the channel will produce a runtime panic in the current goroutine. Note sending data to a closed channel is viewed as a non-blocking operation.</p>
+<h3 id="channel-operation-try-to-close">Channel operation: try to close</h3>
+<p>When a goroutine tries to close a not-closed non-nil channel, once the goroutine has acquired the lock of the channel, both of the following two steps will be performed by the following order.</p>
+<ol>
+<li>If the receiving goroutine queue of the channel is not empty, in which case the value buffer of the channel must be empty, all the goroutines in the receiving goroutine queue of the channel will be unshifted one by one, each of themm will receive a zero value of the elemenet type of the channel and be resumed to running state.</li>
+</ol>
+<p><img src="../../images/channel%20golang/close1.png" alt="send value"></p>
+<ol start="2">
+<li>If the sending goroutine queue of the channel is not empty, all the goroutines in the sending goroutine queue of the channel will be unshifted one by one and each of them will produce a panic for sending on a closed channel. This is the reason why we should avoid concurrent send and close operations on the same channel.</li>
+</ol>
+<p>After a channel is closed, the values which have been already pushed into the value buffer of the channel are still there.</p>
+<p><strong>After a non-nil channel is closed, channel receive operations os the channel will never block</strong></p>
+<h3 id="some-facts-about-the-internal-queues-of-a-channel">Some facts about the internal queues of a channel</h3>
+<ul>
+<li>If the channel is closed, both its sending and receiving goroutine queue must be empty, but its value buffer may not be empty.</li>
+<li>At any time, if the value buffer is not empty, then its receiving goroutine queue must be empty.</li>
+<li>At any time, if the value buffer is not full, then its sending goroutine queue must be empty.</li>
+<li>If the channel is buffered, then at time, at least one of the channel&rsquo;s goroutine queues must be empty (sending, receiving or both).</li>
+<li>If the channel is unbuffered, most of the time one of its sending goroutine queue and the receiving goroutine queue must be empty, with one exception. The exception is that a goroutine may be pushed into both of the two queues when execution a select control flow code block.</li>
+</ul>
+<p><strong>References</strong> <a href="https://go101.org/article/channel.html">Channel Use Case go101</a></p>
+</div>
+</article>
+
+
+    
+    
+        
+        
+        
+            
+                
+                
+        
+            
+                
+                
+        
+    
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/">Fan out, Fan in</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-05
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/concurrency-pattern">#concurrency pattern</a>
+                
+                    <a href="/tags/golang">#golang</a>
+                
+            
+        </p>
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,
+You&rsquo;ve got a pipeline set up.
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+<article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/concurrency-pattern-generator-future/">Generator and Future Pattern</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-05
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/concurrency-pattern">#concurrency pattern</a>
+                
+                    <a href="/tags/golang">#golang</a>
+                
+            
+        </p>
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
+A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed.
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+
+<p><small>
+        2022 &copy; Tran Duc Ngoc
+    </small></p>
+    <p><small>
+        
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

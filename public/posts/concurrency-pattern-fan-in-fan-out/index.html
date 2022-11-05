@@ -42,7 +42,8 @@
         <meta name="keywords" content='concurrency pattern, golang' />
     
     
-        <meta name="description" content="ipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete." />
+        <meta name="description" content="way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,
+You&amp;rsquo;ve got a pipeline set up." />
     
 
 <meta property="og:site_name"
@@ -55,7 +56,7 @@
         property="article:author" content="" />
     <meta
         property="article:published_time"
-        content='2022-11-03T00:00:00Z&#43;0000' />
+        content='2022-11-05T00:00:00Z&#43;0000' />
     
         
             <meta property="article:tag" content="concurrency pattern" />
@@ -69,7 +70,7 @@
     <meta property="og:image"
         content="https://idev-blog.web.app/android-chrome-512x512.png" />
     
-        <meta property="og:description" content="You&amp;rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When t" />
+        <meta property="og:description" content="Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-o" />
     
 
 <meta name="twitter:card" content="summary_large_image" />
@@ -86,7 +87,7 @@
     <meta name="twitter:image"
         content="https://idev-blog.web.app/android-chrome-512x512.png" />
     
-        <meta name="twitter:description" content="You&amp;rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When t" />
+        <meta name="twitter:description" content="Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-o" />
     
 
 <link rel="manifest" href="/manifest/index.json" />
@@ -258,7 +259,7 @@
     
         <p class="date">
             <span title='Date'> </span>
-    2022-11-03
+    2022-11-05
 
 
                 <span>/ authors </span>
@@ -286,29 +287,16 @@
     
     
     
-    <div><p>You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</p>
+    <div><p>Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,</p>
+<p>You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</p>
 <p>One of the interesting properties of pipelines is the ability they give you to operate on the stream of data using a combination of separate, often <strong>reordered</strong> stages. Maybe that would help improve the performance of the pipeline. In fact, it turns out it can, and this pattern has a name: fan-out, fan-in.</p>
-<h2 id="a-generator-function">A generator function</h2>
-<p>Generator (aka Iterator) Pattern is used to generate a sequence of values which is used to produce some output. This allows the consumer of the data producer by the generator to run in parallel when the generator function is busy computing the next value.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">generator</span>(data <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
-</span></span><span style="display:flex;"><span>    channel <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>(){
-</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> {
-</span></span><span style="display:flex;"><span>            channel <span style="color:#ff79c6">&lt;-</span> data
-</span></span><span style="display:flex;"><span>            time.<span style="color:#50fa7b">Sleep</span>(time.<span style="color:#50fa7b">Duration</span>(<span style="color:#bd93f9">100</span><span style="color:#ff79c6">*</span>time.Millisecond))
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }()
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> channel
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="fan-out">Fan out</h2>
+<h2 id="fan-out">Fan out</h2>
 <p>Fan-out is a term to describe the process of starting multiple goroutines to handle input from the pipeline.</p>
 <p>You might consider fanning out one of your stages if both of the following apply:</p>
 <ul>
 <li>It doesn&rsquo;t rely on values that the state had calculated before.</li>
 <li>It takes a long time to run. (system call, a heavy cpu job, &hellip;)</li>
 </ul>
-<p><img src="../../images/fanin-fanout/fan-out.png" alt="fan-out"></p>
 <p>The property of order-independence is important because you have no guarantee in what order concurrent copies of your stage will run, nor in what order they will return.</p>
 <h2 id="fan-in">Fan in</h2>
 <p>Fan-in is a term to describe the process of combining multiple results into one channel.</p>
@@ -343,6 +331,38 @@
             <h2>More posts like this</h2>
             <div class="postlist ">
                 <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/programming-language-channel-in-golang/">Channel in Golang</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-05
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/basic">#basic</a>
+                
+                    <a href="/tags/golang">#golang</a>
+                
+            
+        </p>
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described.
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+<article class="card postlistitem">
     <div>
         <h2>
             <a href="https://idev-blog.web.app/posts/concurrency-pattern-generator-future/">Generator and Future Pattern</a>
