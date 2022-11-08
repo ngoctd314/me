@@ -43,3 +43,5 @@ func fn() string {
 
 	return rs
 }
+
+func fanIn()
