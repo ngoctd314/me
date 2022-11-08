@@ -1,6 +1,6 @@
 baseURL = "https://idev-blog.web.app/"
 languageCode = "en-us"
-title = "NgocTD's Dev Log"
+title = "Dev's Log"
 
 theme = "dracula"
 
