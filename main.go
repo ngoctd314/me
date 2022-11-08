@@ -1,30 +1,45 @@
 package main
 
+import (
+	"fmt"
+	"sync"
+)
+
 func main() {
+	for i := 0; i < 1e9; i++ {
+		if fn() == "x: 0y: 0" {
+			fmt.Println("RUNNx0,y0")
+		}
+		if fn() == "y: 0x: 0" {
+			fmt.Println("RUNNy0,x0")
+		}
+	}
 
 }
 
-func generatePipeline(numbers []int) <-chan int {
-	out := make(chan int)
+func fn() string {
+	var (
+		x, y int
+		wg   sync.WaitGroup
+		rs   = ""
+	)
 
+	wg.Add(1)
 	go func() {
-		for _, number := range numbers {
-			out <- number
-		}
-		close(out)
+		defer wg.Done()
+		x = 1
+		rs += fmt.Sprintf("y: %d", y)
 	}()
 
-	return out
-}
-
-func squareNumber(in <-chan int) <-chan int {
-	out := make(chan int)
+	wg.Add(1)
 	go func() {
-		for n := range in {
-			out <- n * n
-		}
-		close(out)
+		defer wg.Done()
+		y = 1
+
+		rs += fmt.Sprintf("x: %d", x)
 	}()
 
-	return out
+	wg.Wait()
+
+	return rs
 }
