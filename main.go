@@ -28,3 +28,5 @@ func squareNumber(in <-chan int) <-chan int {
 
 	return out
 }
+
+func fanIn()
