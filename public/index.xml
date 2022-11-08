@@ -1,12 +1,65 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><?xml-stylesheet href="/feed_style.xsl" type="text/xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="https://www.rssboard.org/media-rss">
   <channel>
-    <title>NgocTD&#39;s Dev Log</title>
+    <title>Dev&#39;s Log</title>
     <link>https://idev-blog.web.app/</link>
-    <description>Recent content on NgocTD&#39;s Dev Log</description>
+    <description>Recent content on Dev&#39;s Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Sat, 05 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
+    <lastBuildDate>Tue, 08 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
+    
+    
+    <item>
+      <title>Automatic connect to VPN</title>
+      <link>https://idev-blog.web.app/posts/linux-auto-connect-openvpn/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/linux-auto-connect-openvpn/</guid>
+      <description><![CDATA[<p>The OpenVPN is an open source Virtual Private Network (VPN) project. It creates secure connections over the Internet using a custom security protocol that utilizes SSL/TLS.</p>
+<p>In this article, i will introduce naive solution for automatic connect to VPN using openvpn and systemd management.</p>
+<p><strong>Create vpn script</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># Create script connect to vpn</span>
+</span></span><span style="display:flex;"><span>mkdir -p ~/scripts
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> ~/scripts
+</span></span><span style="display:flex;"><span>touch vpn.sh
+</span></span><span style="display:flex;"><span>sudo chmod +x vpn.sh
+</span></span></code></pre></div><p><strong>~/scripts/vpn.sh</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">VPN_USER</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span> <span style="color:#6272a4"># insert vpn user here</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">VPN_PASSWORD</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span>  <span style="color:#6272a4"># insert vpn password here</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">OTP_KEY</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span> <span style="color:#6272a4"># insert otp key here</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">OVPN_FILE</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span> <span style="color:#6272a4"># insert path to .ovpn file here. example /home/admicro-bigdata.ovpn</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> Trying connecting to vpn
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">VPN_AUTH</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>oathtool -b --totp <span style="color:#8be9fd;font-style:italic">$OTP_KEY</span><span style="color:#ff79c6">)</span><span style="color:#8be9fd;font-style:italic">$VPN_PASSWORD</span><span style="color:#f1fa8c">&#34;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#8be9fd;font-style:italic">$VPN_PASSWORD</span> | sudo -S bash -c <span style="color:#f1fa8c">&#34;openvpn --config </span><span style="color:#8be9fd;font-style:italic">$OVPN_FILE</span><span style="color:#f1fa8c"> --auth-user-pass &lt;(echo -e &#39;</span><span style="color:#8be9fd;font-style:italic">$VPN_USER</span><span style="color:#f1fa8c">\n</span><span style="color:#8be9fd;font-style:italic">$VPN_AUTH</span><span style="color:#f1fa8c">&#39;) --daemon&#34;</span>
+</span></span></code></pre></div><p><strong>Create systemd service</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> /lib/systemd/system
+</span></span><span style="display:flex;"><span>sudo touch vpn.service
+</span></span></code></pre></div><p><strong>/lib/systemd/system/vpn.service</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>[Unit]
+</span></span><span style="display:flex;"><span>Description=Auto connect vccorp&#39;s vpn service.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[Service]
+</span></span><span style="display:flex;"><span>Type=forking
+</span></span><span style="display:flex;"><span>User=root
+</span></span><span style="display:flex;"><span>ExecStart=~/scripts/vpn.sh
+</span></span><span style="display:flex;"><span>ExecReload=~/script/vpn.sh
+</span></span><span style="display:flex;"><span>ExecStop=sudo killall openvpn
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Restart=on-failure
+</span></span><span style="display:flex;"><span>RestartSec=1s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[Install]
+</span></span><span style="display:flex;"><span>WantedBy=multi-user.target
+</span></span></code></pre></div><p><strong>start,stop,auto restart service</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl <span style="color:#8be9fd;font-style:italic">enable</span> vpn <span style="color:#6272a4"># auto start when vpn was killed</span>
+</span></span><span style="display:flex;"><span>sudo systemctl start vpn <span style="color:#6272a4"># start vpn</span>
+</span></span><span style="display:flex;"><span>sudo systemctl status vpn <span style="color:#6272a4"># check vpn status</span>
+</span></span><span style="display:flex;"><span>sudo systemctl stop vpn <span style="color:#6272a4"># stop vpn</span>
+</span></span></code></pre></div>]]></description>
+      
+    </item>
+    
     
     
     <item>

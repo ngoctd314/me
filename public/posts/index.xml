@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on NgocTD&#39;s Dev Log</title>
+    <title>Posts on Dev&#39;s Log</title>
     <link>https://idev-blog.web.app/posts/</link>
-    <description>Recent content in Posts on NgocTD&#39;s Dev Log</description>
+    <description>Recent content in Posts on Dev&#39;s Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Sat, 05 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 08 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Automatic connect to VPN</title>
+      <link>https://idev-blog.web.app/posts/linux-auto-connect-openvpn/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/linux-auto-connect-openvpn/</guid>
+      <description>The OpenVPN is an open source Virtual Private Network (VPN) project. It creates secure connections over the Internet using a custom security protocol that utilizes SSL/TLS.
+In this article, i will introduce naive solution for automatic connect to VPN using openvpn and systemd management.</description>
+    </item>
+    
     <item>
       <title>Channel in Golang</title>
       <link>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</link>

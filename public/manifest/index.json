@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "NgocTD's Dev Log",
-  "short_name": "NgocTD's Dev Log",
+  "name": "Dev's Log",
+  "short_name": "Dev's Log",
   "start_url": "/",
   "display": "standalone",
   
