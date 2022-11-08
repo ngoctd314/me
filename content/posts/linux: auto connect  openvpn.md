@@ -26,7 +26,6 @@ VPN_PASSWORD=""  # insert vpn password here
 OTP_KEY="" # insert otp key here
 OVPN_FILE="" # insert path to .ovpn file here. example /home/admicro-bigdata.ovpn
 
-echo Trying connecting to vpn
 VPN_AUTH="$(oathtool -b --totp $OTP_KEY)$VPN_PASSWORD" 
 echo $VPN_PASSWORD | sudo -S bash -c "openvpn --config $OVPN_FILE --auth-user-pass <(echo -e '$VPN_USER\n$VPN_AUTH') --daemon"
 ```
