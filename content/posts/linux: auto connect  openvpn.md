@@ -49,10 +49,10 @@ Description=Auto connect vccorp's vpn service.
 [Service]
 Type=forking
 User=root
-# path to vpn file example: /home/ngoctd/scripts/vpn.sh
-ExecStart=
-# path to vpn file example: /home/ngoctd/scripts/vpn.sh
-ExecReload= 
+# path to vpn file, example: /home/ngoctd/scripts/vpn.sh
+ExecStart=/bin/bash /home/ngoctd/scripts/vpn.sh
+# path to vpn file, example: /home/ngoctd/scripts/vpn.sh
+ExecReload= /bin/bash /home/ngoctd/scripts/vpn.sh
 ExecStop=sudo killall openvpn
 
 Restart=on-failure
@@ -64,6 +64,7 @@ WantedBy=multi-user.target
 
 **start,stop,auto restart service**
 ```bash
+sudo systemctl daemon-reload # reload systemd daemon
 sudo systemctl enable vpn # auto start when vpn was killed
 sudo systemctl start vpn # start vpn
 sudo systemctl status vpn # check vpn status
