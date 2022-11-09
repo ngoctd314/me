@@ -309,12 +309,12 @@ In this article, i will introduce naive solution for automatic connect to VPN us
 </span></span><span style="display:flex;"><span>[Service]
 </span></span><span style="display:flex;"><span>Type=forking
 </span></span><span style="display:flex;"><span>User=root
-</span></span><span style="display:flex;"><span>ExecStart=~/scripts/vpn.sh
-</span></span><span style="display:flex;"><span>ExecReload=~/script/vpn.sh
+</span></span><span style="display:flex;"><span>ExecStart= # path to vpn file example: /home/ngoctd/scripts/vpn.sh
+</span></span><span style="display:flex;"><span>ExecReload= # path to vpn file example: /home/ngoctd/scripts/vpn.sh
 </span></span><span style="display:flex;"><span>ExecStop=sudo killall openvpn
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Restart=on-failure
-</span></span><span style="display:flex;"><span>RestartSec=1s
+</span></span><span style="display:flex;"><span>RestartSec=10s
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>[Install]
 </span></span><span style="display:flex;"><span>WantedBy=multi-user.target

@@ -49,12 +49,12 @@ Description=Auto connect vccorp's vpn service.
 [Service]
 Type=forking
 User=root
-ExecStart=~/scripts/vpn.sh
-ExecReload=~/script/vpn.sh
+ExecStart= # path to vpn file example: /home/ngoctd/scripts/vpn.sh
+ExecReload= # path to vpn file example: /home/ngoctd/scripts/vpn.sh
 ExecStop=sudo killall openvpn
 
 Restart=on-failure
-RestartSec=1s
+RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target
