@@ -19,6 +19,11 @@ touch vpn.sh
 sudo chmod +x vpn.sh
 ```
 
+**Install oauthtool**
+```bash
+sudo apt install oathtool 
+```
+
 **~/scripts/vpn.sh**
 ```bash
 VPN_USER="" # insert vpn user here

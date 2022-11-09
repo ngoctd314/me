@@ -23,6 +23,8 @@
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> ~/scripts
 </span></span><span style="display:flex;"><span>touch vpn.sh
 </span></span><span style="display:flex;"><span>sudo chmod +x vpn.sh
+</span></span></code></pre></div><p><strong>Install oauthtool</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install oathtool 
 </span></span></code></pre></div><p><strong>~/scripts/vpn.sh</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">VPN_USER</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span> <span style="color:#6272a4"># insert vpn user here</span>
 </span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">VPN_PASSWORD</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;</span>  <span style="color:#6272a4"># insert vpn password here</span>
