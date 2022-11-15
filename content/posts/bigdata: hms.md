@@ -1,5 +1,5 @@
 ---
-title: "Hive meta storage "
+title: "Hive metastore service "
 date: 2022-11-15
 authors: ["ngoctd"]
 draft: true
@@ -12,4 +12,4 @@ We can simplify the Hive architecture to four components:
 
 - Storage component is simply that, it stores file in various formats and index structures to recall these files (JSON, CSV, ORC, Parquet, HDFS, Aws S3, GCS)
 
-- In order for Hive to process these files, it must have a mapping from SQL tables in the runtime to files and directories in the storage component. 
+- In order for Hive to process these files, it must have a mapping from SQL tables in the runtime to files and directories in the storage component. To accomplish this, Hive uses the HMS (Hive Metastore Service)
