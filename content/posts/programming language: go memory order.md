@@ -1,5 +1,5 @@
 ---
-title: "Go Memory Order"
+title: "Golang Memory Order"
 date: 2022-11-05
 authors: ["ngoctd"]
 draft: true
