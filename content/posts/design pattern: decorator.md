@@ -58,7 +58,9 @@ B: I can see more potential problems with this approach by thinking about how th
 - We may have new beverages. For some of these beverages (tea), the condiments may not be appropriate, yet the Tea subclass will still inherit methods like hasWhip().
 - What if a customer wants a double mocha?
 
-123
+## Constructing a drink order with Decorators
+
+127
 
 **References**
 - Head first design pattern
@@ -67,3 +69,5 @@ B: I can see more potential problems with this approach by thinking about how th
 ## Summary
 
 - Thinking beyond the maintenance problem, which of the design principles.
+
+- When i inherit behavior by subclassing, that behavior is set statically at compile time. In addition, all subclasses must inherit the same behavior. However, i can extend an object's behavior through composition, then i can do this dynamically at runtime.
