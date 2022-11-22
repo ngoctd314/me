@@ -58,7 +58,13 @@ B: I can see more potential problems with this approach by thinking about how th
 - We may have new beverages. For some of these beverages (tea), the condiments may not be appropriate, yet the Tea subclass will still inherit methods like hasWhip().
 - What if a customer wants a double mocha?
 
-123
+## Constructing a drink order with Decorators
+
+- Decorators have the same supertype as the objects they decorate.
+- You can use one or more decorators to wrap an object
+- Give that the decorator has the same supertype as the object it decorates, we can pass around a decorated object in place of the original wrapped object
+- The decorator adds its own behavior before and/or after delegating to the object it decorates to do the rest of the job.
+- Objects can be decorated at any time, so we can decorate objects dynamically at runtime as many decorators as we like.
 
 **References**
 - Head first design pattern
@@ -67,3 +73,9 @@ B: I can see more potential problems with this approach by thinking about how th
 ## Summary
 
 - Thinking beyond the maintenance problem, which of the design principles.
+
+- When i inherit behavior by subclassing, that behavior is set statically at compile time. In addition, all subclasses must inherit the same behavior. However, i can extend an object's behavior through composition, then i can do this dynamically at runtime.
+
+- The Decorator Pattern attaches additional responsibilities to an object dynamically.  Decorators provide a flexible alternatively to subclassing for extending functionality.
+
+129
