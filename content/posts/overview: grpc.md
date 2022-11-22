@@ -6,6 +6,8 @@ tags: ["grpc"]
 authors: ["ngoctd"]
 ---
 
+gRPC is a modern, open source remote procedure call (RPC) framework that can run anywhere. It enables client and server applications to communicate transparently, and makes it easier to build connected systems.
+
 In gRPC, a client application can directly call a method on a server application on a different machine as if it were a local object, making it easier for you to create disitributed applications can services. As in many RCP systems, gRPC is based around the idea of defining a service, specifying the methods that can be called remotely with their parameters and return types. On the server side, the server implements this interface and runs a gRPC server to handle client calls. On the client side, the client has a stub (referred to as just a client in some languages) that provides the same methods as the server.
 
 ## Service definition
@@ -73,8 +75,27 @@ What happen when a gRPC client calls a gRPC server method.
 
 ### Unary RPC
 
+Client sends a single request and gets back a single response.
+
+
 ### Server streaming RPC
 
 ### Client streaming RPC
 
 ### Bidirectional streaming RPC
+
+## Deadlines/Timeouts
+
+gRPC allows clients to specify how long they are willing to wait for an RPC to complete before the RPC is terminated with a DEADLINE_EXCEEDED error.
+
+## RPC termination
+
+In gRPC, both the client and server independent and local determinations of the success of the call, and their conclusions may not match. This means that, for example, you could have an RPC that finishes successfully on the server side ("I have sent all my responses!") but fails on the client side ("The responses arrived after my deadline!"). It's also possible for a server to decide to complete before a client has sent all its requests.
+
+## Cancelling an RPC
+
+Either the client or the server can cancel an RPC at any time. A cancellation terminations the RPC immediately so that no further work is done.
+
+## Channels
+
+A gRPC channel provides a connection to a gRPC server on a specified host and port. A channel has state, including connected and idle.

@@ -1,47 +1,28 @@
 package main
 
 import (
-	"fmt"
-	"sync"
+	"log"
+	"os"
+	"os/signal"
+	"time"
 )
 
+func blocking(c <-chan struct{}) {
+	time.Sleep(1 * time.Second)
+	// unblock the second send in main goroutine
+	<-c
+}
+
 func main() {
-	for i := 0; i < 1e9; i++ {
-		if fn() == "x: 0y: 0" {
-			fmt.Println("RUNNx0,y0")
-		}
-		if fn() == "y: 0x: 0" {
-			fmt.Println("RUNNy0,x0")
-		}
-	}
+	now := time.Now()
+	ch := make(chan struct{}, 1)
+	go blocking(ch)
 
+	// blocked here, wait for a notification
+	ch <- struct{}{}
+	log.Println("since: ", time.Since(now))
+
+	sig := make(chan os.Signal)
+	signal.Notify(sig, os.Interrupt)
+	<-sig
 }
-
-func fn() string {
-	var (
-		x, y int
-		wg   sync.WaitGroup
-		rs   = ""
-	)
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		x = 1
-		rs += fmt.Sprintf("y: %d", y)
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		y = 1
-
-		rs += fmt.Sprintf("x: %d", x)
-	}()
-
-	wg.Wait()
-
-	return rs
-}
-
-func fanIn()
