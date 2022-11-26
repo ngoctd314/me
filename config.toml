@@ -47,6 +47,7 @@ summaryLength = 40
     gridView = false
     # buttonTags = true
 
+    imageInArticlePreview = true
     tagsInArticlePreview = true
     authorsInArticlePreview = true
 

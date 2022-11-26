@@ -1,28 +1,24 @@
 package main
 
 import (
-	"log"
-	"os"
-	"os/signal"
-	"time"
+	"context"
+	"fmt"
+
+	"github.com/reactivex/rxgo/v2"
 )
 
-func blocking(c <-chan struct{}) {
-	time.Sleep(1 * time.Second)
-	// unblock the second send in main goroutine
-	<-c
-}
-
 func main() {
-	now := time.Now()
-	ch := make(chan struct{}, 1)
-	go blocking(ch)
+	observable := rxgo.Defer([]rxgo.Producer{func(_ context.Context, ch chan<- rxgo.Item) {
+		for i := 0; i < 3; i++ {
+			ch <- rxgo.Of(i)
+		}
+	}})
 
-	// blocked here, wait for a notification
-	ch <- struct{}{}
-	log.Println("since: ", time.Since(now))
+	for item := range observable.Observe() {
+		fmt.Println("first observable: ", item.V)
+	}
 
-	sig := make(chan os.Signal)
-	signal.Notify(sig, os.Interrupt)
-	<-sig
+	for item := range observable.Observe() {
+		fmt.Println("second observable: ", item.V)
+	}
 }

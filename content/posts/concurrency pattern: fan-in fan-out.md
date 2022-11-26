@@ -2,7 +2,7 @@
 title: "Fan out, Fan in"
 date: 2022-11-05
 authors: ["ngoctd"]
-draft: false
+draft: true
 tags: ["concurrency pattern", "golang"]
 series: ["concurrency"]
 ---
