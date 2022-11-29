@@ -22,6 +22,9 @@ You might consider fanning out one of your stages if both of the following apply
 
 The property of order-independence is important because you have no guarantee in what order concurrent copies of your stage will run, nor in what order they will return.
 
+
+Multiple functions can be read from the same channel until that channel is closed; this is called fan-out. This provides a way to distribute work amongst a group of workers to parallelize CPU use and I/O.
+
 ## Fan in
 
 Fan-in is a term to describe the process of combining multiple results into one channel.
