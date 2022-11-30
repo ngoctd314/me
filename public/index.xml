@@ -6,7 +6,270 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Tue, 08 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
+    <lastBuildDate>Sat, 26 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
+    
+    
+    <item>
+      <title>Pipelines and cancellation</title>
+      <link>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</guid>
+      <description><![CDATA[<p>Go&rsquo;s concurrency primitives make it easy to construct streaming data pipelines that make efficient use of I/O and multiple CPUs. This article introduces what is pipeline, how to to construct a pipeline and introduces techniques for dealing with failures cleanly.</p>
+<h2 id="what-is-a-pipeline">What is a pipeline?</h2>
+<p>A pipeline is a series of stages connected by channels, where each channel is a group of goroutines running the same function. In each stage, the goroutines</p>
+<ul>
+<li>receive values from upstream via inbound channels</li>
+<li>perform some function on that data, usually producing new values</li>
+<li>send the values downstream via outbound channels</li>
+</ul>
+<p>Each stage has any number of inbound and outbound channels, except the first and last stages, which have only outbound or inbound channels. The first stage is sometimes called the source and producer; the last stage, the sink or consumer.</p>
+<h2 id="squaring-numbers">Squaring numbers</h2>
+<p>Consider a pipeline with three stages</p>
+<p>The first stage, gen, is a function that converts a list of integers to a channel that emits the integers in the list.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// the main function sets up the pipeline and runs the final stages
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// it receives values from the second stage and prints each one, until the channel is closed
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// a pipeline
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	c <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">gen</span>(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(c)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>out)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>out)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// The gen function starts a goroutine that sends the integers on the channel and closes the channel when all the values have been sent:
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">gen</span>(nums <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> nums {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// The second stage, sq receives integers from a channel and returns a channel that emits the square of each received integer.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// After the inbound channel is closed and this stage has sent all the values downstream, it closes the outbound channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">sq</span>(in <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> in {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n <span style="color:#ff79c6">*</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>References</strong></p>
+<ul>
+<li><a href="https://go.dev/blog/pipelines">https://go.dev/blog/pipelines</a></li>
+</ul>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Reactive Programming with Go</title>
+      <link>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</guid>
+      <description><![CDATA[<p>ReactiveX, or Rx for short, is an API for programming with Observable streams. ReactiveX is a new, alternative way of asynchronous programming to callbacks, promises, and deferred. It is about processing streams of events of items, with events being any occurrences or changes within the system. A stream of events is called an Observable.</p>
+<h2 id="rxgo">RxGO</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"></code></pre></div><h2 id="hot-vs-cold-observables">Hot vs. Cold Observables</h2>
+<p>In the RX world, there is a distinction between cold and hot Observables. When the data is produced by the Observable itself, it is a cold Observable. When the data is produced outside the Observable, it is a hot Observable. Usually, we don&rsquo;t want to create a producer over and over again, we favor a hot Observable.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// Create a hot Observable using FromChannel operator
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> rxgo.Item)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">3</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>        ch <span style="color:#ff79c6">&lt;-</span> rxgo.<span style="color:#50fa7b">Of</span>(i)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">close</span>(ch)
+</span></span><span style="display:flex;"><span>}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>observable <span style="color:#ff79c6">:=</span> rxgo.<span style="color:#50fa7b">FromChannel</span>(ch)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// First Observer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;First Observer&#34;</span>, item.V)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Second Observer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;Second Observer&#34;</span>, item.V)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Result
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// It means the first Observer already consumed all items.
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// Create a cold Observable using Defer operator:
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>observable <span style="color:#ff79c6">:=</span> rxgo.<span style="color:#50fa7b">Defer</span>([]rxgo.Producer{<span style="color:#8be9fd;font-style:italic">func</span>(_ context.Context, ch <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> rxgo.Item) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">3</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>        ch <span style="color:#ff79c6">&lt;-</span> rxgo.<span style="color:#50fa7b">Of</span>(i)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// In the case of a cold observable, the stream was created independent for
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// every Observer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;first observable: &#34;</span>, item.V)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// In the case of a cold observable, the stream was created independent for
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// every Observer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;second observable: &#34;</span>, item.V)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Result
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
+</span></span></span></code></pre></div><p>Hot vs cold Observable are not about how you consume items, it&rsquo;s about where data is produced. Good example for hot Observable are price ticks from a trading exchange. And if you teach an Observable to fetch products from a database, then yield them one by one, you will create the cold Observable.</p>
+]]></description>
+      
+        <media:thumbnail url="https://idev-blog.web.app/images/reactive/rx.png" />
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Channel Use Case in Golang</title>
+      <link>https://idev-blog.web.app/posts/programming-language-channel-usecase/</link>
+      <pubDate>Tue, 22 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/programming-language-channel-usecase/</guid>
+      <description><![CDATA[<p>This article will show many channel use cases</p>
+<ul>
+<li>Asynchronous and concurrency programing with Go channels is easy and enjoyable.</li>
+<li>The channel synchronization technique has wider range of uses and have more variables than the synchronization solutions used in some other languages, such as the actor model and the async/await pattern.</li>
+</ul>
+<h2 id="use-channels-as-futurespromises">Use Channels as Futures/Promises</h2>
+<p><strong>Return receive-only channels as results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">longTimeRequest</span>() <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{} {
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// simulate workload run 3s in using goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		time.<span style="color:#50fa7b">Sleep</span>(time.Second <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>		ch <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// return immediately
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> ch
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	ch1 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">longTimeRequest</span>()
+</span></span><span style="display:flex;"><span>	ch2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">longTimeRequest</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	_, _ = <span style="color:#ff79c6">&lt;-</span>ch1, <span style="color:#ff79c6">&lt;-</span>ch2 <span style="color:#6272a4">// get result in future
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;exec in: &#34;</span>, time.<span style="color:#50fa7b">Since</span>(now)) <span style="color:#6272a4">// ~ 3s
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><p><strong>Pass send-only channels as arguments</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">longTimeRequest</span>(ch <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}) {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// simulate workload run 3s in using goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;send value to channel&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// buffer = 2 to avoid block to handle channle receive
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, <span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">longTimeRequest</span>(ch)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">longTimeRequest</span>(ch)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">&lt;-</span>ch
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">&lt;-</span>ch
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;exec in: &#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>The first response win</strong></p>
+<p>Sometimes, a piece of data can be received from several sources to avoid high latencies. For a lot of factors, the response durations of these sources may vary much. To make the response duration as short as possible, we can send a request to every source in separated goroutine. Only the first response use case will be used, other slower ones will be discarded.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">source</span>(c <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}) {
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// c must be a buffered channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// If there are N sources, the capacity of the communication channel must be at least N-1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// to avoid the goroutines corresponding the discarded responses being blocked for ever
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, <span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#8be9fd;font-style:italic">cap</span>(c); i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">source</span>(c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// first response win
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">&lt;-</span>c
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="use-channels-for-notifications">Use Channels for Notifications</h2>
+<p>Notifications can be viewed as special requests/responses in which the responded values are not important. Generally, we use the blank type struct{} as the element types of the notification channels.</p>
+<p><strong>1-to-1 notification by sending a value to a channel</strong></p>
+<p>If there are no values to be received from a channel, then the next receive operation on the channel will block until another goroutine sends a value to the channel. So we can send a value to a channel to notify another goroutine which is waiting to receive a value from the same channel.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">blocking</span>(c <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}) {
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">*</span> time.Second)
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// unlock by notifycation
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	c <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{})
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">blocking</span>(ch)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// blocking
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">&lt;-</span>ch
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;since: &#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	sig <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> os.Signal)
+</span></span><span style="display:flex;"><span>	signal.<span style="color:#50fa7b">Notify</span>(sig, os.Interrupt)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">&lt;-</span>sig
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>1-to-1 notification by receiving a value from a channel</strong></p>
+<p>If the value buffer queue of a channel is full (the buffer queue of an unbuffered channel is always full), a send operation on the channel will block until another goroutine receives a value from the channel. So we can receive a value from a channel to notify another goroutine which is waiting to send a value to the same channel.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">blocking</span>(c <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}) {
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(<span style="color:#bd93f9">1</span> <span style="color:#ff79c6">*</span> time.Second)
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// unblock the second send in main goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">&lt;-</span>c
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{})
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">blocking</span>(ch)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// blocked here, wait for a notification
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	ch <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;since: &#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	sig <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> os.Signal)
+</span></span><span style="display:flex;"><span>	signal.<span style="color:#50fa7b">Notify</span>(sig, os.Interrupt)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">&lt;-</span>sig
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>N-to-1 and 1-to-N notifications</strong></p>
+<p>Broadcast (1-to-N) notifications by closing a channel</p>
+]]></description>
+      
+    </item>
+    
     
     
     <item>
@@ -196,24 +459,11 @@ If one channel value is assigned to another, the two channels share the same und
     
     <item>
       <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
+      <link>https://idev-blog.web.app/posts/asynchronize-golang/</link>
       <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</guid>
-      <description><![CDATA[<p>Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,</p>
-<p>You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</p>
-<p>One of the interesting properties of pipelines is the ability they give you to operate on the stream of data using a combination of separate, often <strong>reordered</strong> stages. Maybe that would help improve the performance of the pipeline. In fact, it turns out it can, and this pattern has a name: fan-out, fan-in.</p>
-<h2 id="fan-out">Fan out</h2>
-<p>Fan-out is a term to describe the process of starting multiple goroutines to handle input from the pipeline.</p>
-<p>You might consider fanning out one of your stages if both of the following apply:</p>
-<ul>
-<li>It doesn&rsquo;t rely on values that the state had calculated before.</li>
-<li>It takes a long time to run. (system call, a heavy cpu job, &hellip;)</li>
-</ul>
-<p>The property of order-independence is important because you have no guarantee in what order concurrent copies of your stage will run, nor in what order they will return.</p>
-<h2 id="fan-in">Fan in</h2>
-<p>Fan-in is a term to describe the process of combining multiple results into one channel.</p>
-]]></description>
+      <guid>https://idev-blog.web.app/posts/asynchronize-golang/</guid>
+      <description><![CDATA[]]></description>
       
     </item>
     
@@ -360,6 +610,56 @@ If one channel value is assigned to another, the two channels share the same und
 <p>Dành trọn nhiệt huyết nồng</p>
 <p>Tháp sáng ước mơ to.</p>
 ]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title></title>
+      <link>https://idev-blog.web.app/posts/authentication-jwt/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/authentication-jwt/</guid>
+      <description><![CDATA[<h1 id="authentication">Authentication</h1>
+<h2 id="json-web-token">Json Web Token</h2>
+<p>In its compact form, JSON Web Tokens consist of three parts separated by dots (.) which are:</p>
+<ul>
+<li>Header</li>
+<li>Payload</li>
+<li>Signature</li>
+</ul>
+<p><strong>Header</strong>
+The header typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;alg&#34;</span>: <span style="color:#f1fa8c">&#34;HS256&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;typ&#34;</span>: <span style="color:#f1fa8c">&#34;JWT&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Then, this JSON is Base64Url encoded to form the first part of the JWT.</p>
+<p><strong>Payload</strong></p>
+<p>The second part of the token is the payload, which contains the claims. Claims are statements about an entity (typically, the user) and additional data. There are three types of claims: registered, public, and private claims.</p>
+<ul>
+<li>Registered claims: There are a set of predefined claims which are not mandatory but recommended, to provide a set of useful
+iss(issuer), exp(expiration time), sub(subject), aud(audience)</li>
+<li>Public claims:</li>
+<li>Private claims: These are the custom claims created to share information between parties that agree on using them and are neither registered or public claims.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;sub&#34;</span>: <span style="color:#f1fa8c">&#34;123456789&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;name&#34;</span>: <span style="color:#f1fa8c">&#34;John&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;admin&#34;</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The payload is then Base64Url encoded to form the second part of the JSON Web Token.</p>
+<p><strong>Signature</strong></p>
+<p>To create the signature part you have to take the encoded header, the encoded payload, a secret, the algorithm specified in the header, and sign that.
+The signature is used to verify the message wasn&rsquo;t changed along the way, and, in the case of tokens signed with a private key, it can also verify that the sender of the JWT is who it says it is.</p>
+<p><strong>How do JSON Web Tokens work?</strong></p>
+<p>In authentication, when the user successfully logs in using their credentials, a JSON Web Token will be returned. Since tokens are credentials,, greate care must be taken to prevent security issues. In general, you should not keep tokens longer than required.</p>
+<p>You also should not store sensitive session data in browser storage due to lack of security.</p>
+<p>Whenever the user wants to access a protected route or resource, the user agent should send the JWT, typically in the Authorization header using the Bearer schema.</p>
+<p>The content os the header should look like the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Authorization: Bearer &lt;token&gt;
+</span></span></code></pre></div>]]></description>
       
     </item>
     

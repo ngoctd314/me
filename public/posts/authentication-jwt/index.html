@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head>
+    
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+        Dev&#39;s Log
+    </title>
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" />
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" />
+    
+    
+    <link type="text/css" rel="stylesheet" href=https://idev-blog.web.app/css/styles.9b53275cb4d8eaa20bdbb49c202ffdc504a19d2a26a8724d44e3ab30e790bf408f9945c440b56636adeb6aac088b0ce94240f32a3e22b4dd1c55f8bb05663c0a.css integrity="sha512-m1MnXLTY6qIL27ScIC/9xQShnSomqHJNROOrMOeQv0CPmUXEQLVmNq3raqwIiwzpQkDzKj4itN0cVfi7BWY8Cg==" />
+<meta name="author" content="" />
+
+    
+    
+        <meta name="description" content="Web Token In its compact form, JSON Web Tokens consist of three parts separated by dots (.) which are:
+Header Payload Signature Header The header typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA" />
+    
+
+<meta property="og:site_name"
+    content='Dev&#39;s Log' />
+
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="" />
+    <meta
+        property="article:published_time"
+        content='0001-01-01T00:00:00Z&#43;0000' />
+    
+    <meta property="og:url" content="https://idev-blog.web.app/posts/authentication-jwt/" />
+    
+    
+    <meta property="og:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="Authentication Json Web Token In its compact form, JSON Web Tokens consist of three parts separated by dots (.) which are:
+Header Payload Signature Header The h" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='idev-blog.web.a'
+/>
+<meta property="twitter:url" content="https://idev-blog.web.app/posts/authentication-jwt/" />
+
+
+    <meta name="twitter:title" content="" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="Authentication Json Web Token In its compact form, JSON Web Tokens consist of three parts separated by dots (.) which are:
+Header Payload Signature Header The h" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.png' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">Dev&#39;s Log</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <a class="nerdlink" onclick="newSearch();">&#xf002;</a>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://www.facebook.com/ngoctd314">
+    
+    
+        &#xf09a;
+    
+    <span>
+        Facebook
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf09b;
+    
+    <span>
+        GitHub
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        Email
+    </span>
+</a>
+
+    </div>
+    
+        <div id="sidebar_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+        
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1></h1>
+    
+
+
+    
+        <p class="date">
+            <span title='Date'> </span>
+    0001-01-01
+
+
+            
+        </p>
+    
+    
+    
+    
+    <div><h1 id="authentication">Authentication</h1>
+<h2 id="json-web-token">Json Web Token</h2>
+<p>In its compact form, JSON Web Tokens consist of three parts separated by dots (.) which are:</p>
+<ul>
+<li>Header</li>
+<li>Payload</li>
+<li>Signature</li>
+</ul>
+<p><strong>Header</strong>
+The header typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;alg&#34;</span>: <span style="color:#f1fa8c">&#34;HS256&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;typ&#34;</span>: <span style="color:#f1fa8c">&#34;JWT&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Then, this JSON is Base64Url encoded to form the first part of the JWT.</p>
+<p><strong>Payload</strong></p>
+<p>The second part of the token is the payload, which contains the claims. Claims are statements about an entity (typically, the user) and additional data. There are three types of claims: registered, public, and private claims.</p>
+<ul>
+<li>Registered claims: There are a set of predefined claims which are not mandatory but recommended, to provide a set of useful
+iss(issuer), exp(expiration time), sub(subject), aud(audience)</li>
+<li>Public claims:</li>
+<li>Private claims: These are the custom claims created to share information between parties that agree on using them and are neither registered or public claims.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;sub&#34;</span>: <span style="color:#f1fa8c">&#34;123456789&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;name&#34;</span>: <span style="color:#f1fa8c">&#34;John&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;admin&#34;</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The payload is then Base64Url encoded to form the second part of the JSON Web Token.</p>
+<p><strong>Signature</strong></p>
+<p>To create the signature part you have to take the encoded header, the encoded payload, a secret, the algorithm specified in the header, and sign that.
+The signature is used to verify the message wasn&rsquo;t changed along the way, and, in the case of tokens signed with a private key, it can also verify that the sender of the JWT is who it says it is.</p>
+<p><strong>How do JSON Web Tokens work?</strong></p>
+<p>In authentication, when the user successfully logs in using their credentials, a JSON Web Token will be returned. Since tokens are credentials,, greate care must be taken to prevent security issues. In general, you should not keep tokens longer than required.</p>
+<p>You also should not store sensitive session data in browser storage due to lack of security.</p>
+<p>Whenever the user wants to access a protected route or resource, the user agent should send the JWT, typically in the Authorization header using the Bearer schema.</p>
+<p>The content os the header should look like the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Authorization: Bearer &lt;token&gt;
+</span></span></code></pre></div></div>
+</article>
+
+
+
+
+
+
+
+                    </main><footer>
+
+<p><small>
+        2022 &copy; Tran Duc Ngoc
+    </small></p>
+    <p><small>
+        
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

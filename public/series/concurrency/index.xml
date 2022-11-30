@@ -7,15 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Sat, 05 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/series/concurrency/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 26 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/series/concurrency/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
+      <title>Pipelines and cancellation</title>
+      <link>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</guid>
-      <description>Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,
-You&amp;rsquo;ve got a pipeline set up.</description>
+      <guid>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</guid>
+      <description>Go&amp;rsquo;s concurrency primitives make it easy to construct streaming data pipelines that make efficient use of I/O and multiple CPUs. This article introduces what is pipeline, how to to construct a pipeline and introduces techniques for dealing with failures cleanly.</description>
     </item>
     
     <item>

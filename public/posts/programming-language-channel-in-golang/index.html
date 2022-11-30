@@ -435,11 +435,11 @@ If one channel value is assigned to another, the two channels share the same und
                 <article class="card postlistitem">
     <div>
         <h2>
-            <a href="https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/">Fan out, Fan in</a>
+            <a href="https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/">Pipelines and cancellation</a>
         </h2>
         <p class="date">
             <span title='Date'> </span>
-    2022-11-05
+    2022-11-26
 
 
                 | 
@@ -452,12 +452,13 @@ If one channel value is assigned to another, the two channels share the same und
             
         </p>
         
+            
+        
         
             <div class="articlePreview">
                 <p>
                     
-                        Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,
-You&rsquo;ve got a pipeline set up.
+                        Go&rsquo;s concurrency primitives make it easy to construct streaming data pipelines that make efficient use of I/O and multiple CPUs. This article introduces what is pipeline, how to to construct a pipeline and introduces techniques for dealing with failures cleanly.
                     
                 </p>
                 
@@ -468,29 +469,31 @@ You&rsquo;ve got a pipeline set up.
 <article class="card postlistitem">
     <div>
         <h2>
-            <a href="https://idev-blog.web.app/posts/concurrency-pattern-generator-future/">Generator and Future Pattern</a>
+            <a href="https://idev-blog.web.app/posts/programming-language-channel-usecase/">Channel Use Case in Golang</a>
         </h2>
         <p class="date">
             <span title='Date'> </span>
-    2022-11-05
+    2022-11-22
 
 
                 | 
                 <span title='Tags'> </span>
                 
-                    <a href="/tags/concurrency-pattern">#concurrency pattern</a>
+                    <a href="/tags/basic">#basic</a>
                 
                     <a href="/tags/golang">#golang</a>
                 
             
         </p>
         
+            
+        
         
             <div class="articlePreview">
                 <p>
                     
-                        Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
-A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed.
+                        This article will show many channel use cases
+Asynchronous and concurrency programing with Go channels is easy and enjoyable. The channel synchronization technique has wider range of uses and have more variables than the synchronization solutions used in some other languages, such as the actor model and the async/await pattern.
                     
                 </p>
                 
