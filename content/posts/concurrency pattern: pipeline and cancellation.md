@@ -62,6 +62,17 @@ func sq(in <-chan int) <-chan int {
 	return out
 }
 ```
+## Fan-in, Fan-out
+
+## Stopping Short
+
+There is  a pattern to our pipeline functions: 
+- stages close their outbound channels when all the send operations are done.
+- stages keep receiving value from inbound channels until those channel are closed.
+
+This pattern allows each receiving stage to be written as for range loop and ensures that all goroutines exit once all values have been successfully sent downstream.
+
+But in real pipelines, stages don't always receive all the inbound values. Sometimes this is by design: the receiver may only need a subset of values to make progress. More often, a stage exit early because an inbound value represents an error in a earlier stages to stop producing values that later stage don't need. 
 
 **References**
 - https://go.dev/blog/pipelines
