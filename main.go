@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"sync"
+	"time"
 )
 
 // The first stage, gen is a function that converts a list of integers to a channel
@@ -60,16 +62,25 @@ func merge(cs ...<-chan int) <-chan int {
 	return out
 }
 
+func worker(ready chan struct{}, wg *sync.WaitGroup) {
+	defer wg.Done() // N-to-1 notification
+	<-ready         // block here and wait notification
+	time.Sleep(time.Second)
+	log.Println("run")
+}
+
+func after(duration time.Duration) <-chan struct{} {
+	ch := make(chan struct{})
+	go func() {
+		time.Sleep(duration)
+		ch <- struct{}{}
+	}()
+
+	return ch
+}
+
 func main() {
-	in := gen(2, 3)
-
-	// Distribute the sq work across two goroutines that both read from in
-	// fan-out
-	c1 := sq(in)
-	c2 := sq(in)
-
-	// Consume the merged output from c1 and c2
-	for n := range merge(c1, c2) {
-		fmt.Println(n)
-	}
+	now := time.Now()
+	<-after(time.Second)
+	fmt.Println(time.Since(now))
 }
