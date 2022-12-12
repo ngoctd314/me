@@ -148,4 +148,55 @@ func main() {
 
 **N-to-1 and 1-to-N notifications**
 
-Broadcast (1-to-N) notifications by closing a channel
+By making using of the feature that infinite values can be received from a closed channel, we can close a channel to broadcast notifications (1-to-N 1 main to N worker). Use sync.WaitGroup for N-to-1(N worker to 1 main) notification
+
+```go
+func worker(ready chan struct{}, wg *sync.WaitGroup) {
+	defer wg.Done() // N-to-1 notification
+	<-ready         // block here and wait notification
+	time.Sleep(time.Second)
+	log.Println("run")
+}
+
+func main() {
+	ready := make(chan struct{})
+	wg := &sync.WaitGroup{}
+	wg.Add(3)
+
+	go worker(ready, wg)
+	go worker(ready, wg)
+	go worker(ready, wg)
+
+	close(ready)
+	wg.Wait()
+}
+```
+
+**Timer: Scheduled notification**
+
+A custom one-time timer notification
+
+```go
+func after(duration time.Duration) <-chan struct{} {
+	ch := make(chan struct{})
+	go func() {
+		time.Sleep(duration)
+		ch <- struct{}{}
+	}()
+
+	return ch
+}
+
+func main() {
+	now := time.Now()
+	<-after(time.Second)
+	fmt.Println(time.Since(now))
+}
+```
+
+## Use Channels as Mutex Locks
+
+There are two manners to use one-capacity buffered channels as mutex locks
+
+1. Lock through a send, unlock through a receive
+2. Lock through a receive, unlock through a send
