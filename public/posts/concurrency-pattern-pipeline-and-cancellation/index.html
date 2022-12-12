@@ -333,7 +333,16 @@
 </span></span><span style="display:flex;"><span>	}()
 </span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><strong>References</strong></p>
+</span></span></code></pre></div><h2 id="fan-in-fan-out">Fan-in, Fan-out</h2>
+<h2 id="stopping-short">Stopping Short</h2>
+<p>There is  a pattern to our pipeline functions:</p>
+<ul>
+<li>stages close their outbound channels when all the send operations are done.</li>
+<li>stages keep receiving value from inbound channels until those channel are closed.</li>
+</ul>
+<p>This pattern allows each receiving stage to be written as for range loop and ensures that all goroutines exit once all values have been successfully sent downstream.</p>
+<p>But in real pipelines, stages don&rsquo;t always receive all the inbound values. Sometimes this is by design: the receiver may only need a subset of values to make progress. More often, a stage exit early because an inbound value represents an error in a earlier stages to stop producing values that later stage don&rsquo;t need.</p>
+<p><strong>References</strong></p>
 <ul>
 <li><a href="https://go.dev/blog/pipelines">https://go.dev/blog/pipelines</a></li>
 </ul>

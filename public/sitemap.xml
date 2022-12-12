@@ -14,9 +14,6 @@
     <loc>https://idev-blog.web.app/</loc>
     <lastmod>2022-11-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://idev-blog.web.app/tags/go/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://idev-blog.web.app/tags/golang/</loc>
     <lastmod>2022-11-26T00:00:00+00:00</lastmod>
   </url><url>
@@ -27,12 +24,6 @@
     <lastmod>2022-11-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/reactive/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</loc>
     <lastmod>2022-11-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/series/</loc>
@@ -54,9 +45,6 @@
     <lastmod>2022-11-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</loc>
-    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/asynchronize-golang/</loc>
     <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</loc>

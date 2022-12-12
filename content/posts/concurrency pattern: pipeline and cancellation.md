@@ -74,5 +74,134 @@ This pattern allows each receiving stage to be written as for range loop and ens
 
 But in real pipelines, stages don't always receive all the inbound values. Sometimes this is by design: the receiver may only need a subset of values to make progress. More often, a stage exit early because an inbound value represents an error in a earlier stages to stop producing values that later stage don't need. 
 
+```go
+func gen(nums ...int) (result<-chan int) {
+	result = make(chan int)
+	for _, num := range nums {
+		// blocking operation
+		result <- num
+	}
+
+	return
+}
+
+func main() {
+	result := gen(2,3)
+	fmt.Println(result)
+
+	// This is a resource leak: goroutines consume memory and runtime 
+	// resources, and heap references in goroutine stacks heap data from
+	// being garbage collected. Goroutines are not garbage collected;
+	// they must exit on their own.
+	fmt.Println(runtime.NumGoroutine()) // 2
+}
+```
+We need to arrange for the upstream stages of our pipeline to exit even when the downstream stages fail to receive all the inbound values. One way to do this is to change the outbound channels to have a buffer.
+
+```go
+c := make(chan int, 2) // buffer size 2
+c <- 1 // succeeds immediately
+c <- 2 // succeeds immediately
+c <- 3 // blocks until another goroutine does <- c and receives 1
+```
+
+When the **max** number of values to be sent is known at channel creation time, a buffer can simplify the code. 
+
+## Explicit cancellation
+
+When main decides to exit without receiving all the values from out, it must tell the goroutines in the upstream stages to abandon the values they're trying to send. It does so by sending values on channel called done.
+
+```go
+func gen(nums ...int) <-chan int {
+	out := make(chan int, len(nums))
+	go func() {
+		for _, n := range nums {
+			out <- n
+		}
+		// close when all the values have been sent
+		close(out)
+	}()
+
+	return out
+}
+
+func sq(in <-chan int) <-chan int {
+	out := make(chan int)
+	go func() {
+		// consume inbound
+		for v := range in {
+			out <- v * v
+		}
+		close(out)
+	}()
+	return out
+}
+
+func merge(done <-chan struct{}, cs ...<-chan int) <-chan int {
+	// we don't know number of channel size
+	out := make(chan int)
+	var wg sync.WaitGroup
+
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
+
+	output := func(c <-chan int) {
+		for n := range c {
+			select {
+			// consume data
+			case out <- n:
+			// stop send value
+			case <-done:
+				break
+			}
+		}
+		wg.Done()
+	}
+
+	wg.Add(len(cs))
+	// consume input channel, exit sending goroutine of input channel
+	for _, v := range cs {
+		// create goroutine to consume input channel data
+		go output(v)
+	}
+
+	return out
+}
+
+func main() {
+	// create main goroutine
+	g := gen(2, 3) // create 2 new goroutines then exit
+
+	c1 := sq(g) // create a new goroutine and block
+	c2 := sq(g) // create a new goroutine and block
+	// 3 goroutines because no goroutine consume it
+
+	done := make(chan struct{})
+
+	defer func() {
+		close(done)
+		// only main goroutine
+	}()
+
+	out := merge(done, c1, c2)
+	fmt.Println(<-out)
+}
+
+func printGoroutine() {
+	time.Sleep(time.Second)
+	fmt.Println("num goroutine", runtime.NumGoroutine())
+}
+```
+
+**Here are the guidelines for pipeline construction**
+- Stages close their outbound channels when all the send operations are done.
+- Stages keep receiving value from inbound channels until those channels are closed or the senders are unblocked.
+
+## Digesting a tree
+
+
+
 **References**
 - https://go.dev/blog/pipelines
