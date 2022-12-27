@@ -1,28 +1,32 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
 	"log"
-	"os"
-	"strings"
+	"sync"
 )
 
 func main() {
-	f, err := os.Open(".env")
-	if err != nil {
-		log.Println(err)
-	}
-	fileScanner := bufio.NewScanner(f)
-	fileScanner.Split(bufio.ScanLines)
+	cnt := 0
+	wg := sync.WaitGroup{}
 
-	for fileScanner.Scan() {
-		tmp := strings.Split(fileScanner.Text(), "=")
-		if len(tmp) != 2 {
-			continue
-		}
-		os.Setenv(tmp[0], tmp[1])
+	lock := make(chan struct{}, 1)
+	lock <- struct{}{}
+
+	var increase = func() {
+		defer wg.Done()
+		// lock through receive
+		<-lock
+		cnt++
+		// unlock
+		lock <- struct{}{}
 	}
-	fmt.Println(os.Getenv("PORT"))
+
+	for i := 0; i < 10000; i++ {
+		wg.Add(1)
+		go increase()
+	}
+
+	wg.Wait()
+	log.Println(cnt)
 
 }
