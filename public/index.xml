@@ -62,84 +62,20 @@
 </span></span><span style="display:flex;"><span>	}()
 </span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><strong>References</strong></p>
+</span></span></code></pre></div><h2 id="fan-in-fan-out">Fan-in, Fan-out</h2>
+<h2 id="stopping-short">Stopping Short</h2>
+<p>There is  a pattern to our pipeline functions:</p>
+<ul>
+<li>stages close their outbound channels when all the send operations are done.</li>
+<li>stages keep receiving value from inbound channels until those channel are closed.</li>
+</ul>
+<p>This pattern allows each receiving stage to be written as for range loop and ensures that all goroutines exit once all values have been successfully sent downstream.</p>
+<p>But in real pipelines, stages don&rsquo;t always receive all the inbound values. Sometimes this is by design: the receiver may only need a subset of values to make progress. More often, a stage exit early because an inbound value represents an error in a earlier stages to stop producing values that later stage don&rsquo;t need.</p>
+<p><strong>References</strong></p>
 <ul>
 <li><a href="https://go.dev/blog/pipelines">https://go.dev/blog/pipelines</a></li>
 </ul>
 ]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Reactive Programming with Go</title>
-      <link>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</guid>
-      <description><![CDATA[<p>ReactiveX, or Rx for short, is an API for programming with Observable streams. ReactiveX is a new, alternative way of asynchronous programming to callbacks, promises, and deferred. It is about processing streams of events of items, with events being any occurrences or changes within the system. A stream of events is called an Observable.</p>
-<h2 id="rxgo">RxGO</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"></code></pre></div><h2 id="hot-vs-cold-observables">Hot vs. Cold Observables</h2>
-<p>In the RX world, there is a distinction between cold and hot Observables. When the data is produced by the Observable itself, it is a cold Observable. When the data is produced outside the Observable, it is a hot Observable. Usually, we don&rsquo;t want to create a producer over and over again, we favor a hot Observable.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// Create a hot Observable using FromChannel operator
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> rxgo.Item)
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">3</span>; i<span style="color:#ff79c6">++</span> {
-</span></span><span style="display:flex;"><span>        ch <span style="color:#ff79c6">&lt;-</span> rxgo.<span style="color:#50fa7b">Of</span>(i)
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">close</span>(ch)
-</span></span><span style="display:flex;"><span>}()
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>observable <span style="color:#ff79c6">:=</span> rxgo.<span style="color:#50fa7b">FromChannel</span>(ch)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">// First Observer
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
-</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;First Observer&#34;</span>, item.V)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Second Observer
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
-</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;Second Observer&#34;</span>, item.V)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Result
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">//
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// It means the first Observer already consumed all items.
-</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// Create a cold Observable using Defer operator:
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>observable <span style="color:#ff79c6">:=</span> rxgo.<span style="color:#50fa7b">Defer</span>([]rxgo.Producer{<span style="color:#8be9fd;font-style:italic">func</span>(_ context.Context, ch <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> rxgo.Item) {
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">3</span>; i<span style="color:#ff79c6">++</span> {
-</span></span><span style="display:flex;"><span>        ch <span style="color:#ff79c6">&lt;-</span> rxgo.<span style="color:#50fa7b">Of</span>(i)
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}})
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">// In the case of a cold observable, the stream was created independent for
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// every Observer
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
-</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;first observable: &#34;</span>, item.V)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">// In the case of a cold observable, the stream was created independent for
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// every Observer
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
-</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;second observable: &#34;</span>, item.V)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Result
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0 
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
-</span></span></span></code></pre></div><p>Hot vs cold Observable are not about how you consume items, it&rsquo;s about where data is produced. Good example for hot Observable are price ticks from a trading exchange. And if you teach an Observable to fetch products from a database, then yield them one by one, you will create the cold Observable.</p>
-]]></description>
-      
-        <media:thumbnail url="https://idev-blog.web.app/images/reactive/rx.png" />
       
     </item>
     
@@ -452,18 +388,6 @@ If one channel value is assigned to another, the two channels share the same und
 </ul>
 <p><strong>References</strong> <a href="https://go101.org/article/channel.html">Channel Use Case go101</a></p>
 ]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/asynchronize-golang/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/asynchronize-golang/</guid>
-      <description><![CDATA[]]></description>
       
     </item>
     

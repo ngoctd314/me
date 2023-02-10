@@ -87,4 +87,4 @@ The actual http request is done asynchronously in a goroutine. The main function
 
 ## Different Between Generator and Future 
 
-In generator pattern, we generate next state base on previous state (maybe not), but i purpose is compute many things in background. In future pattern, we use goroutine to execute an "heavy job" (only one job).
+In generator pattern, we generate next state base on previous state (maybe not), but it purpose is compute many things in background. In future pattern, we use goroutine to execute an "heavy job" (only one job).

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package tutorial;
+
+option go_package = "./pb";
+
+message User {
+  string name = 1;
+  int32 age = 2;
+  string address = 3 [ deprecated = true ];
+}
+
+message GetMeRequest { string name = 1; }
+
+service UserService {
+  rpc GetMe(GetMeRequest) returns (User) {}
+}

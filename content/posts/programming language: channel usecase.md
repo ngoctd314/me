@@ -1,6 +1,6 @@
 ---
 title: "Channel Use Case in Golang"
-date: 2022-11-22
+date: 2022-12-27
 authors: ["ngoctd"]
 draft: false
 tags: ["basic", "golang"]
@@ -199,8 +199,72 @@ func main() {
 There are two manners to use one-capacity buffered channels as mutex locks
 
 1. Lock through a send, unlock through a receive
+
+```go
+func main() {
+	cnt := 0
+	wg := sync.WaitGroup{}
+
+	lock := make(chan struct{}, 1)
+	var increase = func() {
+		defer wg.Done()
+		// lock through send
+		lock <- struct{}{}
+		cnt++
+		// unlock
+		<-lock
+	}
+
+	for i := 0; i < 10000; i++ {
+		wg.Add(1)
+		go increase()
+	}
+
+	wg.Wait()
+	log.Println(cnt)
+
+}
+
+```
+
 2. Lock through a receive, unlock through a send
 
-The following is a lock-through send example
 ```go
+func main() {
+	cnt := 0
+	wg := sync.WaitGroup{}
+
+	lock := make(chan struct{}, 1)
+	lock <- struct{}{}
+
+	var increase = func() {
+		defer wg.Done()
+		// lock through receive
+		<-lock
+		cnt++
+		// unlock
+		lock <- struct{}{}
+	}
+
+	for i := 0; i < 10000; i++ {
+		wg.Add(1)
+		go increase()
+	}
+
+	wg.Wait()
+	log.Println(cnt)
+
+}
 ```
+
+## Use Channels as Counting Semaphores
+
+Buffered channels can be used as counting semaphores
+Counting semaphores can be viewed as multi-owner locks. If the capacity of a channel is N, then it can be viewed as a lock which can have most N owners at any time. 
+
+Counting semaphores are often used to enforce a maximum number of concurrent requests.
+
+There are two manners to acquire one piece of ownership of a channel semaphore
+1. Acquire ownership through a send, release through a receive
+2. Acquire ownership through a receive, release through a send
+

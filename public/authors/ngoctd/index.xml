@@ -18,15 +18,6 @@
     </item>
     
     <item>
-      <title>Reactive Programming with Go</title>
-      <link>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</guid>
-      <description>ReactiveX, or Rx for short, is an API for programming with Observable streams. ReactiveX is a new, alternative way of asynchronous programming to callbacks, promises, and deferred. It is about processing streams of events of items, with events being any occurrences or changes within the system.</description>
-    </item>
-    
-    <item>
       <title>Channel Use Case in Golang</title>
       <link>https://idev-blog.web.app/posts/programming-language-channel-usecase/</link>
       <pubDate>Tue, 22 Nov 2022 00:00:00 +0000</pubDate>
@@ -53,15 +44,6 @@ In this article, i will introduce naive solution for automatic connect to VPN us
       
       <guid>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</guid>
       <description>Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described.</description>
-    </item>
-    
-    <item>
-      <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/asynchronize-golang/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/asynchronize-golang/</guid>
-      <description></description>
     </item>
     
     <item>
