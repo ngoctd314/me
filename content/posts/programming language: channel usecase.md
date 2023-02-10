@@ -200,3 +200,7 @@ There are two manners to use one-capacity buffered channels as mutex locks
 
 1. Lock through a send, unlock through a receive
 2. Lock through a receive, unlock through a send
+
+The following is a lock-through send example
+```go
+```
