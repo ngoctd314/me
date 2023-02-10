@@ -22,15 +22,11 @@ Mọi hôm thì mẹ sẽ chở mình đến trường, rồi sau đó sẽ đi 
 
 Hồi đó mình cũng chả hiểu câu hỏi của mẹ đâu. Mình trả lời là con không mẹ. Nhưng mà lúc đó mẹ vẫn không đưa mình đến tận cổng, mẹ dừng ở xa xa một chút ...
 
-&nbsp;
-
-Hồi ở trong đấy, xung quanh nhà mình chả có ai cả, không làng, không xóm. Bố mẹ thì đi làm suốt, chỉ có hai chị em chơi với nhau thôi. Thân lắmmm. Còn nhớ vào mỗi mùa khô, bố mẹ phải đi tưới cà phê ở rẫy phải vài ngày mới về. Hai chị em ở nhà sợ lắm. Nhà mình còn chả có đèn điện. Tối đến hai chị em thắp nến lên, chắc hẳn ai cũng từng chỉ chỉ cái bóng khổng lồ xong chơi đùa với nó. Còn mình và chị thì bảo nó là mẹ. Mẹ dọa là tối thì không được mở cửa nhà, không thì trộm nó vào nhà đấy. Thế mà chị mình đóng vai là mẹ, xong hai chị em cứ xưng hô mẹ, con với nhau. Buồn cười lắm. À mình có viết một bài về cái vụ này, bạn có thể đọc ở [đây](https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/) nhé :3 
+Hồi đó, xung quanh nhà mình chả có ai cả, không làng, không xóm. Bố mẹ thì đi làm suốt, chỉ có hai chị em chơi với nhau thôi. Thân lắmmm. Còn nhớ vào mỗi mùa khô, bố mẹ phải đi tưới cà phê ở rẫy phải vài ngày mới về. Hai chị em ở nhà sợ lắm. Nhà mình còn chả có đèn điện. Tối đến hai chị em thắp nến lên, chắc hẳn ai cũng từng chỉ chỉ cái bóng khổng lồ xong chơi đùa với nó. Còn mình và chị thì bảo nó là mẹ. Mẹ dọa là tối thì không được mở cửa nhà, không thì trộm nó vào nhà đấy. Thế mà chị mình đóng vai là mẹ, xong hai chị em cứ xưng hô mẹ, con với nhau. Buồn cười lắm. À mình có viết một bài về cái vụ này, bạn có thể đọc ở [đây](https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/) nhé :3 
 
 Hồi cuối năm lớp 3, chị mình đòi về miền bắc (trước đó mình ở  Tây Nguyên), bố mẹ mình cũng thấy trong đó điều kiện học hành không tốt, nên cho cả mình về. Mình vui lắm. Nhưng mình đâu có biết, là mình sẽ về sống với ông bà thôi, còn bố mẹ thì vẫn phải đi làm ở trong đó. 
 
 Mình nhớ có một lần mẹ về quê thăm con. Trước tối hôm mẹ quay lại miền nam, mình bảo mẹ lúc nào mẹ dậy thì mẹ bảo con với nhé. Mình còn cẩn thận lấy cái dây, buộc tay mình với mẹ lại, lúc đó mình sợ mẹ không gọi mình dậy. Mình nhớ như in lúc 4h sáng hôm đấy, mình vẫn dậy được. Lúc mẹ chuẩn bị đi, mình chạy đến ôm chân mẹ, khóc nức nở, không cho mẹ đi. Mình cũng không nhớ mình nói gì với mẹ, chỉ nhớ mang máng là con không cho mẹ đi, mẹ ở nhà với con. Mình khóc to, to lắm, to đến nỗi cả xóm sang khuyên mình cơ mà. Bình thường mình mà khóc thì mẹ còn đánh thêm cho, nhưng hôm đấy dĩ nhiên là khác ... 
-
-Còn nhiều lắm, chắc là mình viết vào khi khác
 
 ## À ừ, mẹ khóc
 
