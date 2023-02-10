@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>design pattern on Dev&#39;s Log</title>
+    <link>https://idev-blog.web.app/tags/design-pattern/</link>
+    <description>Recent content in design pattern on Dev&#39;s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Tran Duc Ngoc</copyright>
+    <lastBuildDate>Fri, 04 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/design-pattern/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Decorator pattern</title>
+      <link>https://idev-blog.web.app/posts/design-pattern-decorator/</link>
+      <pubDate>Fri, 04 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/design-pattern-decorator/</guid>
+      <description>I used to think real men subclassed everything. That was until I learned the power of extension at runtime, rather than at compile time.
+Just call this chapter &amp;ldquo;Design Eye for Inheritance Guy.&amp;rdquo; We&amp;rsquo;ll re-examine the typical overuse of inheritance and you&amp;rsquo;ll learn how to decorate your classes at runtime using a form of object composition.</description>
+    </item>
+    
+    <item>
+      <title>Observer Pattern</title>
+      <link>https://idev-blog.web.app/posts/design-pattern-observer/</link>
+      <pubDate>Thu, 03 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/design-pattern-observer/</guid>
+      <description>Keeping your Objects in the Know, you don&amp;rsquo;t want to miss out when something interesting happens.
+The Observer Pattern defines a one-to-many dependency between objects so that when one object changes state, all of its dependents are notified and updated automatically.</description>
+    </item>
+    
+  </channel>
+</rss>

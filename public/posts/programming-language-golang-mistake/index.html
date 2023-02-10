@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head>
+    
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            Golang All in One  &ndash;
+        
+        Dev&#39;s Log
+    </title>
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" />
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" />
+    
+    
+    <link type="text/css" rel="stylesheet" href=https://idev-blog.web.app/css/styles.9b53275cb4d8eaa20bdbb49c202ffdc504a19d2a26a8724d44e3ab30e790bf408f9945c440b56636adeb6aac088b0ce94240f32a3e22b4dd1c55f8bb05663c0a.css integrity="sha512-m1MnXLTY6qIL27ScIC/9xQShnSomqHJNROOrMOeQv0CPmUXEQLVmNq3raqwIiwzpQkDzKj4itN0cVfi7BWY8Cg==" />
+<meta name="author" content="" />
+
+    
+        <meta name="keywords" content='basic, golang' />
+    
+    
+        <meta name="description" content="basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept in golang.
+Basic Types and Basic Value Literals rune type (a." />
+    
+
+<meta property="og:site_name"
+    content='Dev&#39;s Log' />
+
+    <meta property="og:title" content="Golang All in One" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="" />
+    <meta
+        property="article:published_time"
+        content='2022-10-02T07:33:22Z&#43;0700' />
+    
+        
+            <meta property="article:tag" content="basic" />
+        
+            <meta property="article:tag" content="golang" />
+        
+    
+    <meta property="og:url" content="https://idev-blog.web.app/posts/programming-language-golang-mistake/" />
+    
+    
+    <meta property="og:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept i" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='idev-blog.web.a'
+/>
+<meta property="twitter:url" content="https://idev-blog.web.app/posts/programming-language-golang-mistake/" />
+
+
+    <meta name="twitter:title" content="Golang All in One" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept i" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.png' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">Dev&#39;s Log</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <a class="nerdlink" onclick="newSearch();">&#xf002;</a>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://www.facebook.com/ngoctd314">
+    
+    
+        &#xf09a;
+    
+    <span>
+        Facebook
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf09b;
+    
+    <span>
+        GitHub
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        Email
+    </span>
+</a>
+
+    </div>
+    
+        <div id="sidebar_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+        
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>Golang All in One</h1>
+    
+
+
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2022-10-02
+
+
+                <span>/ authors </span>
+                
+                
+                    <a
+                        
+                        href="/authors/ngoctd">#ngoctd</a>
+                
+            
+            
+                <span>/ tags </span>
+                
+                    <a
+                        
+                        href="/tags/basic">#basic</a>
+                
+                    <a
+                        
+                        href="/tags/golang">#golang</a>
+                
+            
+        </p>
+    
+    
+    
+    
+    <div><p>All about golang at basic level in one post. Content in this post i have learned in <a href="https://go101.org/">go101 book </a> and on the internet. At this time, i think it can be misconcept in golang.</p>
+<h2 id="basic-types-and-basic-value-literals">Basic Types and Basic Value Literals</h2>
+<p>rune type (a.k.a int32 type), are special integer types. A rune value is intended to store a Unicode point. A rune literal is expressed as one or more characters enclosed in a pair of quotes, for example &lsquo;a&rsquo; (the Unicode value of character a is 97). We should know that some Unicode characters are composed of more than one code points, for example &lsquo;a&rsquo;, &lsquo;\x61&rsquo;, &lsquo;\141&rsquo; are the same (the Unicode value is 97).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">97</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;\x61&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;\141&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;\u0061&#39;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></div>
+</article>
+
+
+    
+    
+        
+        
+        
+            
+                
+                
+        
+            
+                
+                
+        
+    
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/programming-language-channel-usecase/">Channel Use Case in Golang</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-12-27
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/basic">#basic</a>
+                
+                    <a href="/tags/golang">#golang</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        This article will show many channel use cases
+Asynchronous and concurrency programing with Go channels is easy and enjoyable. The channel synchronization technique has wider range of uses and have more variables than the synchronization solutions used in some other languages, such as the actor model and the async/await pattern.
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+<article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/programming-language-wire-for-d/">wire for D. D for Dependency Injection</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-12-12
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/basic">#basic</a>
+                
+                    <a href="/tags/golang">#golang</a>
+                
+                    <a href="/tags/solid">#solid</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Wire has two core concepts: providers and injectors.
+Providers The primary mechanism in Wire is the providers: a function that can produce a value.
+type Foo struct { X int } func ProvideFoo() Foo { return Foo{X: 42} } Providers can also return errors
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+
+<p><small>
+        2023 &copy; Tran Duc Ngoc
+    </small></p>
+    <p><small>
+        
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

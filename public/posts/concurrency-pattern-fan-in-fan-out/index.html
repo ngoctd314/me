@@ -290,7 +290,7 @@ You&amp;rsquo;ve got a pipeline set up." />
     <div><p>Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,</p>
 <p>You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</p>
 <p>One of the interesting properties of pipelines is the ability they give you to operate on the stream of data using a combination of separate, often <strong>reordered</strong> stages. Maybe that would help improve the performance of the pipeline. In fact, it turns out it can, and this pattern has a name: fan-out, fan-in.</p>
-<h2 id="fan-out">Fan out</h2>
+<h2 id="fan-infan-out">Fan in,Fan out</h2>
 <p>Fan-out is a term to describe the process of starting multiple goroutines to handle input from the pipeline.</p>
 <p>You might consider fanning out one of your stages if both of the following apply:</p>
 <ul>
@@ -298,9 +298,77 @@ You&amp;rsquo;ve got a pipeline set up." />
 <li>It takes a long time to run. (system call, a heavy cpu job, &hellip;)</li>
 </ul>
 <p>The property of order-independence is important because you have no guarantee in what order concurrent copies of your stage will run, nor in what order they will return.</p>
-<h2 id="fan-in">Fan in</h2>
-<p>Fan-in is a term to describe the process of combining multiple results into one channel.</p>
-</div>
+<p>Multiple functions can be read from the same channel until that channel is closed; this is called fan-out. This provides a way to distribute work amongst a group of workers to parallelize CPU use and I/O.</p>
+<p>A function can read from multiple inputs and proceed until all are closed by multiplexing then input channels onto a single channel that&rsquo;s closed when all the inputs are closed. This is called fan-in.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// The first stage, gen is a function that converts a list of integers to a channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// that emits the integers in the list. The gen function starts a goroutine that sends
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// the integers on the channel and closes the channel when all the values have been sent
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">gen</span>(nums <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> nums {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// close when all the values have been sent
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// The second stage, sq receives integers from a channel and returns a channel that emits the square
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// of each received integer. After the inbound channel is closed and this stage has sent all the values
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// downstream, it closes the outbound channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">sq</span>(in <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// consume inbound
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">for</span> v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> in {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> v <span style="color:#ff79c6">*</span> v
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">merge</span>(cs <span style="color:#ff79c6">...&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> wg sync.WaitGroup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	output <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">func</span>(c <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> c {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Done</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	wg.<span style="color:#50fa7b">Add</span>(<span style="color:#8be9fd;font-style:italic">len</span>(cs))
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> _, v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> cs {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">output</span>(v)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	in <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">gen</span>(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// Distribute the sq work across two goroutines that both read from in
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// fan-out
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	c1 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(in)
+</span></span><span style="display:flex;"><span>	c2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(in)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// Consume the merged output from c1 and c2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> <span style="color:#50fa7b">merge</span>(c1, c2) {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(n)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></div>
 </article>
 
 
@@ -333,11 +401,11 @@ You&amp;rsquo;ve got a pipeline set up." />
                 <article class="card postlistitem">
     <div>
         <h2>
-            <a href="https://idev-blog.web.app/posts/programming-language-channel-in-golang/">Channel in Golang</a>
+            <a href="https://idev-blog.web.app/posts/programming-language-channel-usecase/">Channel Use Case in Golang</a>
         </h2>
         <p class="date">
             <span title='Date'> </span>
-    2022-11-05
+    2022-12-27
 
 
                 | 
@@ -350,11 +418,14 @@ You&amp;rsquo;ve got a pipeline set up." />
             
         </p>
         
+            
+        
         
             <div class="articlePreview">
                 <p>
                     
-                        Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described.
+                        This article will show many channel use cases
+Asynchronous and concurrency programing with Go channels is easy and enjoyable. The channel synchronization technique has wider range of uses and have more variables than the synchronization solutions used in some other languages, such as the actor model and the async/await pattern.
                     
                 </p>
                 
@@ -365,29 +436,34 @@ You&amp;rsquo;ve got a pipeline set up." />
 <article class="card postlistitem">
     <div>
         <h2>
-            <a href="https://idev-blog.web.app/posts/concurrency-pattern-generator-future/">Generator and Future Pattern</a>
+            <a href="https://idev-blog.web.app/posts/programming-language-wire-for-d/">wire for D. D for Dependency Injection</a>
         </h2>
         <p class="date">
             <span title='Date'> </span>
-    2022-11-05
+    2022-12-12
 
 
                 | 
                 <span title='Tags'> </span>
                 
-                    <a href="/tags/concurrency-pattern">#concurrency pattern</a>
+                    <a href="/tags/basic">#basic</a>
                 
                     <a href="/tags/golang">#golang</a>
                 
+                    <a href="/tags/solid">#solid</a>
+                
             
         </p>
+        
+            
         
         
             <div class="articlePreview">
                 <p>
                     
-                        Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
-A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed.
+                        Wire has two core concepts: providers and injectors.
+Providers The primary mechanism in Wire is the providers: a function that can produce a value.
+type Foo struct { X int } func ProvideFoo() Foo { return Foo{X: 42} } Providers can also return errors
                     
                 </p>
                 
@@ -404,7 +480,7 @@ A Future indicates any data that is needed in future but its computation can be 
                     </main><footer>
 
 <p><small>
-        2022 &copy; Tran Duc Ngoc
+        2023 &copy; Tran Duc Ngoc
     </small></p>
     <p><small>
         

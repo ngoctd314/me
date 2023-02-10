@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>network on Dev&#39;s Log</title>
+    <link>https://idev-blog.web.app/tags/network/</link>
+    <description>Recent content in network on Dev&#39;s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Tran Duc Ngoc</copyright>
+    <lastBuildDate>Fri, 25 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/network/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Content Delivery Network</title>
+      <link>https://idev-blog.web.app/posts/net-work-cdn/</link>
+      <pubDate>Fri, 25 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/net-work-cdn/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html class="" lang="en-us"><head>
+    
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+    <link
+    rel="icon"
+    href='/favicon.png'
+/>
+<link
+    rel="shortcut icon"
+    href='/favicon.ico'
+    type="image/x-icon"
+/>
+<link
+    rel="apple-touch-icon"
+    href='/apple-touch-icon.png'
+/>
+
+    <link
+        rel="icon"
+        href='/logo.svg'
+        type="image/svg+xml"
+    />
+
+<title>
+        
+            GRPC Overview  &ndash;
+        
+        Dev&#39;s Log
+    </title>
+    <link href="/symbols-nerd-font/symbols-nerd-font.css" rel="stylesheet" />
+    <link href="/jetbrains-mono/jetbrains-mono.css" rel="stylesheet" />
+    
+    
+    <link type="text/css" rel="stylesheet" href=https://idev-blog.web.app/css/styles.9b53275cb4d8eaa20bdbb49c202ffdc504a19d2a26a8724d44e3ab30e790bf408f9945c440b56636adeb6aac088b0ce94240f32a3e22b4dd1c55f8bb05663c0a.css integrity="sha512-m1MnXLTY6qIL27ScIC/9xQShnSomqHJNROOrMOeQv0CPmUXEQLVmNq3raqwIiwzpQkDzKj4itN0cVfi7BWY8Cg==" />
+<meta name="author" content="" />
+
+    
+        <meta name="keywords" content='grpc' />
+    
+    
+        <meta name="description" content="en source remote procedure call (RPC) framework that can run anywhere. It enables client and server applications to communicate transparently, and makes it easier to build connected systems.
+In gRPC, a client application can directly call a method on a server application on a different machine as if it were a local object, making it easier for you to create disitributed applications can services." />
+    
+
+<meta property="og:site_name"
+    content='Dev&#39;s Log' />
+
+    <meta property="og:title" content="GRPC Overview" />
+    <meta property="og:type" content="article" />
+    
+    <meta
+        property="article:author" content="" />
+    <meta
+        property="article:published_time"
+        content='2022-11-07T00:00:00Z&#43;0000' />
+    
+        
+            <meta property="article:tag" content="grpc" />
+        
+    
+    <meta property="og:url" content="https://idev-blog.web.app/posts/overview-grpc/" />
+    
+    
+    <meta property="og:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta property="og:description" content="gRPC is a modern, open source remote procedure call (RPC) framework that can run anywhere. It enables client and server applications to communicate transparentl" />
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:domain"
+      content='idev-blog.web.a'
+/>
+<meta property="twitter:url" content="https://idev-blog.web.app/posts/overview-grpc/" />
+
+
+    <meta name="twitter:title" content="GRPC Overview" />
+    
+    
+    
+    <meta name="twitter:image"
+        content="https://idev-blog.web.app/android-chrome-512x512.png" />
+    
+        <meta name="twitter:description" content="gRPC is a modern, open source remote procedure call (RPC) framework that can run anywhere. It enables client and server applications to communicate transparentl" />
+    
+
+<link rel="manifest" href="/manifest/index.json" />
+</head>
+
+
+<body>
+        <div id="baseContainer"><header class="">
+<div class="titleAndSearchContainer">
+        <div id="titleContainer">
+            
+                <a class="unstyledLink" href="/">
+                    <img src='/logo.png' alt='Logo'/>
+                </a>
+            
+            <div class="rightOfLogo">
+                <div class="titleAndHamburger">
+                    <h1>
+                        <a class="unstyledLink" href="/">Dev&#39;s Log</a>
+                        
+                    </h1>
+                    
+                </div>
+                <div id="wide_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+            </div>
+        </div>
+        <div class="search">
+    <input id="searchbar" type="text" placeholder='Search' />
+    <a class="nerdlink" onclick="newSearch();">&#xf002;</a>
+</div>
+<script>
+    function newSearch() {
+        let term = searchbar.value.trim();
+        if (!term) return;
+        location.href = `/search?q=${term}`;
+    }
+    searchbar.onkeyup = (ev) => {if (ev.keyCode == 13) newSearch()};
+</script>
+
+    </div>
+    <div id="links">
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="/index.xml">
+    
+    
+        &#xf09e;
+    
+    <span>
+        RSS
+    </span>
+</a>
+
+        
+        <a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://www.facebook.com/ngoctd314">
+    
+    
+        &#xf09a;
+    
+    <span>
+        Facebook
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf09b;
+    
+    <span>
+        GitHub
+    </span>
+</a>
+<a
+    
+        rel="noreferrer"
+    
+    target="_blank"
+    class="nerdlink"
+    href="https://github.com/ngoctd314">
+    
+    
+        &#xf0e1;
+    
+    <span>
+        Email
+    </span>
+</a>
+
+    </div>
+    
+        <div id="sidebar_nav"><nav>
+    
+    <ul id="main-nav">
+        <li><a href="/">Home</a></li>
+        
+            <li><a href="/posts">Posts</a></li>
+        
+        
+        
+        
+        
+        
+        
+            <li><a href="/authors">Authors</a></li>
+        
+        
+            <li><a href="/series">Series</a></li>
+        
+        
+            <li><a href="/tags">Tags</a></li>
+        
+        
+    </ul>
+</nav>
+</div>
+        
+    
+
+</header>
+<div id="contentContainer">
+                <div id="content">
+                    <main>
+<article class="card single">
+    
+        <h1>GRPC Overview</h1>
+    
+
+
+    
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-07
+
+
+                <span>/ authors </span>
+                
+                
+                    <a
+                        
+                        href="/authors/ngoctd">#ngoctd</a>
+                
+            
+            
+                <span>/ tags </span>
+                
+                    <a
+                        
+                        href="/tags/grpc">#grpc</a>
+                
+            
+        </p>
+    
+    
+    
+    
+    <div><p>gRPC is a modern, open source remote procedure call (RPC) framework that can run anywhere. It enables client and server applications to communicate transparently, and makes it easier to build connected systems.</p>
+<p>In gRPC, a client application can directly call a method on a server application on a different machine as if it were a local object, making it easier for you to create disitributed applications can services. As in many RCP systems, gRPC is based around the idea of defining a service, specifying the methods that can be called remotely with their parameters and return types. On the server side, the server implements this interface and runs a gRPC server to handle client calls. On the client side, the client has a stub (referred to as just a client in some languages) that provides the same methods as the server.</p>
+<h2 id="service-definition">Service definition</h2>
+<p>Like many RPC systems, gRPC is based around the idea of defining a service, specifying the methods that can be called remotely with their parameters and return types.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> HelloService {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> SayHello(HelloRequest) <span style="color:#ff79c6">returns</span> (HelloResponse);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">HelloRequest</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> greeting <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">HelloResponse</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> reply <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="four-kinds-of-service-method">Four kinds of service method</h2>
+<ul>
+<li>Unary RPCs where the client sends a single request to the server and gets a single response back</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> UnaryService {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Unary(Requestr) <span style="color:#ff79c6">returns</span> (Response);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Server streaming RPCs where the client sends a request to the server and gets a stream to read a sequence of messages back. The client reads from the returned stream until there are no more messages. gRPC guarantees message ordering within an individual RPC call.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> ServerStreaming {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Streaming(Request) <span style="color:#ff79c6">returns</span> (Responses);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Client streaming RPCs where the client writes a sequence of messages and sends them to the server, again using a provided stream. Once the client has finished writing the messages, it waits for the server to read them and return its response. Again gRPC guaranteed message ordering within an individual RPC call.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> ClientStreaming {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Streaming(Requests) <span style="color:#ff79c6">returns</span> (Response);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Bidirectional streaming RPCs where both sides send a sequence of messages using a read-write stream. Server could wait to receive all the client messages before writing its responses, or it could alternately read a message then write a message, or some other combination of reads and writes. The order of messages in each stream is preserved.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> BidirectionalStreaming {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Streaming(Requests) <span style="color:#ff79c6">returns</span> (Responses)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="using-the-api">Using the API</h2>
+<p>gRPC provides protocol buffer compiler plugins that generate client and server side code. gRPC users typically call these APIs on the client side and implement the corresponding API on the server side.</p>
+<ul>
+<li>On the server side, the server implements the method declared by the service and runs a gRPC server to handle client calls. The gRPC infrastructure decodes incoming requests, executes service methods, and encodes service response.</li>
+<li>On the client side, the client has a local object known as stub that implements the same methods as the service. The client can then just call those methods on the local object, wrapping the parameters for the call in the appropriate protocol buffer message type.</li>
+</ul>
+<h2 id="rpc-life-cycle">RPC life cycle</h2>
+<p>What happen when a gRPC client calls a gRPC server method.</p>
+<h3 id="unary-rpc">Unary RPC</h3>
+<p>Client sends a single request and gets back a single response.</p>
+<h3 id="server-streaming-rpc">Server streaming RPC</h3>
+<h3 id="client-streaming-rpc">Client streaming RPC</h3>
+<h3 id="bidirectional-streaming-rpc">Bidirectional streaming RPC</h3>
+<h2 id="deadlinestimeouts">Deadlines/Timeouts</h2>
+<p>gRPC allows clients to specify how long they are willing to wait for an RPC to complete before the RPC is terminated with a DEADLINE_EXCEEDED error.</p>
+<h2 id="rpc-termination">RPC termination</h2>
+<p>In gRPC, both the client and server independent and local determinations of the success of the call, and their conclusions may not match. This means that, for example, you could have an RPC that finishes successfully on the server side (&ldquo;I have sent all my responses!&rdquo;) but fails on the client side (&ldquo;The responses arrived after my deadline!&rdquo;). It&rsquo;s also possible for a server to decide to complete before a client has sent all its requests.</p>
+<h2 id="cancelling-an-rpc">Cancelling an RPC</h2>
+<p>Either the client or the server can cancel an RPC at any time. A cancellation terminations the RPC immediately so that no further work is done.</p>
+<h2 id="channels">Channels</h2>
+<p>A gRPC channel provides a connection to a gRPC server on a specified host and port. A channel has state, including connected and idle.</p>
+</div>
+</article>
+
+
+    
+    
+        
+        
+        
+            
+                
+                
+        
+    
+
+
+
+
+
+    
+    
+        
+        <div class="relatedArticlesContainer">
+            <hr />
+            <h2>More posts like this</h2>
+            <div class="postlist ">
+                <article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/microservices-protocol-buffers/">Observer Pattern</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-08
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/grpc">#grpc</a>
+                
+                    <a href="/tags/microservice">#microservice</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+<article class="card postlistitem">
+    <div>
+        <h2>
+            <a href="https://idev-blog.web.app/posts/overview-protocol-buffer/">Protocol Buffers Overview</a>
+        </h2>
+        <p class="date">
+            <span title='Date'> </span>
+    2022-11-07
+
+
+                | 
+                <span title='Tags'> </span>
+                
+                    <a href="/tags/grpc">#grpc</a>
+                
+            
+        </p>
+        
+            
+        
+        
+            <div class="articlePreview">
+                <p>
+                    
+                        Protocol buffers provide a language-neutral, platform-neutral, extensible mechanism for serializing structured data in a forward-compatible and backward-compatible way. It&rsquo;s like JSON, except it&rsquo;s smaller and faster, and it generates native language bindings.
+Protocol buffers are a combination of the definition language (created in .
+                    
+                </p>
+                
+            </div>
+        
+    </div>
+</article>
+
+            </div>
+        </div>
+    
+
+
+                    </main><footer>
+
+<p><small>
+        2023 &copy; Tran Duc Ngoc
+    </small></p>
+    <p><small>
+        
+    </small></p>
+</footer>
+</div>
+            </div>
+        </div>
+
+
+</body>
+</html>

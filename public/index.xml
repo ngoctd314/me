@@ -6,75 +6,39 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Sat, 26 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
+    <lastBuildDate>Fri, 10 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
     
     
     <item>
-      <title>Pipelines and cancellation</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      <title>Ước mơ của mẹ</title>
+      <link>https://idev-blog.web.app/posts/%C6%B0%E1%BB%9Bc-m%C6%A1-c%E1%BB%A7a-m%E1%BA%B9/</link>
+      <pubDate>Fri, 10 Feb 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</guid>
-      <description><![CDATA[<p>Go&rsquo;s concurrency primitives make it easy to construct streaming data pipelines that make efficient use of I/O and multiple CPUs. This article introduces what is pipeline, how to to construct a pipeline and introduces techniques for dealing with failures cleanly.</p>
-<h2 id="what-is-a-pipeline">What is a pipeline?</h2>
-<p>A pipeline is a series of stages connected by channels, where each channel is a group of goroutines running the same function. In each stage, the goroutines</p>
+      <guid>https://idev-blog.web.app/posts/%C6%B0%E1%BB%9Bc-m%C6%A1-c%E1%BB%A7a-m%E1%BA%B9/</guid>
+      <description><![CDATA[<p>Hello bạn, mình không biết bạn là ai, nhưng cảm ơn bạn vì đã ghé vào đây và nghe mình xàm xí. Bài viết này được viết lúc mình đang hơi tâm trạng, có thể làm ảnh hưởng đến bạn. Vậy nên bạn hãy cân nhắc tắt tivi hoặc chuyển kênh qua các kênh như <a href="https://idev-blog.web.app/tags/th%C6%A1/">#thơ</a> hoặc các bài về tech nhé. Cảm ơn nhiều nhiềuuu.</p>
+<p><strong>À ừ, tuổi thơ của cậu thế nào nhỉ?</strong></p>
+<p>Mỗi khi mình nghe ai đó kể vể tuổi thơ thì mình sẽ luôn nhận ra là nó đẹp. Mình cũng thế, mình lớn lên trong nghèo khó và nó cũng rất đẹp.</p>
+<p><strong>À ừ, vài mảnh kí ức mà cậu còn nhớ?</strong></p>
+<p>Không biết cậu thế nào, chứ mình nhớ rất nhiều chuyện từ hồi mình bé xíu xíu và hầu hết nó đều liên quan đến mẹ &hellip;
+Còn nhớ cái hồi mình học lớp một, hồi đó nhà mình nghèo lắm. Bố, mẹ mình làm đủ nghề đánh cá, trồng cà phê, thu mua đồng nát &hellip; còn nhiều, nhiều lắm, mình cũng chả nhớ nổi nữa.</p>
+<p>Mọi hôm thì mẹ sẽ chở mình đến trường, rồi sau đó sẽ đi thu mua đồng nát. Nhưng hôm ấy, mẹ chở mình xong tiện thể sẽ đi làm luôn. Đi đến gần trường, mẹ có hỏi mình rằng:</p>
 <ul>
-<li>receive values from upstream via inbound channels</li>
-<li>perform some function on that data, usually producing new values</li>
-<li>send the values downstream via outbound channels</li>
+<li>Con có ngại với các bạn không?</li>
 </ul>
-<p>Each stage has any number of inbound and outbound channels, except the first and last stages, which have only outbound or inbound channels. The first stage is sometimes called the source and producer; the last stage, the sink or consumer.</p>
-<h2 id="squaring-numbers">Squaring numbers</h2>
-<p>Consider a pipeline with three stages</p>
-<p>The first stage, gen, is a function that converts a list of integers to a channel that emits the integers in the list.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// the main function sets up the pipeline and runs the final stages
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// it receives values from the second stage and prints each one, until the channel is closed
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// a pipeline
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	c <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">gen</span>(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>)
-</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(c)
-</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>out)
-</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>out)
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">// The gen function starts a goroutine that sends the integers on the channel and closes the channel when all the values have been sent:
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">gen</span>(nums <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
-</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
-</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> nums {
-</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
-</span></span><span style="display:flex;"><span>	}()
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4">// The second stage, sq receives integers from a channel and returns a channel that emits the square of each received integer.
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// After the inbound channel is closed and this stage has sent all the values downstream, it closes the outbound channel
-</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">sq</span>(in <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
-</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
-</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
-</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> in {
-</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n <span style="color:#ff79c6">*</span> n
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
-</span></span><span style="display:flex;"><span>	}()
-</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="fan-in-fan-out">Fan-in, Fan-out</h2>
-<h2 id="stopping-short">Stopping Short</h2>
-<p>There is  a pattern to our pipeline functions:</p>
-<ul>
-<li>stages close their outbound channels when all the send operations are done.</li>
-<li>stages keep receiving value from inbound channels until those channel are closed.</li>
-</ul>
-<p>This pattern allows each receiving stage to be written as for range loop and ensures that all goroutines exit once all values have been successfully sent downstream.</p>
-<p>But in real pipelines, stages don&rsquo;t always receive all the inbound values. Sometimes this is by design: the receiver may only need a subset of values to make progress. More often, a stage exit early because an inbound value represents an error in a earlier stages to stop producing values that later stage don&rsquo;t need.</p>
-<p><strong>References</strong></p>
-<ul>
-<li><a href="https://go.dev/blog/pipelines">https://go.dev/blog/pipelines</a></li>
-</ul>
+<p>Hồi đó mình cũng chả hiểu câu hỏi của mẹ đâu. Mình trả lời là con không mẹ. Nhưng mà lúc đó mẹ vẫn không đưa mình đến tận cổng, mẹ dừng ở xa xa một chút &hellip;</p>
+<p> </p>
+<p>Hồi ở trong đấy, xung quanh nhà mình chả có ai cả, không làng, không xóm. Bố mẹ thì đi làm suốt, chỉ có hai chị em chơi với nhau thôi. Thân lắmmm. Còn nhớ vào mỗi mùa khô, bố mẹ phải đi tưới cà phê ở rẫy phải vài ngày mới về. Hai chị em ở nhà sợ lắm. Nhà mình còn chả có đèn điện. Tối đến hai chị em thắp nến lên, chắc hẳn ai cũng từng chỉ chỉ cái bóng khổng lồ xong chơi đùa với nó. Còn mình và chị thì bảo nó là mẹ. Mẹ dọa là tối thì không được mở cửa nhà, không thì trộm nó vào nhà đấy. Thế mà chị mình đóng vai là mẹ, xong hai chị em cứ xưng hô mẹ, con với nhau. Buồn cười lắm. À mình có viết một bài về cái vụ này, bạn có thể đọc ở <a href="https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/">đây</a> nhé :3</p>
+<p>Hồi cuối năm lớp 3, chị mình đòi về miền bắc (trước đó mình ở  Tây Nguyên), bố mẹ mình cũng thấy trong đó điều kiện học hành không tốt, nên cho cả mình về. Mình vui lắm. Nhưng mình đâu có biết, là mình sẽ về sống với ông bà thôi, còn bố mẹ thì vẫn phải đi làm ở trong đó.</p>
+<p>Mình nhớ có một lần mẹ về quê thăm con. Trước tối hôm mẹ quay lại miền nam, mình bảo mẹ lúc nào mẹ dậy thì mẹ bảo con với nhé. Mình còn cẩn thận lấy cái dây, buộc tay mình với mẹ lại, lúc đó mình sợ mẹ không gọi mình dậy. Mình nhớ như in lúc 4h sáng hôm đấy, mình vẫn dậy được. Lúc mẹ chuẩn bị đi, mình chạy đến ôm chân mẹ, khóc nức nở, không cho mẹ đi. Mình cũng không nhớ mình nói gì với mẹ, chỉ nhớ mang máng là con không cho mẹ đi, mẹ ở nhà với con. Mình khóc to, to lắm, to đến nỗi cả xóm sang khuyên mình cơ mà. Bình thường mình mà khóc thì mẹ còn đánh thêm cho, nhưng hôm đấy dĩ nhiên là khác &hellip;</p>
+<p>Còn nhiều lắm, chắc là mình viết vào khi khác</p>
+<h2 id="à-ừ-mẹ-khóc">À ừ, mẹ khóc</h2>
+<p>Mẹ mình khóc nhiều lắm. Bà ngoại có nói với mình là, trong cái nhà này không ai khổ bằng bà với mẹ (à mà mình có người bà tuyệt vời lắm, nếu có khúc mắc, chuyện buồn gì mà nói với bà là lúc sau sẽ được giải tỏa ngay. Ước gì mình có thể nói chuyện giỏi như bà :3).</p>
+<p>Hồi chị mình học năm 3, chị mình thấy không phù hợp nên đã bỏ học. Đấy là lần đầu tiên mình thấy bố khóc. Còn mẹ thì khóc cả ngày.</p>
+<p>Còn hôm nay mình cũng làm mẹ khóc. Mẹ mình có ước mơ là mình học ThS, mình đã nhận lời rồi, ấy thế mà hôm nay mình lại định bỏ. À mà không phải là mình không muốn học ThS đâu, mà mình đang có một vài dự định khác, thôi thì cân tất vậy :3</p>
+<p><img src="../../images/confide/m%E1%BA%B9.png" alt="mẹ"></p>
+<p>Mình làm mẹ khóc nhiều lắm, nhưng mà thôi không dám kể :))</p>
+<p> </p>
+<p>Cảm ơn bạn đã đọc đến tận lúc này, nếu được thì ib để  mình mời cf nhé. Cảm ơn nhiều nhiềuuu.</p>
 ]]></description>
       
     </item>
@@ -84,7 +48,7 @@
     <item>
       <title>Channel Use Case in Golang</title>
       <link>https://idev-blog.web.app/posts/programming-language-channel-usecase/</link>
-      <pubDate>Tue, 22 Nov 2022 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 27 Dec 2022 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/posts/programming-language-channel-usecase/</guid>
       <description><![CDATA[<p>This article will show many channel use cases</p>
@@ -201,8 +165,462 @@
 </span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">&lt;-</span>sig
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><strong>N-to-1 and 1-to-N notifications</strong></p>
-<p>Broadcast (1-to-N) notifications by closing a channel</p>
+<p>By making using of the feature that infinite values can be received from a closed channel, we can close a channel to broadcast notifications (1-to-N 1 main to N worker). Use sync.WaitGroup for N-to-1(N worker to 1 main) notification</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">worker</span>(ready <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, wg <span style="color:#ff79c6">*</span>sync.WaitGroup) {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> wg.<span style="color:#50fa7b">Done</span>() <span style="color:#6272a4">// N-to-1 notification
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">&lt;-</span>ready         <span style="color:#6272a4">// block here and wait notification
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second)
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;run&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	ready <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{})
+</span></span><span style="display:flex;"><span>	wg <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>sync.WaitGroup{}
+</span></span><span style="display:flex;"><span>	wg.<span style="color:#50fa7b">Add</span>(<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">worker</span>(ready, wg)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">worker</span>(ready, wg)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">worker</span>(ready, wg)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">close</span>(ready)
+</span></span><span style="display:flex;"><span>	wg.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Timer: Scheduled notification</strong></p>
+<p>A custom one-time timer notification</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">after</span>(duration time.Duration) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{} {
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{})
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		time.<span style="color:#50fa7b">Sleep</span>(duration)
+</span></span><span style="display:flex;"><span>		ch <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> ch
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">&lt;-</span><span style="color:#50fa7b">after</span>(time.Second)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="use-channels-as-mutex-locks">Use Channels as Mutex Locks</h2>
+<p>There are two manners to use one-capacity buffered channels as mutex locks</p>
+<ol>
+<li>Lock through a send, unlock through a receive</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	cnt <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>	wg <span style="color:#ff79c6">:=</span> sync.WaitGroup{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	lock <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> increase = <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">defer</span> wg.<span style="color:#50fa7b">Done</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// lock through send
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		lock <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>		cnt<span style="color:#ff79c6">++</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// unlock
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">&lt;-</span>lock
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">10000</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Add</span>(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">increase</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	wg.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(cnt)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="2">
+<li>Lock through a receive, unlock through a send</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	cnt <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>	wg <span style="color:#ff79c6">:=</span> sync.WaitGroup{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	lock <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	lock <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> increase = <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">defer</span> wg.<span style="color:#50fa7b">Done</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// lock through receive
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">&lt;-</span>lock
+</span></span><span style="display:flex;"><span>		cnt<span style="color:#ff79c6">++</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// unlock
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		lock <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">10000</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Add</span>(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">increase</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	wg.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(cnt)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="use-channels-as-counting-semaphores">Use Channels as Counting Semaphores</h2>
+<p>Buffered channels can be used as counting semaphores
+Counting semaphores can be viewed as multi-owner locks. If the capacity of a channel is N, then it can be viewed as a lock which can have most N owners at any time.</p>
+<p>Counting semaphores are often used to enforce a maximum number of concurrent requests.</p>
+<p>There are two manners to acquire one piece of ownership of a channel semaphore</p>
+<ol>
+<li>Acquire ownership through a send, release through a receive</li>
+<li>Acquire ownership through a receive, release through a send</li>
+</ol>
 ]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>wire for D. D for Dependency Injection</title>
+      <link>https://idev-blog.web.app/posts/programming-language-wire-for-d/</link>
+      <pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/programming-language-wire-for-d/</guid>
+      <description><![CDATA[<p>Wire has two core concepts: providers and injectors.</p>
+<h2 id="providers">Providers</h2>
+<p>The primary mechanism in Wire is the <strong>providers</strong>: a function that can produce a value.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Foo <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    X <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ProvideFoo</span>() Foo {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> Foo{X: <span style="color:#bd93f9">42</span>}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Providers can also return errors</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"></code></pre></div><h2 id="injectors">Injectors</h2>
+<p>An application wires up these providers with an <strong>injector</strong>: a function that calls providers in dependency order. With Wire, you write the injector&rsquo;s signature, then Wire generates the function&rsquo;s body.</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Pipelines and cancellation</title>
+      <link>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</guid>
+      <description><![CDATA[<p>Go&rsquo;s concurrency primitives make it easy to construct streaming data pipelines that make efficient use of I/O and multiple CPUs. This article introduces what is pipeline, how to to construct a pipeline and introduces techniques for dealing with failures cleanly.</p>
+<h2 id="what-is-a-pipeline">What is a pipeline?</h2>
+<p>A pipeline is a series of stages connected by channels, where each channel is a group of goroutines running the same function. In each stage, the goroutines</p>
+<ul>
+<li>receive values from upstream via inbound channels</li>
+<li>perform some function on that data, usually producing new values</li>
+<li>send the values downstream via outbound channels</li>
+</ul>
+<p>Each stage has any number of inbound and outbound channels, except the first and last stages, which have only outbound or inbound channels. The first stage is sometimes called the source and producer; the last stage, the sink or consumer.</p>
+<h2 id="squaring-numbers">Squaring numbers</h2>
+<p>Consider a pipeline with three stages</p>
+<p>The first stage, gen, is a function that converts a list of integers to a channel that emits the integers in the list.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// the main function sets up the pipeline and runs the final stages
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// it receives values from the second stage and prints each one, until the channel is closed
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// a pipeline
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	c <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">gen</span>(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(c)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>out)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>out)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// The gen function starts a goroutine that sends the integers on the channel and closes the channel when all the values have been sent:
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">gen</span>(nums <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> nums {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// The second stage, sq receives integers from a channel and returns a channel that emits the square of each received integer.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// After the inbound channel is closed and this stage has sent all the values downstream, it closes the outbound channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">sq</span>(in <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> in {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n <span style="color:#ff79c6">*</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="fan-in-fan-out">Fan-in, Fan-out</h2>
+<h2 id="stopping-short">Stopping Short</h2>
+<p>There is  a pattern to our pipeline functions:</p>
+<ul>
+<li>stages close their outbound channels when all the send operations are done.</li>
+<li>stages keep receiving value from inbound channels until those channel are closed.</li>
+</ul>
+<p>This pattern allows each receiving stage to be written as for range loop and ensures that all goroutines exit once all values have been successfully sent downstream.</p>
+<p>But in real pipelines, stages don&rsquo;t always receive all the inbound values. Sometimes this is by design: the receiver may only need a subset of values to make progress. More often, a stage exit early because an inbound value represents an error in a earlier stages to stop producing values that later stage don&rsquo;t need.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">gen</span>(nums <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) (result<span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	result = <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> _, num <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> nums {
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// blocking operation
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		result <span style="color:#ff79c6">&lt;-</span> num
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	result <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">gen</span>(<span style="color:#bd93f9">2</span>,<span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(result)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// This is a resource leak: goroutines consume memory and runtime 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// resources, and heap references in goroutine stacks heap data from
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// being garbage collected. Goroutines are not garbage collected;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// they must exit on their own.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Println</span>(runtime.<span style="color:#50fa7b">NumGoroutine</span>()) <span style="color:#6272a4">// 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><p>We need to arrange for the upstream stages of our pipeline to exit even when the downstream stages fail to receive all the inbound values. One way to do this is to change the outbound channels to have a buffer.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">2</span>) <span style="color:#6272a4">// buffer size 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>c <span style="color:#ff79c6">&lt;-</span> <span style="color:#bd93f9">1</span> <span style="color:#6272a4">// succeeds immediately
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>c <span style="color:#ff79c6">&lt;-</span> <span style="color:#bd93f9">2</span> <span style="color:#6272a4">// succeeds immediately
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>c <span style="color:#ff79c6">&lt;-</span> <span style="color:#bd93f9">3</span> <span style="color:#6272a4">// blocks until another goroutine does &lt;- c and receives 1
+</span></span></span></code></pre></div><p>When the <strong>max</strong> number of values to be sent is known at channel creation time, a buffer can simplify the code.</p>
+<h2 id="explicit-cancellation">Explicit cancellation</h2>
+<p>When main decides to exit without receiving all the values from out, it must tell the goroutines in the upstream stages to abandon the values they&rsquo;re trying to send. It does so by sending values on channel called done.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">gen</span>(nums <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>, <span style="color:#8be9fd;font-style:italic">len</span>(nums))
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> nums {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// close when all the values have been sent
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">sq</span>(in <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// consume inbound
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">for</span> v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> in {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> v <span style="color:#ff79c6">*</span> v
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">merge</span>(done <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, cs <span style="color:#ff79c6">...&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// we don&#39;t know number of channel size
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> wg sync.WaitGroup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	output <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">func</span>(c <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> c {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#6272a4">// consume data
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>			<span style="color:#ff79c6">case</span> out <span style="color:#ff79c6">&lt;-</span> n:
+</span></span><span style="display:flex;"><span>			<span style="color:#6272a4">// stop send value
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>			<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>done:
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Done</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	wg.<span style="color:#50fa7b">Add</span>(<span style="color:#8be9fd;font-style:italic">len</span>(cs))
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// consume input channel, exit sending goroutine of input channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> _, v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> cs {
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// create goroutine to consume input channel data
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">output</span>(v)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// create main goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	g <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">gen</span>(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>) <span style="color:#6272a4">// create 2 new goroutines then exit
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>	c1 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(g) <span style="color:#6272a4">// create a new goroutine and block
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	c2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(g) <span style="color:#6272a4">// create a new goroutine and block
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// 3 goroutines because no goroutine consume it
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>	done <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(done)
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// only main goroutine
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">merge</span>(done, c1, c2)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>out)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">printGoroutine</span>() {
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;num goroutine&#34;</span>, runtime.<span style="color:#50fa7b">NumGoroutine</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Here are the guidelines for pipeline construction</strong></p>
+<ul>
+<li>Stages close their outbound channels when all the send operations are done.</li>
+<li>Stages keep receiving value from inbound channels until those channels are closed or the senders are unblocked.</li>
+</ul>
+<h2 id="digesting-a-tree">Digesting a tree</h2>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="https://go.dev/blog/pipelines">https://go.dev/blog/pipelines</a></li>
+</ul>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Reactive Programming with Go</title>
+      <link>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</guid>
+      <description><![CDATA[<p>ReactiveX, or Rx for short, is an API for programming with Observable streams. ReactiveX is a new, alternative way of asynchronous programming to callbacks, promises, and deferred. It is about processing streams of events of items, with events being any occurrences or changes within the system. A stream of events is called an Observable.</p>
+<h2 id="rxgo">RxGO</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"></code></pre></div><h2 id="hot-vs-cold-observables">Hot vs. Cold Observables</h2>
+<p>In the RX world, there is a distinction between cold and hot Observables. When the data is produced by the Observable itself, it is a cold Observable. When the data is produced outside the Observable, it is a hot Observable. Usually, we don&rsquo;t want to create a producer over and over again, we favor a hot Observable.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// Create a hot Observable using FromChannel operator
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> rxgo.Item)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">3</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>        ch <span style="color:#ff79c6">&lt;-</span> rxgo.<span style="color:#50fa7b">Of</span>(i)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">close</span>(ch)
+</span></span><span style="display:flex;"><span>}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>observable <span style="color:#ff79c6">:=</span> rxgo.<span style="color:#50fa7b">FromChannel</span>(ch)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// First Observer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;First Observer&#34;</span>, item.V)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Second Observer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;Second Observer&#34;</span>, item.V)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Result
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">//
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// It means the first Observer already consumed all items.
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// Create a cold Observable using Defer operator:
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>observable <span style="color:#ff79c6">:=</span> rxgo.<span style="color:#50fa7b">Defer</span>([]rxgo.Producer{<span style="color:#8be9fd;font-style:italic">func</span>(_ context.Context, ch <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> rxgo.Item) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">3</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>        ch <span style="color:#ff79c6">&lt;-</span> rxgo.<span style="color:#50fa7b">Of</span>(i)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// In the case of a cold observable, the stream was created independent for
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// every Observer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;first observable: &#34;</span>, item.V)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// In the case of a cold observable, the stream was created independent for
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// every Observer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> item <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> observable.<span style="color:#50fa7b">Observe</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;second observable: &#34;</span>, item.V)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Result
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 1
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// 2
+</span></span></span></code></pre></div><p>Hot vs cold Observable are not about how you consume items, it&rsquo;s about where data is produced. Good example for hot Observable are price ticks from a trading exchange. And if you teach an Observable to fetch products from a database, then yield them one by one, you will create the cold Observable.</p>
+]]></description>
+      
+        <media:thumbnail url="https://idev-blog.web.app/images/reactive/rx.png" />
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Reactive Programming, VertX</title>
+      <link>https://idev-blog.web.app/posts/tech-talk-reactive-programming-vertx/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/tech-talk-reactive-programming-vertx/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Content Delivery Network</title>
+      <link>https://idev-blog.web.app/posts/net-work-cdn/</link>
+      <pubDate>Fri, 25 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/net-work-cdn/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Hive metastore service </title>
+      <link>https://idev-blog.web.app/posts/bigdata-hms/</link>
+      <pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/bigdata-hms/</guid>
+      <description><![CDATA[<p>We can simplify the Hive architecture to four components:</p>
+<ul>
+<li>
+<p>The runtime contains the logic of the query engine that translates the SQL - esque Hive Query Language (HQL) into MapReduce jobs that run over files stored in the filesystem.</p>
+</li>
+<li>
+<p>Storage component is simply that, it stores file in various formats and index structures to recall these files (JSON, CSV, ORC, Parquet, HDFS, Aws S3, GCS)</p>
+</li>
+<li>
+<p>In order for Hive to process these files, it must have a mapping from SQL tables in the runtime to files and directories in the storage component. To accomplish this, Hive uses the HMS (Hive Metastore Service)</p>
+</li>
+</ul>
+<h2 id="hive-connector">Hive connector</h2>
+<p>The hive connector allows querying data stored in an Apache Hive data warehouse. Hive is a combination of there components:</p>
+<ul>
+<li>Data files in varying formats (HDFS, S3)</li>
+<li>HMS</li>
+<li>Query language (HiveQL)</li>
+</ul>
+<p>Trino only uses the first two components: the data and the metadata. It does not use HiveQL or any part of Hive&rsquo;s execution environment.</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Distributed tracing, open telemetry</title>
+      <link>https://idev-blog.web.app/posts/monitor-distributed-tracing-opentelemetry/</link>
+      <pubDate>Thu, 10 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/monitor-distributed-tracing-opentelemetry/</guid>
+      <description><![CDATA[]]></description>
       
     </item>
     
@@ -260,6 +678,137 @@
 </span></span><span style="display:flex;"><span>sudo systemctl status vpn <span style="color:#6272a4"># check vpn status</span>
 </span></span><span style="display:flex;"><span>sudo systemctl stop vpn <span style="color:#6272a4"># stop vpn</span>
 </span></span></code></pre></div>]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Cancel context with timeout in golang</title>
+      <link>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Concurrency is not parallelism</title>
+      <link>https://idev-blog.web.app/posts/tech-talk-concurrent-is-not-parallelism/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/tech-talk-concurrent-is-not-parallelism/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Observer Pattern</title>
+      <link>https://idev-blog.web.app/posts/microservices-protocol-buffers/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/microservices-protocol-buffers/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>GRPC Overview</title>
+      <link>https://idev-blog.web.app/posts/overview-grpc/</link>
+      <pubDate>Mon, 07 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/overview-grpc/</guid>
+      <description><![CDATA[<p>gRPC is a modern, open source remote procedure call (RPC) framework that can run anywhere. It enables client and server applications to communicate transparently, and makes it easier to build connected systems.</p>
+<p>In gRPC, a client application can directly call a method on a server application on a different machine as if it were a local object, making it easier for you to create disitributed applications can services. As in many RCP systems, gRPC is based around the idea of defining a service, specifying the methods that can be called remotely with their parameters and return types. On the server side, the server implements this interface and runs a gRPC server to handle client calls. On the client side, the client has a stub (referred to as just a client in some languages) that provides the same methods as the server.</p>
+<h2 id="service-definition">Service definition</h2>
+<p>Like many RPC systems, gRPC is based around the idea of defining a service, specifying the methods that can be called remotely with their parameters and return types.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> HelloService {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> SayHello(HelloRequest) <span style="color:#ff79c6">returns</span> (HelloResponse);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">HelloRequest</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> greeting <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">message</span> <span style="color:#50fa7b">HelloResponse</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">string</span> reply <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="four-kinds-of-service-method">Four kinds of service method</h2>
+<ul>
+<li>Unary RPCs where the client sends a single request to the server and gets a single response back</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> UnaryService {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Unary(Requestr) <span style="color:#ff79c6">returns</span> (Response);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Server streaming RPCs where the client sends a request to the server and gets a stream to read a sequence of messages back. The client reads from the returned stream until there are no more messages. gRPC guarantees message ordering within an individual RPC call.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> ServerStreaming {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Streaming(Request) <span style="color:#ff79c6">returns</span> (Responses);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Client streaming RPCs where the client writes a sequence of messages and sends them to the server, again using a provided stream. Once the client has finished writing the messages, it waits for the server to read them and return its response. Again gRPC guaranteed message ordering within an individual RPC call.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> ClientStreaming {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Streaming(Requests) <span style="color:#ff79c6">returns</span> (Response);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>Bidirectional streaming RPCs where both sides send a sequence of messages using a read-write stream. Server could wait to receive all the client messages before writing its responses, or it could alternately read a message then write a message, or some other combination of reads and writes. The order of messages in each stream is preserved.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-proto" data-lang="proto"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">service</span> BidirectionalStreaming {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">rpc</span> Streaming(Requests) <span style="color:#ff79c6">returns</span> (Responses)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="using-the-api">Using the API</h2>
+<p>gRPC provides protocol buffer compiler plugins that generate client and server side code. gRPC users typically call these APIs on the client side and implement the corresponding API on the server side.</p>
+<ul>
+<li>On the server side, the server implements the method declared by the service and runs a gRPC server to handle client calls. The gRPC infrastructure decodes incoming requests, executes service methods, and encodes service response.</li>
+<li>On the client side, the client has a local object known as stub that implements the same methods as the service. The client can then just call those methods on the local object, wrapping the parameters for the call in the appropriate protocol buffer message type.</li>
+</ul>
+<h2 id="rpc-life-cycle">RPC life cycle</h2>
+<p>What happen when a gRPC client calls a gRPC server method.</p>
+<h3 id="unary-rpc">Unary RPC</h3>
+<p>Client sends a single request and gets back a single response.</p>
+<h3 id="server-streaming-rpc">Server streaming RPC</h3>
+<h3 id="client-streaming-rpc">Client streaming RPC</h3>
+<h3 id="bidirectional-streaming-rpc">Bidirectional streaming RPC</h3>
+<h2 id="deadlinestimeouts">Deadlines/Timeouts</h2>
+<p>gRPC allows clients to specify how long they are willing to wait for an RPC to complete before the RPC is terminated with a DEADLINE_EXCEEDED error.</p>
+<h2 id="rpc-termination">RPC termination</h2>
+<p>In gRPC, both the client and server independent and local determinations of the success of the call, and their conclusions may not match. This means that, for example, you could have an RPC that finishes successfully on the server side (&ldquo;I have sent all my responses!&rdquo;) but fails on the client side (&ldquo;The responses arrived after my deadline!&rdquo;). It&rsquo;s also possible for a server to decide to complete before a client has sent all its requests.</p>
+<h2 id="cancelling-an-rpc">Cancelling an RPC</h2>
+<p>Either the client or the server can cancel an RPC at any time. A cancellation terminations the RPC immediately so that no further work is done.</p>
+<h2 id="channels">Channels</h2>
+<p>A gRPC channel provides a connection to a gRPC server on a specified host and port. A channel has state, including connected and idle.</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Protocol Buffers Overview</title>
+      <link>https://idev-blog.web.app/posts/overview-protocol-buffer/</link>
+      <pubDate>Mon, 07 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/overview-protocol-buffer/</guid>
+      <description><![CDATA[<p>Protocol buffers provide a language-neutral, platform-neutral, extensible mechanism for serializing structured data in a forward-compatible and backward-compatible way. It&rsquo;s like JSON, except it&rsquo;s smaller and faster, and it generates native language bindings.</p>
+<p>Protocol buffers are a combination of the definition language (created in .proto files), the code that the proto compiler generates to interface with data, language-specific runtime libraries, and the serialization format for data that is written to a file (or sent across a network connection).</p>
+<p><strong>Some of the advantages of using protocol buffers</strong></p>
+<ul>
+<li>Compact data storage</li>
+<li>Fast parsing</li>
+<li>Availability in many programming languages</li>
+<li>Optimized functionality through automatically-generated classes</li>
+</ul>
+<p><strong>When are Protocol Buffers not a Good Fit?</strong></p>
+]]></description>
       
     </item>
     
@@ -394,6 +943,99 @@ If one channel value is assigned to another, the two channels share the same und
     
     
     <item>
+      <title>Fan out, Fan in</title>
+      <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
+      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</guid>
+      <description><![CDATA[<p>Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,</p>
+<p>You&rsquo;ve got a pipeline set up. Data is flowing through your system beautifully. Sometimes, stages in your pipeline can be computationally expensive. When this happens, upstream stages in your pipeline can become blocked while waiting for your expensive stages to complete.</p>
+<p>One of the interesting properties of pipelines is the ability they give you to operate on the stream of data using a combination of separate, often <strong>reordered</strong> stages. Maybe that would help improve the performance of the pipeline. In fact, it turns out it can, and this pattern has a name: fan-out, fan-in.</p>
+<h2 id="fan-infan-out">Fan in,Fan out</h2>
+<p>Fan-out is a term to describe the process of starting multiple goroutines to handle input from the pipeline.</p>
+<p>You might consider fanning out one of your stages if both of the following apply:</p>
+<ul>
+<li>It doesn&rsquo;t rely on values that the state had calculated before.</li>
+<li>It takes a long time to run. (system call, a heavy cpu job, &hellip;)</li>
+</ul>
+<p>The property of order-independence is important because you have no guarantee in what order concurrent copies of your stage will run, nor in what order they will return.</p>
+<p>Multiple functions can be read from the same channel until that channel is closed; this is called fan-out. This provides a way to distribute work amongst a group of workers to parallelize CPU use and I/O.</p>
+<p>A function can read from multiple inputs and proceed until all are closed by multiplexing then input channels onto a single channel that&rsquo;s closed when all the inputs are closed. This is called fan-in.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// The first stage, gen is a function that converts a list of integers to a channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// that emits the integers in the list. The gen function starts a goroutine that sends
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// the integers on the channel and closes the channel when all the values have been sent
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">gen</span>(nums <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> nums {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// close when all the values have been sent
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// The second stage, sq receives integers from a channel and returns a channel that emits the square
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// of each received integer. After the inbound channel is closed and this stage has sent all the values
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// downstream, it closes the outbound channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">sq</span>(in <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// consume inbound
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">for</span> v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> in {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> v <span style="color:#ff79c6">*</span> v
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">merge</span>(cs <span style="color:#ff79c6">...&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	out <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> wg sync.WaitGroup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	output <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">func</span>(c <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> c {
+</span></span><span style="display:flex;"><span>			out <span style="color:#ff79c6">&lt;-</span> n
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Done</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	wg.<span style="color:#50fa7b">Add</span>(<span style="color:#8be9fd;font-style:italic">len</span>(cs))
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> _, v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> cs {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">output</span>(v)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(out)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> out
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	in <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">gen</span>(<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// Distribute the sq work across two goroutines that both read from in
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// fan-out
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	c1 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(in)
+</span></span><span style="display:flex;"><span>	c2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">sq</span>(in)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// Consume the merged output from c1 and c2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> n <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> <span style="color:#50fa7b">merge</span>(c1, c2) {
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(n)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
       <title>Generator and Future Pattern</title>
       <link>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</link>
       <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
@@ -464,7 +1106,144 @@ If one channel value is assigned to another, the two channels share the same und
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>The actual http request is done asynchronously in a goroutine. The main function can continue doing other things. When the result is needed, we read the result from the channel. If the request isn&rsquo;t finished yet, the channel will block until the result is ready.</p>
 <h2 id="different-between-generator-and-future">Different Between Generator and Future</h2>
-<p>In generator pattern, we generate next state base on previous state (maybe not), but i purpose is compute many things in background. In future pattern, we use goroutine to execute an &ldquo;heavy job&rdquo; (only one job).</p>
+<p>In generator pattern, we generate next state base on previous state (maybe not), but it purpose is compute many things in background. In future pattern, we use goroutine to execute an &ldquo;heavy job&rdquo; (only one job).</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Golang Memory Order</title>
+      <link>https://idev-blog.web.app/posts/programming-language-go-memory-order/</link>
+      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/programming-language-go-memory-order/</guid>
+      <description><![CDATA[]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Decorator pattern</title>
+      <link>https://idev-blog.web.app/posts/design-pattern-decorator/</link>
+      <pubDate>Fri, 04 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/design-pattern-decorator/</guid>
+      <description><![CDATA[<p>I used to think real men subclassed everything. That was until I learned the power of extension at runtime, rather than at compile time.</p>
+<p>Just call this chapter &ldquo;Design Eye for Inheritance Guy.&rdquo; We&rsquo;ll re-examine the typical overuse of inheritance and you&rsquo;ll learn how to decorate your classes at runtime using a form of object composition. Why? Once you know the techniques of decorating, you&rsquo;ll be able to give your objects new responsibilities without making any code changes to the underlying classes.</p>
+<h2 id="welcome-to-starbuzz-coffee">Welcome to Starbuzz Coffee</h2>
+<p>Starbuzz Coffee has made a name for itself as the fastest-growing coffee shop. When they first went into business they designed their classes like this&hellip;</p>
+<p><img src="../../images/design-patterns/decorator/decorator1.png" alt="inheritance version"></p>
+<p>In addition to your coffee, you can also ask for several condiments like steamed milk, soy, and mocha&hellip;</p>
+<p><img src="../../images/design-patterns/decorator/decorator2.png" alt="inheritance version"></p>
+<p>It&rsquo;s pretty obvious that Starbuzz has created a maintenance nightmare for themselves. What happens when the price of milk goes up? What do they do when they add a new caramel topping.</p>
+<p>Solution: keep track of the condiments</p>
+<p><img src="../../images/design-patterns/decorator/decorator3.png" alt="inheritance version"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Beverage</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> String description<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">double</span> milk<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">double</span> soy<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">double</span> mocha<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">double</span> <span style="color:#50fa7b">cost</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// check condiments here
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">DarkRoast</span> <span style="color:#8be9fd;font-style:italic">extends</span> Beverage <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">DarkRoast</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        description <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;Dark road description&#34;</span><span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">double</span> <span style="color:#50fa7b">cost</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><p>A: See, five classes total. This is definitely the way to go.
+B: I can see more potential problems with this approach by thinking about how th design might need to change in the future.</p>
+<ul>
+<li>Price changes for condiments will force us to alter existing code.</li>
+<li>New condiments will force us to add new methods and alter the cost method in the superclass</li>
+<li>We may have new beverages. For some of these beverages (tea), the condiments may not be appropriate, yet the Tea subclass will still inherit methods like hasWhip().</li>
+<li>What if a customer wants a double mocha?</li>
+</ul>
+<h2 id="constructing-a-drink-order-with-decorators">Constructing a drink order with Decorators</h2>
+<ul>
+<li>Decorators have the same supertype as the objects they decorate.</li>
+<li>You can use one or more decorators to wrap an object</li>
+<li>Give that the decorator has the same supertype as the object it decorates, we can pass around a decorated object in place of the original wrapped object</li>
+<li>The decorator adds its own behavior before and/or after delegating to the object it decorates to do the rest of the job.</li>
+<li>Objects can be decorated at any time, so we can decorate objects dynamically at runtime as many decorators as we like.</li>
+</ul>
+<p><strong>References</strong></p>
+<ul>
+<li>Head first design pattern</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>
+<p>Thinking beyond the maintenance problem, which of the design principles.</p>
+</li>
+<li>
+<p>When i inherit behavior by subclassing, that behavior is set statically at compile time. In addition, all subclasses must inherit the same behavior. However, i can extend an object&rsquo;s behavior through composition, then i can do this dynamically at runtime.</p>
+</li>
+<li>
+<p>The Decorator Pattern attaches additional responsibilities to an object dynamically.  Decorators provide a flexible alternatively to subclassing for extending functionality.</p>
+</li>
+</ul>
+<p>129</p>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Trino Overview</title>
+      <link>https://idev-blog.web.app/posts/overview-trino/</link>
+      <pubDate>Fri, 04 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/overview-trino/</guid>
+      <description><![CDATA[<p>Trino is a distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources.</p>
+<p>Since Trino is being called a database by many members of the community, it makes sense to begin with a definition of what Trino is not. Trino is not a general-purpose relation database. It is not a replacement for databases like MySQL, PostgreSQL or Oracle.</p>
+<h2 id="what-trino-is">What Trino is</h2>
+<p>Trino is a tool designed to efficiently query vast amount of data using distributed queries. If you work with terabytes or petabytes of data, you are likely using tools that interact with Hadoop and HDFS.</p>
+<p>Trino was designed as an alternative to tools that query HDFS using pipelines of MapReduce jobs, such as Hive or Pig, but Trino it not limited to HDFS. Trino can be and has been extended to operate over different kinds of data sources, including traditional relational databases and other data sources such as Cassandra.</p>
+<p>Trino was designed to handle data warehousing and analytics: data analysis, aggregating large amount of data and producing reports. These workloads are often classified as OLAP.</p>
+<h2 id="trino-component-coordinator--server-">Trino component: coordinator ( server )</h2>
+<p>The Trino coordinator is the server that is responsible for parsing statements, planning queries, and managing Trino worker nodes. Every Trino installation must have at least one Trino coordinator alongside one or more Trino workers.
+Coordinators communicate with workers and clients using REST API.</p>
+<h2 id="trino-component-worker--server-">Trino component: worker ( server )</h2>
+<p>The Trino worker is responsible for executing tasks and processing data. Worker nodes fetch data from connectors and exchange intermediate data with each other. The coordinator is responsible for fetching results from the workers and returning the final results to the client.</p>
+<p>When a Trino worker process starts up, it advertises itself to the discovery server in the coordinator, which makes it available to the Trino coordinator for task execution.</p>
+<p>Workers communicate with other workers and Trino coordinators using a REST API.</p>
+<h2 id="trino-component-connector--data-source-">Trino component: connector ( data source )</h2>
+<p>A connector adapts Trino to a data source such as Hive or a relational database. You can think of a connector the same way you think of a driver for a database. Connector implements Trino&rsquo;s SPI.</p>
+<h2 id="trino-component-catalog--data-source-">Trino component: catalog ( data source )</h2>
+<h2 id="trino-component-schema--data-source-">Trino component: schema ( data source )</h2>
+<h2 id="hive-metadata-storage">Hive Metadata Storage</h2>
+<p>TL;DR: The Hive connector is what you use in Trino for reading data from object storage that is organized according to the rules laid out by Hive, without using the Hive runtime code.</p>
+<p><strong>References</strong></p>
+<ul>
+<li><a href="https://trino.io/docs/current/overview/use-cases.html">trino documentation</a></li>
+</ul>
+]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Observer Pattern</title>
+      <link>https://idev-blog.web.app/posts/design-pattern-observer/</link>
+      <pubDate>Thu, 03 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/design-pattern-observer/</guid>
+      <description><![CDATA[<p>Keeping your Objects in the Know, you don&rsquo;t want to miss out when something interesting happens.</p>
+<p>The Observer Pattern defines a one-to-many dependency between objects so that when one object changes state, all of its dependents are notified and updated automatically.</p>
+<h2 id="publishers--subscribers--observer-pattern">Publishers + Subscribers = Observer Pattern</h2>
 ]]></description>
       
     </item>
@@ -498,6 +1277,27 @@ If one channel value is assigned to another, the two channels share the same und
 <p>Chuyện học hành, chuyện tương lai, chuyện mai sau</p>
 <p>Hai đứa trẻ, hai đứa trẻ ấy không còn&hellip;</p>
 ]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title>Golang All in One</title>
+      <link>https://idev-blog.web.app/posts/programming-language-golang-mistake/</link>
+      <pubDate>Sun, 02 Oct 2022 07:33:22 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/programming-language-golang-mistake/</guid>
+      <description><![CDATA[<p>All about golang at basic level in one post. Content in this post i have learned in <a href="https://go101.org/">go101 book </a> and on the internet. At this time, i think it can be misconcept in golang.</p>
+<h2 id="basic-types-and-basic-value-literals">Basic Types and Basic Value Literals</h2>
+<p>rune type (a.k.a int32 type), are special integer types. A rune value is intended to store a Unicode point. A rune literal is expressed as one or more characters enclosed in a pair of quotes, for example &lsquo;a&rsquo; (the Unicode value of character a is 97). We should know that some Unicode characters are composed of more than one code points, for example &lsquo;a&rsquo;, &lsquo;\x61&rsquo;, &lsquo;\141&rsquo; are the same (the Unicode value is 97).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">97</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;\x61&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;\141&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#39;a&#39;</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;\u0061&#39;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>]]></description>
       
     </item>
     
@@ -584,6 +1384,34 @@ The signature is used to verify the message wasn&rsquo;t changed along the way, 
 <p>The content os the header should look like the following:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Authorization: Bearer &lt;token&gt;
 </span></span></code></pre></div>]]></description>
+      
+    </item>
+    
+    
+    
+    <item>
+      <title></title>
+      <link>https://idev-blog.web.app/posts/protobuf-backward-and-forward-compatibility/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/protobuf-backward-and-forward-compatibility/</guid>
+      <description><![CDATA[<h2 id="what-exactly-are-protocol-buffers">What exactly are protocol buffers?</h2>
+<p>Protocol Buffers provide a language-neutral, platform-neutral, extensible mechanism for serializing structured data in a forward-compatible and backward-compatible way. It&rsquo;s like JSON, except it&rsquo;s smaller and faster, and it generates native language bindings.</p>
+<h2 id="some-of-the-advantages-of-using-protocol-buffers-include">Some of the advantages of using protocol buffers include:</h2>
+<ul>
+<li>Compact data storage</li>
+<li>Fast parsing</li>
+<li>Availability in many programming languages</li>
+<li>Optimized functionality through automatically-generated classes</li>
+</ul>
+<h2 id="understanding-backward-and-forward-compatibility">Understanding Backward and Forward Compatibility</h2>
+<p>There are at least two parts to any protobuf system, the sender and the receiver. If either one can be upgraded to a new message format, and the system functionality continues uninterrupted then the message protocol is both forward and backward compatible.</p>
+<p><strong>Backward Compatibility</strong></p>
+<p>If a client that was updated to a new message type but it still able to understand the previous message type then the message change is backward compatible. Backward compatibility is being able to understand messages from a previous version.</p>
+<p><strong>Forward Compatibility</strong></p>
+<p>If a message if changed and a non-updated client can still understand and process the message then the message change if forward compatible. Forward compatibility is being able to understand messages from a future version.</p>
+<p>With Protocol buffers, it a sender is upgraded, the receiver can still understand messages if it is forward compatible.</p>
+]]></description>
       
     </item>
     

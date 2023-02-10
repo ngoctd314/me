@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>grpc on Dev&#39;s Log</title>
+    <link>https://idev-blog.web.app/tags/grpc/</link>
+    <description>Recent content in grpc on Dev&#39;s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Tran Duc Ngoc</copyright>
+    <lastBuildDate>Tue, 08 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/grpc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Observer Pattern</title>
+      <link>https://idev-blog.web.app/posts/microservices-protocol-buffers/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/microservices-protocol-buffers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GRPC Overview</title>
+      <link>https://idev-blog.web.app/posts/overview-grpc/</link>
+      <pubDate>Mon, 07 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/overview-grpc/</guid>
+      <description>gRPC is a modern, open source remote procedure call (RPC) framework that can run anywhere. It enables client and server applications to communicate transparently, and makes it easier to build connected systems.
+In gRPC, a client application can directly call a method on a server application on a different machine as if it were a local object, making it easier for you to create disitributed applications can services.</description>
+    </item>
+    
+    <item>
+      <title>Protocol Buffers Overview</title>
+      <link>https://idev-blog.web.app/posts/overview-protocol-buffer/</link>
+      <pubDate>Mon, 07 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/overview-protocol-buffer/</guid>
+      <description>Protocol buffers provide a language-neutral, platform-neutral, extensible mechanism for serializing structured data in a forward-compatible and backward-compatible way. It&amp;rsquo;s like JSON, except it&amp;rsquo;s smaller and faster, and it generates native language bindings.
+Protocol buffers are a combination of the definition language (created in .</description>
+    </item>
+    
+  </channel>
+</rss>

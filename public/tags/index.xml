@@ -7,7 +7,43 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Sat, 26 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 10 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tâm sự của NgocTD</title>
+      <link>https://idev-blog.web.app/tags/t%C3%A2m-s%E1%BB%B1-c%E1%BB%A7a-ngoctd/</link>
+      <pubDate>Fri, 10 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/t%C3%A2m-s%E1%BB%B1-c%E1%BB%A7a-ngoctd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>basic</title>
+      <link>https://idev-blog.web.app/tags/basic/</link>
+      <pubDate>Tue, 27 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/basic/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>https://idev-blog.web.app/tags/golang/</link>
+      <pubDate>Tue, 27 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>solid</title>
+      <link>https://idev-blog.web.app/tags/solid/</link>
+      <pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/solid/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>concurrency pattern</title>
       <link>https://idev-blog.web.app/tags/concurrency-pattern/</link>
@@ -18,20 +54,83 @@
     </item>
     
     <item>
-      <title>golang</title>
-      <link>https://idev-blog.web.app/tags/golang/</link>
+      <title>go</title>
+      <link>https://idev-blog.web.app/tags/go/</link>
       <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/tags/golang/</guid>
+      <guid>https://idev-blog.web.app/tags/go/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>basic</title>
-      <link>https://idev-blog.web.app/tags/basic/</link>
-      <pubDate>Tue, 22 Nov 2022 00:00:00 +0000</pubDate>
+      <title>java</title>
+      <link>https://idev-blog.web.app/tags/java/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/tags/basic/</guid>
+      <guid>https://idev-blog.web.app/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>reactive</title>
+      <link>https://idev-blog.web.app/tags/reactive/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/reactive/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>techtalk</title>
+      <link>https://idev-blog.web.app/tags/techtalk/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/techtalk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>network</title>
+      <link>https://idev-blog.web.app/tags/network/</link>
+      <pubDate>Fri, 25 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/network/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>bigdata</title>
+      <link>https://idev-blog.web.app/tags/bigdata/</link>
+      <pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/bigdata/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>trino</title>
+      <link>https://idev-blog.web.app/tags/trino/</link>
+      <pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/trino/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tracing</title>
+      <link>https://idev-blog.web.app/tags/tracing/</link>
+      <pubDate>Thu, 10 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/tracing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>grpc</title>
+      <link>https://idev-blog.web.app/tags/grpc/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/grpc/</guid>
       <description></description>
     </item>
     
@@ -41,6 +140,24 @@
       <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>microservice</title>
+      <link>https://idev-blog.web.app/tags/microservice/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/microservice/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>design pattern</title>
+      <link>https://idev-blog.web.app/tags/design-pattern/</link>
+      <pubDate>Fri, 04 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/design-pattern/</guid>
       <description></description>
     </item>
     
