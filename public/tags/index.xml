@@ -54,110 +54,11 @@
     </item>
     
     <item>
-      <title>go</title>
-      <link>https://idev-blog.web.app/tags/go/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/go/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>java</title>
-      <link>https://idev-blog.web.app/tags/java/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/java/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>reactive</title>
-      <link>https://idev-blog.web.app/tags/reactive/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/reactive/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>techtalk</title>
-      <link>https://idev-blog.web.app/tags/techtalk/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/techtalk/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>network</title>
-      <link>https://idev-blog.web.app/tags/network/</link>
-      <pubDate>Fri, 25 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/network/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>bigdata</title>
-      <link>https://idev-blog.web.app/tags/bigdata/</link>
-      <pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/bigdata/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>trino</title>
-      <link>https://idev-blog.web.app/tags/trino/</link>
-      <pubDate>Tue, 15 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/trino/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>tracing</title>
-      <link>https://idev-blog.web.app/tags/tracing/</link>
-      <pubDate>Thu, 10 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/tracing/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>grpc</title>
-      <link>https://idev-blog.web.app/tags/grpc/</link>
-      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/grpc/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>linux</title>
       <link>https://idev-blog.web.app/tags/linux/</link>
       <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>microservice</title>
-      <link>https://idev-blog.web.app/tags/microservice/</link>
-      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/microservice/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>design pattern</title>
-      <link>https://idev-blog.web.app/tags/design-pattern/</link>
-      <pubDate>Fri, 04 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/design-pattern/</guid>
       <description></description>
     </item>
     

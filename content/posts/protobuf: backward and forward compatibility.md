@@ -1,3 +1,12 @@
+---
+title: "wire for D. D for Dependency Injection"
+date: 2022-12-12
+draft: true
+authors: ["ngoctd"]
+tags: ["grpc"]
+---
+
+
 ## What exactly are protocol buffers?
 
 Protocol Buffers provide a language-neutral, platform-neutral, extensible mechanism for serializing structured data in a forward-compatible and backward-compatible way. It's like JSON, except it's smaller and faster, and it generates native language bindings.

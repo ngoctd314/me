@@ -1,7 +1,7 @@
 ---
 title: "wire for D. D for Dependency Injection"
 date: 2022-12-12
-draft: false
+draft: true
 authors: ["ngoctd"]
 tags: ["golang", "basic", "solid"]
 ---

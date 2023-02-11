@@ -44,113 +44,29 @@
     <loc>https://idev-blog.web.app/tags/concurrency-pattern/</loc>
     <lastmod>2022-11-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://idev-blog.web.app/tags/go/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/java/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/reactive/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/asynchronize-reactive-programming-in-golang/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/tech-talk-reactive-programming-vertx/</loc>
     <lastmod>2022-11-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/series/</loc>
     <lastmod>2022-11-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://idev-blog.web.app/tags/techtalk/</loc>
-    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/net-work-cdn/</loc>
-    <lastmod>2022-11-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/network/</loc>
-    <lastmod>2022-11-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/bigdata/</loc>
-    <lastmod>2022-11-15T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/bigdata-hms/</loc>
-    <lastmod>2022-11-15T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/trino/</loc>
-    <lastmod>2022-11-15T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/monitor-distributed-tracing-opentelemetry/</loc>
-    <lastmod>2022-11-10T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/tracing/</loc>
-    <lastmod>2022-11-10T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://idev-blog.web.app/posts/linux-auto-connect-openvpn/</loc>
-    <lastmod>2022-11-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</loc>
-    <lastmod>2022-11-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/tech-talk-concurrent-is-not-parallelism/</loc>
-    <lastmod>2022-11-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/grpc/</loc>
     <lastmod>2022-11-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/linux/</loc>
     <lastmod>2022-11-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://idev-blog.web.app/tags/microservice/</loc>
-    <lastmod>2022-11-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/microservices-protocol-buffers/</loc>
-    <lastmod>2022-11-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/overview-grpc/</loc>
-    <lastmod>2022-11-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/overview-protocol-buffer/</loc>
-    <lastmod>2022-11-07T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</loc>
-    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</loc>
     <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</loc>
     <lastmod>2022-11-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/programming-language-go-memory-order/</loc>
-    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/design-pattern-decorator/</loc>
-    <lastmod>2022-11-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/design-pattern/</loc>
-    <lastmod>2022-11-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/series/head-first-design-pattern/</loc>
-    <lastmod>2022-11-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/overview-trino/</loc>
-    <lastmod>2022-11-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/design-pattern-observer/</loc>
-    <lastmod>2022-11-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</loc>
     <lastmod>2022-10-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/th%C6%A1/</loc>
     <lastmod>2022-10-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/programming-language-golang-mistake/</loc>
-    <lastmod>2022-10-02T07:33:22+07:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/poem-m%C6%B0a/</loc>
     <lastmod>2022-03-11T00:00:00+00:00</lastmod>

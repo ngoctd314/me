@@ -39,31 +39,12 @@ type Foo struct { X int } func ProvideFoo() Foo { return Foo{X: 42} } Providers 
     </item>
     
     <item>
-      <title>Cancel context with timeout in golang</title>
-      <link>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</link>
-      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Channel in Golang</title>
       <link>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</link>
       <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</guid>
       <description>Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described.</description>
-    </item>
-    
-    <item>
-      <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</guid>
-      <description>Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,
-You&amp;rsquo;ve got a pipeline set up.</description>
     </item>
     
     <item>
@@ -74,25 +55,6 @@ You&amp;rsquo;ve got a pipeline set up.</description>
       <guid>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</guid>
       <description>Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
 A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed.</description>
-    </item>
-    
-    <item>
-      <title>Golang Memory Order</title>
-      <link>https://idev-blog.web.app/posts/programming-language-go-memory-order/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-go-memory-order/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Golang All in One</title>
-      <link>https://idev-blog.web.app/posts/programming-language-golang-mistake/</link>
-      <pubDate>Sun, 02 Oct 2022 07:33:22 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-golang-mistake/</guid>
-      <description>All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept in golang.
-Basic Types and Basic Value Literals rune type (a.</description>
     </item>
     
   </channel>
