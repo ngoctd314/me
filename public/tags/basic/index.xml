@@ -7,37 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Tue, 27 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/basic/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Channel Use Case in Golang</title>
-      <link>https://idev-blog.web.app/posts/programming-language-channel-usecase/</link>
-      <pubDate>Tue, 27 Dec 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-channel-usecase/</guid>
-      <description>This article will show many channel use cases
-Asynchronous and concurrency programing with Go channels is easy and enjoyable. The channel synchronization technique has wider range of uses and have more variables than the synchronization solutions used in some other languages, such as the actor model and the async/await pattern.</description>
-    </item>
-    
-    <item>
-      <title>wire for D. D for Dependency Injection</title>
-      <link>https://idev-blog.web.app/posts/programming-language-wire-for-d/</link>
-      <pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-wire-for-d/</guid>
-      <description>Wire has two core concepts: providers and injectors.
-Providers The primary mechanism in Wire is the providers: a function that can produce a value.
-type Foo struct { X int } func ProvideFoo() Foo { return Foo{X: 42} } Providers can also return errors</description>
-    </item>
-    
-    <item>
-      <title>Cancel context with timeout in golang</title>
-      <link>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</link>
-      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Sat, 05 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/basic/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Channel in Golang</title>
       <link>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</link>
@@ -45,25 +15,6 @@ type Foo struct { X int } func ProvideFoo() Foo { return Foo{X: 42} } Providers 
       
       <guid>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</guid>
       <description>Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described.</description>
-    </item>
-    
-    <item>
-      <title>Golang Memory Order</title>
-      <link>https://idev-blog.web.app/posts/programming-language-go-memory-order/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-go-memory-order/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Golang All in One</title>
-      <link>https://idev-blog.web.app/posts/programming-language-golang-mistake/</link>
-      <pubDate>Sun, 02 Oct 2022 07:33:22 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-golang-mistake/</guid>
-      <description>All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept in golang.
-Basic Types and Basic Value Literals rune type (a.</description>
     </item>
     
   </channel>

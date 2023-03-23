@@ -7,46 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Tue, 27 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/golang/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Channel Use Case in Golang</title>
-      <link>https://idev-blog.web.app/posts/programming-language-channel-usecase/</link>
-      <pubDate>Tue, 27 Dec 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-channel-usecase/</guid>
-      <description>This article will show many channel use cases
-Asynchronous and concurrency programing with Go channels is easy and enjoyable. The channel synchronization technique has wider range of uses and have more variables than the synchronization solutions used in some other languages, such as the actor model and the async/await pattern.</description>
-    </item>
-    
-    <item>
-      <title>wire for D. D for Dependency Injection</title>
-      <link>https://idev-blog.web.app/posts/programming-language-wire-for-d/</link>
-      <pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-wire-for-d/</guid>
-      <description>Wire has two core concepts: providers and injectors.
-Providers The primary mechanism in Wire is the providers: a function that can produce a value.
-type Foo struct { X int } func ProvideFoo() Foo { return Foo{X: 42} } Providers can also return errors</description>
-    </item>
-    
-    <item>
-      <title>Pipelines and cancellation</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</guid>
-      <description>Go&amp;rsquo;s concurrency primitives make it easy to construct streaming data pipelines that make efficient use of I/O and multiple CPUs. This article introduces what is pipeline, how to to construct a pipeline and introduces techniques for dealing with failures cleanly.</description>
-    </item>
-    
-    <item>
-      <title>Cancel context with timeout in golang</title>
-      <link>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</link>
-      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-graceful-cancel-context-with-timeout-in-golang/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Sat, 05 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Channel in Golang</title>
       <link>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</link>
@@ -57,42 +18,12 @@ type Foo struct { X int } func ProvideFoo() Foo { return Foo{X: 42} } Providers 
     </item>
     
     <item>
-      <title>Fan out, Fan in</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
+      <title>Tổng hợp ví dụ về channel trong golang</title>
+      <link>https://idev-blog.web.app/posts/golang-channel-usecase/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern-fan-in-fan-out/</guid>
-      <description>Fan-in Fan-out is a way of Multiplexing and De-Multiplexing in golang. Fan-in refers to processing multiple input data and combining into a single entity. Fan-out is the exact opposite, dividing the data into multiple smaller chunks,
-You&amp;rsquo;ve got a pipeline set up.</description>
-    </item>
-    
-    <item>
-      <title>Generator and Future Pattern</title>
-      <link>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</guid>
-      <description>Generator Pattern allows the consumer of the data produced by the generator to run in parallel when the generator function is busy computing the next value.
-A Future indicates any data that is needed in future but its computation can be started in parallel so that it can be fetched from the background when needed.</description>
-    </item>
-    
-    <item>
-      <title>Golang Memory Order</title>
-      <link>https://idev-blog.web.app/posts/programming-language-go-memory-order/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-go-memory-order/</guid>
+      <guid>https://idev-blog.web.app/posts/golang-channel-usecase/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>Golang All in One</title>
-      <link>https://idev-blog.web.app/posts/programming-language-golang-mistake/</link>
-      <pubDate>Sun, 02 Oct 2022 07:33:22 +0700</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/programming-language-golang-mistake/</guid>
-      <description>All about golang at basic level in one post. Content in this post i have learned in go101 book and on the internet. At this time, i think it can be misconcept in golang.
-Basic Types and Basic Value Literals rune type (a.</description>
     </item>
     
   </channel>
