@@ -7,13 +7,31 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Fri, 10 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 23 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Tâm sự của NgocTD</title>
-      <link>https://idev-blog.web.app/tags/t%C3%A2m-s%E1%BB%B1-c%E1%BB%A7a-ngoctd/</link>
-      <pubDate>Fri, 10 Feb 2023 00:00:00 +0000</pubDate>
+      <title>channel</title>
+      <link>https://idev-blog.web.app/tags/channel/</link>
+      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://idev-blog.web.app/tags/t%C3%A2m-s%E1%BB%B1-c%E1%BB%A7a-ngoctd/</guid>
+      <guid>https://idev-blog.web.app/tags/channel/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>concurrency</title>
+      <link>https://idev-blog.web.app/tags/concurrency/</link>
+      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/concurrency/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>https://idev-blog.web.app/tags/golang/</link>
+      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/golang/</guid>
       <description></description>
     </item>
     
@@ -36,69 +54,11 @@
     </item>
     
     <item>
-      <title>golang</title>
-      <link>https://idev-blog.web.app/tags/golang/</link>
-      <pubDate>Sat, 05 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/golang/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-<<<<<<< HEAD
       <title>thơ</title>
       <link>https://idev-blog.web.app/tags/th%C6%A1/</link>
       <pubDate>Thu, 13 Oct 2022 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/th%C6%A1/</guid>
-=======
-      <title>solid</title>
-      <link>https://idev-blog.web.app/tags/solid/</link>
-      <pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/solid/</guid>
->>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
-      <description></description>
-    </item>
-    
-    <item>
-<<<<<<< HEAD
-      <title>channel</title>
-      <link>https://idev-blog.web.app/tags/channel/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/channel/</guid>
-=======
-      <title>concurrency pattern</title>
-      <link>https://idev-blog.web.app/tags/concurrency-pattern/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/concurrency-pattern/</guid>
->>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
-      <description></description>
-    </item>
-    
-    <item>
-<<<<<<< HEAD
-      <title>concurrency</title>
-      <link>https://idev-blog.web.app/tags/concurrency/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-=======
-      <title>linux</title>
-      <link>https://idev-blog.web.app/tags/linux/</link>
-      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/tags/linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>thơ</title>
-      <link>https://idev-blog.web.app/tags/th%C6%A1/</link>
-      <pubDate>Thu, 13 Oct 2022 00:00:00 +0000</pubDate>
->>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
-      
-      <guid>https://idev-blog.web.app/tags/concurrency/</guid>
       <description></description>
     </item>
     

@@ -6,20 +6,6 @@
     <description>Recent content in Series on Dev&#39;s Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-<<<<<<< HEAD
     <copyright>Tran Duc Ngoc</copyright><atom:link href="https://idev-blog.web.app/series/index.xml" rel="self" type="application/rss+xml" />
-=======
-    <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Sat, 26 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/series/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>concurrency</title>
-      <link>https://idev-blog.web.app/series/concurrency/</link>
-      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/series/concurrency/</guid>
-      <description></description>
-    </item>
-    
->>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
   </channel>
 </rss>

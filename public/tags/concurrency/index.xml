@@ -6,11 +6,12 @@
     <description>Recent content in concurrency on Dev&#39;s Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>Tran Duc Ngoc</copyright><atom:link href="https://idev-blog.web.app/tags/concurrency/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Tran Duc Ngoc</copyright>
+    <lastBuildDate>Thu, 23 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/concurrency/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Tổng hợp ví dụ về channel trong golang</title>
       <link>https://idev-blog.web.app/posts/golang-channel-usecase/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/posts/golang-channel-usecase/</guid>
       <description></description>
