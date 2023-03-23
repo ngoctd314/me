@@ -18,7 +18,41 @@
     <lastmod>2023-02-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/authors/</loc>
+<<<<<<< HEAD
     <lastmod>2022-11-08T00:00:00+00:00</lastmod>
+=======
+    <lastmod>2022-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/basic/</loc>
+    <lastmod>2022-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/programming-language-channel-usecase/</loc>
+    <lastmod>2022-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/golang/</loc>
+    <lastmod>2022-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/authors/ngoctd/</loc>
+    <lastmod>2022-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/solid/</loc>
+    <lastmod>2022-12-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/programming-language-wire-for-d/</loc>
+    <lastmod>2022-12-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/series/concurrency/</loc>
+    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/concurrency-pattern/</loc>
+    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/concurrency-pattern-pipeline-and-cancellation/</loc>
+    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/series/</loc>
+    <lastmod>2022-11-26T00:00:00+00:00</lastmod>
+>>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
   </url><url>
     <loc>https://idev-blog.web.app/posts/linux-auto-connect-openvpn/</loc>
     <lastmod>2022-11-08T00:00:00+00:00</lastmod>
@@ -26,6 +60,7 @@
     <loc>https://idev-blog.web.app/tags/linux/</loc>
     <lastmod>2022-11-08T00:00:00+00:00</lastmod>
   </url><url>
+<<<<<<< HEAD
     <loc>https://idev-blog.web.app/authors/ngoctd/</loc>
     <lastmod>2022-11-08T00:00:00+00:00</lastmod>
   </url><url>
@@ -38,6 +73,14 @@
     <loc>https://idev-blog.web.app/tags/golang/</loc>
     <lastmod>2022-11-05T00:00:00+00:00</lastmod>
   </url><url>
+=======
+    <loc>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</loc>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/concurrency-pattern-generator-future/</loc>
+    <lastmod>2022-11-05T00:00:00+00:00</lastmod>
+  </url><url>
+>>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
     <loc>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</loc>
     <lastmod>2022-10-13T00:00:00+00:00</lastmod>
   </url><url>

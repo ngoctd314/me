@@ -7,7 +7,32 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
+<<<<<<< HEAD
     <lastBuildDate>Sat, 05 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/basic/index.xml" rel="self" type="application/rss+xml" />
+=======
+    <lastBuildDate>Tue, 27 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/basic/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Channel Use Case in Golang</title>
+      <link>https://idev-blog.web.app/posts/programming-language-channel-usecase/</link>
+      <pubDate>Tue, 27 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/programming-language-channel-usecase/</guid>
+      <description>This article will show many channel use cases
+Asynchronous and concurrency programing with Go channels is easy and enjoyable. The channel synchronization technique has wider range of uses and have more variables than the synchronization solutions used in some other languages, such as the actor model and the async/await pattern.</description>
+    </item>
+    
+    <item>
+      <title>wire for D. D for Dependency Injection</title>
+      <link>https://idev-blog.web.app/posts/programming-language-wire-for-d/</link>
+      <pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/programming-language-wire-for-d/</guid>
+      <description>Wire has two core concepts: providers and injectors.
+Providers The primary mechanism in Wire is the providers: a function that can produce a value.
+type Foo struct { X int } func ProvideFoo() Foo { return Foo{X: 42} } Providers can also return errors</description>
+    </item>
+    
+>>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
     <item>
       <title>Channel in Golang</title>
       <link>https://idev-blog.web.app/posts/programming-language-channel-in-golang/</link>

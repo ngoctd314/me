@@ -45,27 +45,58 @@
     </item>
     
     <item>
+<<<<<<< HEAD
       <title>thơ</title>
       <link>https://idev-blog.web.app/tags/th%C6%A1/</link>
       <pubDate>Thu, 13 Oct 2022 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/th%C6%A1/</guid>
+=======
+      <title>solid</title>
+      <link>https://idev-blog.web.app/tags/solid/</link>
+      <pubDate>Mon, 12 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/solid/</guid>
+>>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
       <description></description>
     </item>
     
     <item>
+<<<<<<< HEAD
       <title>channel</title>
       <link>https://idev-blog.web.app/tags/channel/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/channel/</guid>
+=======
+      <title>concurrency pattern</title>
+      <link>https://idev-blog.web.app/tags/concurrency-pattern/</link>
+      <pubDate>Sat, 26 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/concurrency-pattern/</guid>
+>>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
       <description></description>
     </item>
     
     <item>
+<<<<<<< HEAD
       <title>concurrency</title>
       <link>https://idev-blog.web.app/tags/concurrency/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+=======
+      <title>linux</title>
+      <link>https://idev-blog.web.app/tags/linux/</link>
+      <pubDate>Tue, 08 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>thơ</title>
+      <link>https://idev-blog.web.app/tags/th%C6%A1/</link>
+      <pubDate>Thu, 13 Oct 2022 00:00:00 +0000</pubDate>
+>>>>>>> 5c1e6d3d001797cff0e5075f832ea129252d9496
       
       <guid>https://idev-blog.web.app/tags/concurrency/</guid>
       <description></description>
