@@ -135,7 +135,24 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">&lt;-</span> pos
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>]]></description>
+</span></span></code></pre></div><h2 id="sử-dụng-channel-để-notification">Sử dụng channel để notification</h2>
+<p><strong>Đừng kể với ai nhé - 1-to-1 notification</strong></p>
+<p>Một ngày đẹp trời, bạn được đi chơi riêng với cà rốt, có những điều từ lâu bạn đã muốn nói riêng với cô ấy. Hôm nay bạn mới có cơ hội vậy thì thắt dây an toàn và vào việc thôi.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">secret</span>(ch)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>ch)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">secret</span>(ch <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second)
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">&lt;-</span> <span style="color:#f1fa8c">&#34;this is secret&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Gửi đám bạn thân - 1-to-n notification</strong></p>
+<p>Bên trên bạn chỉ thổ lộ riêng với cà rốt, bạn nghĩ điều đó là bí mật riêng của hai người, nhưng mà biết đâu được, bạn đâu kiểm soát được nó. Bí mật chỉ là bí mật khi chỉ có một người biết thôi. Ví dụ cô ấy gửi tấm chân tình của bạn đến đám bạn thân chẳng hạn :v.</p>
+<p><strong>Phản hồi về bí mật - n-to-1 notification</strong></p>
+]]></description>
       
     </item>
     

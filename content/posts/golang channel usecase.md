@@ -148,3 +148,28 @@ func reply(ctx context.Context, ch chan<- int, pos int) {
 	ch <- pos
 }
 ```
+## Sử dụng channel để notification
+
+**Đừng kể với ai nhé - 1-to-1 notification**
+
+Một ngày đẹp trời, bạn được đi chơi riêng với cà rốt, có những điều từ lâu bạn đã muốn nói riêng với cô ấy. Hôm nay bạn mới có cơ hội vậy thì thắt dây an toàn và vào việc thôi.
+
+```go
+func main() {
+	ch := make(chan string)
+	go secret(ch)
+
+	log.Println(<-ch)
+}
+
+func secret(ch chan<- string) {
+	time.Sleep(time.Second)
+	ch <- "this is secret"
+}
+```
+
+**Gửi đám bạn thân - 1-to-n notification**
+
+Bên trên bạn chỉ thổ lộ riêng với cà rốt, bạn nghĩ điều đó là bí mật riêng của hai người, nhưng mà biết đâu được, bạn đâu kiểm soát được nó. Bí mật chỉ là bí mật khi chỉ có một người biết thôi. Ví dụ cô ấy gửi tấm chân tình của bạn đến đám bạn thân chẳng hạn :v.
+
+**Phản hồi về bí mật - n-to-1 notification**
