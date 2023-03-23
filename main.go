@@ -1,22 +1,41 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand"
 	"time"
 )
 
-type Seat int
-type Bar chan Seat
+func main() {
+	now := time.Now()
 
-func (bar Bar) ServeCustomer(c int) {
-	log.Print("customer#", c, " enters the bar")
-	seat := <-bar // need a seat to drink
-	log.Print("++ customer#", c, " drinks at seat#", seat)
-	time.Sleep(time.Second * time.Duration(2+rand.Intn(6)))
-	log.Print("-- customer#", c, " free seat#", seat)
-	bar <- seat // free seat and leave the bar
+	queue := 10
+	ok := make(chan int, queue)
+	ctx, cancel := context.WithCancel(context.Background())
+
+	for i := 0; i < queue; i++ {
+		go reply(ctx, ok, i)
+	}
+
+	// ai nhanh thì thắng
+	firstRepsonse := <-ok
+	cancel()
+	log.Println("since: ", time.Since(now), "pos", firstRepsonse)
 }
 
-func main() {
+func init() {
+	rand.Seed(time.Now().Unix())
+}
+
+func reply(ctx context.Context, ch chan<- int, pos int) {
+	rd := rand.Intn(3) + 1
+	select {
+	case <-time.After(time.Duration(rd) * time.Second):
+		log.Println("run")
+	case <-ctx.Done():
+		log.Println("cancel")
+	}
+
+	ch <- pos
 }

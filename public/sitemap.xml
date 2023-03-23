@@ -3,31 +3,31 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://idev-blog.web.app/authors/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/channel/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/concurrency/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/golang/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/authors/ngoctd/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/tags/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/golang-channel-usecase/</loc>
-    <lastmod>2023-03-23T00:00:00+00:00</lastmod>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/authors/ngoctd/</loc>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/</loc>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/tags/</loc>
+    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/linux-auto-connect-openvpn/</loc>
     <lastmod>2022-11-08T00:00:00+00:00</lastmod>

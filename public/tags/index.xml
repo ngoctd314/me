@@ -7,11 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Thu, 23 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 03 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>channel</title>
       <link>https://idev-blog.web.app/tags/channel/</link>
-      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 03 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/channel/</guid>
       <description></description>
@@ -20,7 +20,7 @@
     <item>
       <title>concurrency</title>
       <link>https://idev-blog.web.app/tags/concurrency/</link>
-      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 03 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/concurrency/</guid>
       <description></description>
@@ -29,7 +29,7 @@
     <item>
       <title>golang</title>
       <link>https://idev-blog.web.app/tags/golang/</link>
-      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 03 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/tags/golang/</guid>
       <description></description>

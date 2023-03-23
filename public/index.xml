@@ -6,16 +6,136 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Thu, 23 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
+    <lastBuildDate>Fri, 03 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
     
     
     <item>
-      <title>Tổng hợp ví dụ về channel trong golang</title>
+      <title>Một vài cách sử dụng channel trong golang</title>
       <link>https://idev-blog.web.app/posts/golang-channel-usecase/</link>
-      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 03 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/posts/golang-channel-usecase/</guid>
-      <description><![CDATA[]]></description>
+      <description><![CDATA[<p>Lập trình bất đồng bộ (asynchronous) và đồng thời (concurrency) trở  lên dễ dàng với channel trong Golang. Synchronization với channel có phạm vi sử dụng lớn và nhiều biến thể hơn so với các mô hình khác như actoc model hay async/await pattern.</p>
+<p>Trong bài này mình sẽ tổng hợp lại các trường hợp sử dụng channel trong golang, mục đích chính là sử dụng nhiều nhất có thể (chứ không phải là trường hợp tốt nhất) có thể các kĩ thuật khác về synchronization sẽ tốt hơn.</p>
+<h2 id="sử-dụng-channel-như-futurespromises">Sử dụng channel như Futures/Promises</h2>
+<p>Future và promises được sử dụng trong nhiều ngôn ngữ khác nhau. Chúng thường được sử dụng dưới dạng requests và responses.</p>
+<p><strong>Lười làm thì thuê - Return receive-only channel</strong></p>
+<p>Trong ví dụ dưới longTimeRequest xử lý async bằng cách trả về receive-only channel. Mỗi hàm longTimeRequest thực hiện hết 1s (sleep). Bằng cách đưa phần sleep (minh họa cho workload nào đó) chạy dưới goroutine và trả về ngay receive-only channel thì giúp x2 thời gian thực hiện.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// do async
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	r1, r2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">longTimeRequest</span>(), <span style="color:#50fa7b">longTimeRequest</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">getResponse</span>(r1)
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">getResponse</span>(r2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;since: &#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">longTimeRequest</span>() <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// async here
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		time.<span style="color:#50fa7b">Sleep</span>(time.Second)
+</span></span><span style="display:flex;"><span>		ch <span style="color:#ff79c6">&lt;-</span> fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;long time request response after: %v&#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">close</span>(ch)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> ch
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">getResponse</span>(ch <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>ch)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Lười làm thì thuê - Pass send-only channels</strong></p>
+<p>Thay vì trả về receive-only channel, ta có thể sử dụng send-only channels như là một phương pháp thay thế. Tuy nhiên mình thấy cách receive-only channel sử dụng clean hơn.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// sử dụng buffered channel để tránh block khi gửi
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>, <span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">longTimeRequest</span>(ch)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">longTimeRequest</span>(ch)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">getResponse</span>(ch)
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">getResponse</span>(ch)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;since: &#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">longTimeRequest</span>(ch <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second)
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">&lt;-</span> fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;long time request response after: %v&#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">getResponse</span>(ch <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>ch)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Ai nhanh thì thắng - The first response win</strong></p>
+<p>Một ngày đẹp trời, cà rốt của bạn đăng story: tối nay tớ rảnh? Bạn suy nghĩ hết nửa tiếng đồng hồ rồi reply để hẹn địa điểm, thì nhận được câu trả lời là tớ set kèo đi với người khác rồi. Thực ra là dù có reply sớm thì cà rốt cũng chả đi với bạn đâu :v tuy nhiên bạn đến muộn thì người ta có cái cớ rất chi là hợp lí để từ chối. Không lan man nữa, vào việc thôi.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	queue <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">10</span>
+</span></span><span style="display:flex;"><span>	ok <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>, queue)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; queue; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">reply</span>(ok, i)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// ai nhanh thì thắng
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	firstRepsonse <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>ok
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;since: &#34;</span>, time.<span style="color:#50fa7b">Since</span>(now), <span style="color:#f1fa8c">&#34;pos&#34;</span>, firstRepsonse)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">init</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">Unix</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">reply</span>(ch <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">int</span>, pos <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	rd <span style="color:#ff79c6">:=</span> rand.<span style="color:#50fa7b">Intn</span>(<span style="color:#bd93f9">3</span>) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(time.<span style="color:#50fa7b">Duration</span>(rd) <span style="color:#ff79c6">*</span> time.Second)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">&lt;-</span> pos
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Chú ý là phải dùng buffered channel để tránh ăn send block của channel nhé. Đoạn code trên còn vấn đề là chẳng hạn cà rốt chỉ đăng tin cho người nào đó xem thôi, người đó reply rồi thì cà rốt thêm một tin mới là đã tìm được người cần tìm rồi. Thế là bạn cũng không cần reply lại nữa. Vậy xử lý thế nào nhỉ?</p>
+<p>Câu trả lời là dùng context</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	queue <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">10</span>
+</span></span><span style="display:flex;"><span>	ok <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>, queue)
+</span></span><span style="display:flex;"><span>	ctx, cancel <span style="color:#ff79c6">:=</span> context.<span style="color:#50fa7b">WithCancel</span>(context.<span style="color:#50fa7b">Background</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; queue; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">reply</span>(ctx, ok, i)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// ai nhanh thì thắng
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	firstRepsonse <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>ok
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">cancel</span>()
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;since: &#34;</span>, time.<span style="color:#50fa7b">Since</span>(now), <span style="color:#f1fa8c">&#34;pos&#34;</span>, firstRepsonse)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">init</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">Unix</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">reply</span>(ctx context.Context, ch <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">int</span>, pos <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	rd <span style="color:#ff79c6">:=</span> rand.<span style="color:#50fa7b">Intn</span>(<span style="color:#bd93f9">3</span>) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>time.<span style="color:#50fa7b">After</span>(time.<span style="color:#50fa7b">Duration</span>(rd) <span style="color:#ff79c6">*</span> time.Second):
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;run&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ctx.<span style="color:#50fa7b">Done</span>():
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;cancel&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">&lt;-</span> pos
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>]]></description>
       
     </item>
     

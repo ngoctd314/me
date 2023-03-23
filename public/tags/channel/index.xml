@@ -7,14 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Thu, 23 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/channel/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 03 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/tags/channel/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Tổng hợp ví dụ về channel trong golang</title>
+      <title>Một vài cách sử dụng channel trong golang</title>
       <link>https://idev-blog.web.app/posts/golang-channel-usecase/</link>
-      <pubDate>Thu, 23 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 03 Mar 2023 00:00:00 +0000</pubDate>
       
       <guid>https://idev-blog.web.app/posts/golang-channel-usecase/</guid>
-      <description></description>
+      <description>Lập trình bất đồng bộ (asynchronous) và đồng thời (concurrency) trở lên dễ dàng với channel trong Golang. Synchronization với channel có phạm vi sử dụng lớn và nhiều biến thể hơn so với các mô hình khác như actoc model hay async/await pattern.</description>
     </item>
     
   </channel>
