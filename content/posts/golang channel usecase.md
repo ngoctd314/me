@@ -243,14 +243,43 @@ func main() {
 ```
 Đoạn code trên dùng channel để đảm bảo synchronize cho biến cnt. Channel phải là buffered channel với cap = 1 để đảm bảo lần lock đầu tiên không bị block. Nếu không sẽ bị deadlock do ông nào cũng đòi khóa mà không ai chịu trả khóa.
 
-**Sử dụng channels như Counting Semaphores**
+## Sử dụng channels như Counting Semaphores
 
 Buffered channel có thể sử dụng để implement semaphores. Counting semaphore có thể xem là multi-owner locks. Nếu cap của một channel là N thì nó có thể xem là một cái khóa cho phép N người sử dụng tại một thời điểm. Counting semaphores thường được sử dụng để giới hạn số lượng tài nguyên như số lượng concurrent request tối đa ...
 
 Ví dụ khi bạn vào quán cafe, quán chỉ phục vụ một số lượng chỗ ngồi nhất định, hết chỗ thì ... mời bạn về. Dĩ nhiên rồi, chả nhẽ bạn lại đứng để uống cafe, mà có khi chỗ còn không có mà đứng ấy chứ. Thế làm sao để thông báo cho khách biết là đã hết chỗ rồi (ví dụ như khách đặt bàn online). Cách đơn giản là bạn phải duy trì một biến để đếm số lượng khách trong quán.
 
 ```go
+type Seat int
+type Bar chan Seat
+
+func (bar Bar) ServeCustomer(c int) {
+	log.Print("customer#", c, " enters the bar")
+	seat := <-bar // receive value from bar
+	log.Print("++ customer#", c, "drinks at seat#", seat)
+	time.Sleep(time.Second * time.Duration(10+rand.Intn(6)))
+	log.Print("-- customer#", c, " free seat#", seat)
+	bar <- seat
+
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	bar24x7 := make(Bar, 10)
+	for seatId := 0; seatId < cap(bar24x7); seatId++ {
+		bar24x7 <- Seat(seatId)
+	}
+
+	for customerId := 0; ; customerId++ {
+		log.Println("num goroutine: ", runtime.NumGoroutine())
+		time.Sleep(time.Second)
+		go bar24x7.ServeCustomer(customerId)
+	}
+
+}
 ```
+Đoạn code trên đảm bảo chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm. Mặc dù chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm, tuy nhiên có nhiều hơn 10 customers ở trong hàng đợi để chờ phục vụ (> 10 goroutines), càng lâu thì số lượng goroutine này càng lớn. Từ đó sẽ bị tồn đọng và không bao giờ xử lý hết. Do tốc độ tạo mới nhiều hơn tốc độ consume.
 
 ## Try-Send and Try-Receive
 
