@@ -214,4 +214,86 @@ func notify(wg *sync.WaitGroup) {
 
 **Sử dụng channels như Mutex Locks**
 
+Channel với capacity bằng 1 có thể sử dụng như buffered channel. Tuy nhiên thì dùng cho vui thôi chứ thực tế chả ai dùng channel chỉ để implement lại cái mutex làm gì cả :3
+
+```go
+type empty struct{}
+
+func main() {
+	ch := make(chan empty, 1)
+
+	cnt := 0
+	wg := sync.WaitGroup{}
+	n := 100
+	wg.Add(n)
+	for i := 0; i < n; i++ {
+		go func() {
+			defer wg.Done()
+			for i := 0; i < 1000; i++ {
+				ch <- empty{}
+				cnt++
+				<-ch
+			}
+		}()
+	}
+
+	wg.Wait()
+	log.Println("cnt: ", cnt)
+}
+```
+Đoạn code trên dùng channel để đảm bảo synchronize cho biến cnt. Channel phải là buffered channel với cap = 1 để đảm bảo lần lock đầu tiên không bị block. Nếu không sẽ bị deadlock do ông nào cũng đòi khóa mà không ai chịu trả khóa.
+
 **Sử dụng channels như Counting Semaphores**
+
+Buffered channel có thể sử dụng để implement semaphores. Counting semaphore có thể xem là multi-owner locks. Nếu cap của một channel là N thì nó có thể xem là một cái khóa cho phép N người sử dụng tại một thời điểm. Counting semaphores thường được sử dụng để giới hạn số lượng tài nguyên như số lượng concurrent request tối đa ...
+
+Ví dụ khi bạn vào quán cafe, quán chỉ phục vụ một số lượng chỗ ngồi nhất định, hết chỗ thì ... mời bạn về. Dĩ nhiên rồi, chả nhẽ bạn lại đứng để uống cafe, mà có khi chỗ còn không có mà đứng ấy chứ. Thế làm sao để thông báo cho khách biết là đã hết chỗ rồi (ví dụ như khách đặt bàn online). Cách đơn giản là bạn phải duy trì một biến để đếm số lượng khách trong quán.
+
+```go
+```
+
+## Try-Send and Try-Receive
+
+Khi sử dụng select block với nhánh default và chỉ một nhánh case được gọi là try-send hoặc try-receive (tùy vào nhánh case triển khai ra sao). Try-send và try-receive không bao giờ block.
+
+```go
+func main() {
+	type Book struct{ id int }
+	bookshelf := make(chan Book, 3)
+
+	for i := 0; i < cap(bookshelf)*2; i++ {
+		select {
+		case bookshelf <- Book{id: i}:
+			fmt.Println("succeeded to put book")
+		default:
+			fmt.Println("failed to put book")
+		}
+	}
+
+	for i := 0; i < cap(bookshelf)*2; i++ {
+		select {
+		case book := <-bookshelf:
+			fmt.Println("succeeded to get book", book.id)
+		default:
+			fmt.Println("failed to get book")
+		}
+	}
+}
+```
+
+**Check if a channel is closed without blocking the current goroutine**
+
+Nếu có thể chắc chắn rằng không có values nào gửi đến channel nữa thì ta có thể sử dụng đoạn code sau (concurrently and safely) để kiểm tra xem một channel đã close hay chưa mà không cần block goroutine hiện tại.
+
+```go
+func isClose(c chan int) bool {
+	select {
+	case _, ok := <-c:
+		return ok
+	default:
+	}
+
+	return false
+}
+```
+**Peak/burst limiting**
