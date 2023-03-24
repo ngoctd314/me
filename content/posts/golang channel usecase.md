@@ -172,4 +172,46 @@ func secret(ch chan<- string) {
 
 Bên trên bạn chỉ thổ lộ riêng với cà rốt, bạn nghĩ điều đó là bí mật riêng của hai người, nhưng mà biết đâu được, bạn đâu kiểm soát được nó. Bí mật chỉ là bí mật khi chỉ có một người biết thôi. Ví dụ cô ấy gửi tấm chân tình của bạn đến đám bạn thân chẳng hạn :v.
 
+Có nhiều cách để thực hiện 1-to-n notification. Cách đơn giản nhất là close channel. Do tính chất: sau khi close channel thì receive value từ channel luôn luôn không bị block (receive zero value).
+
+```go
+func main() {
+	ch := make(chan string)
+	n := 10
+	for i := 0; i < n; i++ {
+		go notify(ch)
+	}
+	close(ch)
+	time.Sleep(time.Second)
+}
+
+func notify(ch <-chan string) {
+	<-ch
+	fmt.Println("receive notify")
+}
+```
+
 **Phản hồi về bí mật - n-to-1 notification**
+
+Bí mật của bạn bị chia sẻ ra thì có lẽ nó cũng sẽ nhận được nhiều lời bàn tán. Cách dễ nhất để nhận nhiều lời bàn tán là dùng sync.WaitGroup. 
+
+```go
+func main() {
+	n := 10
+	wg := &sync.WaitGroup{}
+	wg.Add(n)
+	for i := 0; i < n; i++ {
+		go notify(wg)
+	}
+	wg.Wait()
+}
+
+func notify(wg *sync.WaitGroup) {
+	defer wg.Done()
+	fmt.Println("send notify")
+}
+```
+
+**Sử dụng channels như Mutex Locks**
+
+**Sử dụng channels như Counting Semaphores**

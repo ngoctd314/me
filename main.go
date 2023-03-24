@@ -1,18 +1,21 @@
 package main
 
 import (
-	"log"
-	"time"
+	"fmt"
+	"sync"
 )
 
 func main() {
-	ch := make(chan string)
-	go secret(ch)
-
-	log.Println(<-ch)
+	n := 10
+	wg := &sync.WaitGroup{}
+	wg.Add(n)
+	for i := 0; i < n; i++ {
+		go notify(wg)
+	}
+	wg.Wait()
 }
 
-func secret(ch chan<- string) {
-	time.Sleep(time.Second)
-	ch <- "this is secret"
+func notify(wg *sync.WaitGroup) {
+	defer wg.Done()
+	fmt.Println("send notify")
 }
