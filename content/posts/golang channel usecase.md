@@ -470,5 +470,8 @@ func source(ctx context.Context, c chan<- int) {
 	}
 
 }
-
 ```
+
+## Rate Limiting
+
+We can also use try-send to do rate limiting . In practice, rate-limit is often to avoid quota exceeding and resource exhaustion.

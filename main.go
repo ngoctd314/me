@@ -25,6 +25,9 @@ func main() {
 func source(ctx context.Context, c chan<- int) {
 	now := time.Now()
 	fn := func(ctx context.Context) <-chan int {
+		defer func() {
+			log.Println("makesure goroutines is released")
+		}()
 		rand.Seed(time.Now().UnixNano())
 
 		fmt.Println("call to source")
