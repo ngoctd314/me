@@ -111,7 +111,7 @@ func reply(ch chan<- int, pos int) {
 }
 ```
 
-Chú ý là phải dùng buffered channel để tránh ăn send block của channel nhé. Đoạn code trên còn vấn đề là chẳng hạn cà rốt chỉ đăng tin cho người nào đó xem thôi, người đó reply rồi thì cà rốt thêm một tin mới là đã tìm được người cần tìm rồi. Thế là bạn cũng không cần reply lại nữa. Vậy xử lý thế nào nhỉ?
+Chú ý là phải dùng buffered channel để tránh ăn send block của channel nhé (goroutine leak problem). Đoạn code trên còn vấn đề là chẳng hạn cà rốt chỉ đăng tin cho người nào đó xem thôi, người đó reply rồi thì cà rốt thêm một tin mới là đã tìm được người cần tìm rồi. Thế là bạn cũng không cần reply lại nữa. Vậy xử lý thế nào nhỉ?
 
 Câu trả lời là dùng context 
 ```go
@@ -259,7 +259,7 @@ func (bar Bar) ServeCustomer(c int) {
 	log.Print("++ customer#", c, "drinks at seat#", seat)
 	time.Sleep(time.Second * time.Duration(10+rand.Intn(6)))
 	log.Print("-- customer#", c, " free seat#", seat)
-	bar <- seat
+	bar <- seat // release
 
 }
 
@@ -273,15 +273,74 @@ func main() {
 
 	for customerId := 0; ; customerId++ {
 		log.Println("num goroutine: ", runtime.NumGoroutine())
-		time.Sleep(time.Second)
 		go bar24x7.ServeCustomer(customerId)
 	}
-
 }
 ```
 Đoạn code trên đảm bảo chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm. Mặc dù chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm, tuy nhiên có nhiều hơn 10 customers ở trong hàng đợi để chờ phục vụ (> 10 goroutines), càng lâu thì số lượng goroutine này càng lớn. Từ đó sẽ bị tồn đọng và không bao giờ xử lý hết. Do tốc độ tạo mới nhiều hơn tốc độ consume.
 
-## Try-Send and Try-Receive
+Vậy làm sao để giới hạn số lượng goroutine có thể tạo ra? Ý tưởng là dùng một buffered channel với cap là số lượng channel lớn nhất có thể tồn tại tại một thời điểm.
+
+```go
+type Seat int
+type Bar chan Seat
+
+func (bar Bar) ServeCustomer(c int, seat Seat) {
+	log.Print("++ customer#", c, "drinks at seat#", seat)
+	time.Sleep(time.Second * time.Duration(2+rand.Intn(6)))
+	log.Print("-- customer#", c, " free seat#", seat)
+	bar <- seat // free seat and leave the bar
+}
+
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	bar24x7 := make(Bar, 10)
+	for seatId := 0; seatId < cap(bar24x7); seatId++ {
+		bar24x7 <- Seat(seatId)
+	}
+
+	for customerId := 0; ; customerId++ {
+		log.Println("num goroutine: ", runtime.NumGoroutine())
+		// Need a seed to serve next customer
+		seat := <-bar24x7
+		go bar24x7.ServeCustomer(customerId, seat)
+	}
+}
+```
+
+Đoạn chương trình trên chỉ đảm bảo được có 10 goroutines tồn tại đồng thời. Tuy nhiên cần tạo rất nhiều goroutines trong quá trình hoạt động (mỗi khi free seat thì lại cần tạo một goroutine mới để xử lý).
+
+Để tối ưu hơn, cần viết một chương trình đảm bảo chỉ có tối đa 10 goroutines tồn tại đồng thời và tối đa 10 goroutines được tạo ra. Đoạn code dưới đây thực hiện yêu cầu này.
+
+```go
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	maxServe := 10
+	consumers := make(chan int)
+	for i := 0; i < maxServe; i++ {
+		go serveCustomer(consumers)
+	}
+
+	for i := 0; ; i++ {
+		log.Println("num goroutines:", runtime.NumGoroutine())
+		consumers <- i
+	}
+}
+
+func serveCustomer(consumers chan int) {
+	for consumer := range consumers {
+		log.Println("++ customer#", consumer, "drinks at the bar")
+		time.Sleep(time.Second * time.Duration(2+rand.Intn(6)))
+		log.Println("-- customer#", consumer, "leaves the bar")
+	}
+}
+```
+## Channel Encapsulated in Channel
+
+
+## Try-Send và Try-Receive đến channel
 
 Khi sử dụng select block với nhánh default và chỉ một nhánh case được gọi là try-send hoặc try-receive (tùy vào nhánh case triển khai ra sao). Try-send và try-receive không bao giờ block.
 
@@ -326,3 +385,90 @@ func isClose(c chan int) bool {
 }
 ```
 **Peak/burst limiting**
+
+## Các cách khác để implement first-response win
+
+Ta có thể sử dụng select mechanism (try-send) với buffered channel có capacity bằng 1 (ít nhất 1) để implement first-response-win. 
+
+```go
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	c := make(chan int, 1)
+	for i := 0; i < 5; i++ {
+		go source(c)
+	}
+	rnd := <-c // only the first response win
+	fmt.Println(rnd)
+	select {}
+}
+
+func source(c chan<- int) {
+	now := time.Now()
+	defer func() {
+		log.Println("end call to source after:", time.Since(now))
+	}()
+
+	fmt.Println("call to source")
+	ra, rb := rand.Int(), rand.Intn(3)+1
+	// Sleep 1s, 2s, 3s
+	time.Sleep(time.Duration(rb) * time.Second)
+	// try send
+	select {
+	case c <- ra:
+	default:
+	}
+}
+```
+
+Phiên bản trên kết quả thì đúng nhưng sử dụng tài nguyên là thừa thãi. Do khi đã có first-response rồi thì không cần phải tiếp tục thực thi việc gọi đến source nữa.
+
+```go
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	c := make(chan int, 1)
+	for i := 0; i < 5; i++ {
+		go source(ctx, c)
+	}
+	rnd := <-c // only the first response win
+	cancel()
+	log.Println("winner: ", rnd)
+	time.Sleep(time.Second * 5)
+	fmt.Println("number of goroutines:", runtime.NumGoroutine())
+}
+
+func source(ctx context.Context, c chan<- int) {
+	now := time.Now()
+	fn := func(ctx context.Context) <-chan int {
+		rand.Seed(time.Now().UnixNano())
+
+		fmt.Println("call to source")
+		// try-send
+		ch := make(chan int, 1)
+
+		ra, rb := rand.Int(), rand.Intn(3)+1
+		select {
+		// simulate work load, we don't need to call when context is canceled
+		case <-time.After(time.Duration(rb) * time.Second):
+			defer func() {
+				log.Println("end call to source after:", time.Since(now))
+			}()
+			ch <- ra
+		case <-ctx.Done():
+		}
+
+		return ch
+	}
+
+	select {
+	case <-ctx.Done():
+		log.Println(ctx.Err())
+	case v := <-fn(ctx):
+		select {
+		case c <- v:
+		default:
+		}
+	}
+
+}
+
+```

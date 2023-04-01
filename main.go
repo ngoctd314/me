@@ -1,37 +1,58 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"math/rand"
 	"runtime"
 	"time"
 )
 
-type Seat int
-type Bar chan Seat
-
-func (bar Bar) ServeCustomer(c int) {
-	log.Print("customer#", c, " enters the bar")
-	seat := <-bar // receive value from bar
-	log.Print("++ customer#", c, "drinks at seat#", seat)
-	time.Sleep(time.Second * time.Duration(10+rand.Intn(6)))
-	log.Print("-- customer#", c, " free seat#", seat)
-	bar <- seat
-
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	c := make(chan int, 1)
+	for i := 0; i < 5; i++ {
+		go source(ctx, c)
+	}
+	rnd := <-c // only the first response win
+	cancel()
+	log.Println("winner: ", rnd)
+	time.Sleep(time.Second * 5)
+	fmt.Println("number of goroutines:", runtime.NumGoroutine())
 }
 
-func main() {
-	rand.Seed(time.Now().UnixNano())
+func source(ctx context.Context, c chan<- int) {
+	now := time.Now()
+	fn := func(ctx context.Context) <-chan int {
+		rand.Seed(time.Now().UnixNano())
 
-	bar24x7 := make(Bar, 10)
-	for seatId := 0; seatId < cap(bar24x7); seatId++ {
-		bar24x7 <- Seat(seatId)
+		fmt.Println("call to source")
+		// try-send
+		ch := make(chan int, 1)
+
+		ra, rb := rand.Int(), rand.Intn(3)+1
+		select {
+		// simulate work load, we don't need to call when context is canceled
+		case <-time.After(time.Duration(rb) * time.Second):
+			defer func() {
+				log.Println("end call to source after:", time.Since(now))
+			}()
+			ch <- ra
+		case <-ctx.Done():
+		}
+
+		return ch
 	}
 
-	for customerId := 0; ; customerId++ {
-		log.Println("num goroutine: ", runtime.NumGoroutine())
-		time.Sleep(time.Second)
-		go bar24x7.ServeCustomer(customerId)
+	select {
+	case <-ctx.Done():
+		log.Println(ctx.Err())
+	case v := <-fn(ctx):
+		select {
+		case c <- v:
+		default:
+		}
 	}
 
 }
