@@ -535,6 +535,7 @@ func crawl(id string, sleepTime time.Duration) chan string {
 ```
 Kết quả trả ra là một kết quả tuần tự crawl1,crawl2,crawl1,crawl2... crawl1 phải đợi crawl2 đi crawl xong thì mới được chạy.
 
+```txt
 2023/04/04 16:35:06 crawl for crawl1: 0
 2023/04/04 16:35:06 crawl for crawl2: 0
 2023/04/04 16:35:07 crawl for crawl1: 1
@@ -544,6 +545,7 @@ Kết quả trả ra là một kết quả tuần tự crawl1,crawl2,crawl1,craw
 2023/04/04 16:35:16 crawl for crawl1: 3
 2023/04/04 16:35:21 crawl for crawl2: 3
 2023/04/04 16:35:21 crawl for crawl1: 4
+```
 
 Sếp yêu cầu kết quả bạn crawl phải là realtime. Fan-in chính là giải pháp
 
@@ -589,6 +591,7 @@ func fanIn(c ...chan string) <-chan string {
 ```
 Kết quả đa số kết quả sẽ từ crawl1 vì crawl1 chạy nhanh hơn. 
 
+```txt
 2023/04/04 16:35:57 crawl for crawl1: 0
 2023/04/04 16:35:57 crawl for crawl2: 0
 2023/04/04 16:35:58 crawl for crawl1: 1
@@ -599,3 +602,81 @@ Kết quả đa số kết quả sẽ từ crawl1 vì crawl1 chạy nhanh hơn.
 2023/04/04 16:36:02 crawl for crawl1: 5
 2023/04/04 16:36:03 crawl for crawl1: 6
 2023/04/04 16:36:04 crawl for crawl1: 7
+```
+
+Để sử dụng fan-in, luồng dữ liệu phải không phụ thuộc lẫn nhau
+
+
+Đoạn code bên trên chưa graceful close channel và có goroutine leak. Chú ý phần này.
+```go
+func main() {
+	rand.Seed(time.Now().UnixNano())
+	ctx, cancel := context.WithCancel(context.Background())
+
+	c1 := crawl(ctx, "crawl1", time.Millisecond*1)
+	c2 := crawl(ctx, "crawl2", time.Millisecond*2)
+	c := fanIn(ctx, c1, c2)
+
+	// forward to another source
+	for i := 0; i < 2; i++ {
+		log.Println(<-c)
+	}
+	cancel()
+	// _ = cancel
+	time.Sleep(time.Second * 1)
+	log.Println("num goroutines:", runtime.NumGoroutine())
+
+}
+func crawl(ctx context.Context, id string, sleepTime time.Duration) chan string {
+	c := make(chan string)
+	go func() {
+		defer func() {
+			log.Println("exit crawl goroutine")
+		}()
+		for {
+			select {
+			case c <- fmt.Sprintf("crawl for %s", id):
+			case <-ctx.Done():
+				log.Printf("close %s\n", id)
+				close(c)
+				return
+			}
+		}
+	}()
+
+	return c
+}
+
+func fanIn(ctx context.Context, c ...chan string) <-chan string {
+	fi := make(chan string)
+
+	wg := sync.WaitGroup{}
+
+	for _, v := range c {
+		wg.Add(1)
+		go func(v chan string) {
+			defer func() {
+				wg.Done()
+				log.Println("exit fanIn goroutine")
+			}()
+			for i := range v {
+				select {
+				case fi <- i:
+				case <-ctx.Done():
+					return
+				}
+			}
+		}(v)
+	}
+
+	go func() {
+		defer func() {
+			log.Println("exit wg goroutine")
+		}()
+		wg.Wait()
+		close(fi)
+	}()
+
+	return fi
+}
+```
