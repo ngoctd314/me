@@ -732,16 +732,16 @@
 </span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> c
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Kết quả trả ra là một kết quả tuần tự crawl1,crawl2,crawl1,crawl2&hellip; crawl1 phải đợi crawl2 đi crawl xong thì mới được chạy.</p>
-<p>2023/04/04 16:35:06 crawl for crawl1: 0
-2023/04/04 16:35:06 crawl for crawl2: 0
-2023/04/04 16:35:07 crawl for crawl1: 1
-2023/04/04 16:35:11 crawl for crawl2: 1
-2023/04/04 16:35:11 crawl for crawl1: 2
-2023/04/04 16:35:16 crawl for crawl2: 2
-2023/04/04 16:35:16 crawl for crawl1: 3
-2023/04/04 16:35:21 crawl for crawl2: 3
-2023/04/04 16:35:21 crawl for crawl1: 4</p>
-<p>Sếp yêu cầu kết quả bạn crawl phải là realtime. Fan-in chính là giải pháp</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>2023/04/04 16:35:06 crawl for crawl1: 0
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:06 crawl for crawl2: 0
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:07 crawl for crawl1: 1
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:11 crawl for crawl2: 1
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:11 crawl for crawl1: 2
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:16 crawl for crawl2: 2
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:16 crawl for crawl1: 3
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:21 crawl for crawl2: 3
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:21 crawl for crawl1: 4
+</span></span></code></pre></div><p>Sếp yêu cầu kết quả bạn crawl phải là realtime. Fan-in chính là giải pháp</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
 </span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
 </span></span><span style="display:flex;"><span>
@@ -781,17 +781,89 @@
 </span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> fi
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Kết quả đa số kết quả sẽ từ crawl1 vì crawl1 chạy nhanh hơn.</p>
-<p>2023/04/04 16:35:57 crawl for crawl1: 0
-2023/04/04 16:35:57 crawl for crawl2: 0
-2023/04/04 16:35:58 crawl for crawl1: 1
-2023/04/04 16:35:59 crawl for crawl1: 2
-2023/04/04 16:36:00 crawl for crawl1: 3
-2023/04/04 16:36:01 crawl for crawl1: 4
-2023/04/04 16:36:02 crawl for crawl2: 1
-2023/04/04 16:36:02 crawl for crawl1: 5
-2023/04/04 16:36:03 crawl for crawl1: 6
-2023/04/04 16:36:04 crawl for crawl1: 7</p>
-</div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>2023/04/04 16:35:57 crawl for crawl1: 0
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:57 crawl for crawl2: 0
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:58 crawl for crawl1: 1
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:59 crawl for crawl1: 2
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:00 crawl for crawl1: 3
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:01 crawl for crawl1: 4
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:02 crawl for crawl2: 1
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:02 crawl for crawl1: 5
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:03 crawl for crawl1: 6
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:04 crawl for crawl1: 7
+</span></span></code></pre></div><p>Để sử dụng fan-in, luồng dữ liệu phải không phụ thuộc lẫn nhau</p>
+<p>Đoạn code bên trên chưa graceful close channel và có goroutine leak. Chú ý phần này.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>	ctx, cancel <span style="color:#ff79c6">:=</span> context.<span style="color:#50fa7b">WithCancel</span>(context.<span style="color:#50fa7b">Background</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	c1 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>(ctx, <span style="color:#f1fa8c">&#34;crawl1&#34;</span>, time.Millisecond<span style="color:#ff79c6">*</span><span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	c2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>(ctx, <span style="color:#f1fa8c">&#34;crawl2&#34;</span>, time.Millisecond<span style="color:#ff79c6">*</span><span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">fanIn</span>(ctx, c1, c2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// forward to another source
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">2</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">cancel</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// _ = cancel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;num goroutines:&#34;</span>, runtime.<span style="color:#50fa7b">NumGoroutine</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">crawl</span>(ctx context.Context, id <span style="color:#8be9fd">string</span>, sleepTime time.Duration) <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>			log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;exit crawl goroutine&#34;</span>)
+</span></span><span style="display:flex;"><span>		}()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">case</span> c <span style="color:#ff79c6">&lt;-</span> fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;crawl for %s&#34;</span>, id):
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ctx.<span style="color:#50fa7b">Done</span>():
+</span></span><span style="display:flex;"><span>				log.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;close %s\n&#34;</span>, id)
+</span></span><span style="display:flex;"><span>				<span style="color:#8be9fd;font-style:italic">close</span>(c)
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> c
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">fanIn</span>(ctx context.Context, c <span style="color:#ff79c6">...</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	fi <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	wg <span style="color:#ff79c6">:=</span> sync.WaitGroup{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> _, v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> c {
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Add</span>(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>(v <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>				wg.<span style="color:#50fa7b">Done</span>()
+</span></span><span style="display:flex;"><span>				log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;exit fanIn goroutine&#34;</span>)
+</span></span><span style="display:flex;"><span>			}()
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> v {
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">case</span> fi <span style="color:#ff79c6">&lt;-</span> i:
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ctx.<span style="color:#50fa7b">Done</span>():
+</span></span><span style="display:flex;"><span>					<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}(v)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>			log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;exit wg goroutine&#34;</span>)
+</span></span><span style="display:flex;"><span>		}()
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(fi)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> fi
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></div>
 </article>
 
 
