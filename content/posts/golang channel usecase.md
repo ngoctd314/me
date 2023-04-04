@@ -475,3 +475,127 @@ func source(ctx context.Context, c chan<- int) {
 ## Rate Limiting
 
 We can also use try-send to do rate limiting . In practice, rate-limit is often to avoid quota exceeding and resource exhaustion.
+
+## Fan-in
+
+Bạn cân viết một chương trình đi crawl data từ một source sau đó in ra console. 
+
+```go
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	c := crawl()
+
+	// forward to another source
+	for i := 0; i < 5; i++ {
+		log.Println(<-c)
+	}
+
+}
+
+func crawl() chan string {
+	c := make(chan string)
+	go func() {
+		for i := 0; ; i++ {
+			c <- fmt.Sprintf("crawl %d", i)
+			time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
+		}
+	}()
+
+	return c
+}
+```
+Yêu cầu mới là bạn phải crawl từ 2 source khác nhau, sau đó in ra console.
+
+```go
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	c1 := crawl("crawl1", time.Second)
+	c2 := crawl("crawl2", time.Second*5)
+
+	// forward to another source
+	for i := 0; i < 10; i++ {
+		log.Println(<-c1)
+		log.Println(<-c2)
+	}
+
+}
+func crawl(id string, sleepTime time.Duration) chan string {
+	c := make(chan string)
+	go func() {
+		for i := 0; ; i++ {
+			c <- fmt.Sprintf("crawl for %s: %d", id, i)
+			time.Sleep(sleepTime)
+		}
+	}()
+
+	return c
+}
+```
+Kết quả trả ra là một kết quả tuần tự crawl1,crawl2,crawl1,crawl2... crawl1 phải đợi crawl2 đi crawl xong thì mới được chạy.
+
+2023/04/04 16:35:06 crawl for crawl1: 0
+2023/04/04 16:35:06 crawl for crawl2: 0
+2023/04/04 16:35:07 crawl for crawl1: 1
+2023/04/04 16:35:11 crawl for crawl2: 1
+2023/04/04 16:35:11 crawl for crawl1: 2
+2023/04/04 16:35:16 crawl for crawl2: 2
+2023/04/04 16:35:16 crawl for crawl1: 3
+2023/04/04 16:35:21 crawl for crawl2: 3
+2023/04/04 16:35:21 crawl for crawl1: 4
+
+Sếp yêu cầu kết quả bạn crawl phải là realtime. Fan-in chính là giải pháp
+
+```go
+func main() {
+	rand.Seed(time.Now().UnixNano())
+
+	c1 := crawl("crawl1", time.Second)
+	c2 := crawl("crawl2", time.Second*5)
+	c := fanIn(c1, c2)
+
+	// forward to another source
+	for i := 0; i < 10; i++ {
+		log.Println(<-c)
+	}
+
+}
+func crawl(id string, sleepTime time.Duration) chan string {
+	c := make(chan string)
+	go func() {
+		for i := 0; ; i++ {
+			c <- fmt.Sprintf("crawl for %s: %d", id, i)
+			time.Sleep(sleepTime)
+		}
+	}()
+
+	return c
+}
+
+func fanIn(c ...chan string) <-chan string {
+	fi := make(chan string)
+
+	for _, v := range c {
+		go func(v chan string) {
+			for i := range v {
+				fi <- i
+			}
+		}(v)
+	}
+
+	return fi
+}
+```
+Kết quả đa số kết quả sẽ từ crawl1 vì crawl1 chạy nhanh hơn. 
+
+2023/04/04 16:35:57 crawl for crawl1: 0
+2023/04/04 16:35:57 crawl for crawl2: 0
+2023/04/04 16:35:58 crawl for crawl1: 1
+2023/04/04 16:35:59 crawl for crawl1: 2
+2023/04/04 16:36:00 crawl for crawl1: 3
+2023/04/04 16:36:01 crawl for crawl1: 4
+2023/04/04 16:36:02 crawl for crawl2: 1
+2023/04/04 16:36:02 crawl for crawl1: 5
+2023/04/04 16:36:03 crawl for crawl1: 6
+2023/04/04 16:36:04 crawl for crawl1: 7

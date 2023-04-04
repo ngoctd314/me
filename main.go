@@ -1,61 +1,47 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"math/rand"
-	"runtime"
 	"time"
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	c := make(chan int, 1)
-	for i := 0; i < 5; i++ {
-		go source(ctx, c)
+	rand.Seed(time.Now().UnixNano())
+
+	c1 := crawl("crawl1", time.Second)
+	c2 := crawl("crawl2", time.Second*5)
+	c := fanIn(c1, c2)
+
+	// forward to another source
+	for i := 0; i < 10; i++ {
+		log.Println(<-c)
 	}
-	rnd := <-c // only the first response win
-	cancel()
-	log.Println("winner: ", rnd)
-	time.Sleep(time.Second * 5)
-	fmt.Println("number of goroutines:", runtime.NumGoroutine())
+
+}
+func crawl(id string, sleepTime time.Duration) chan string {
+	c := make(chan string)
+	go func() {
+		for i := 0; ; i++ {
+			c <- fmt.Sprintf("crawl for %s: %d", id, i)
+			time.Sleep(sleepTime)
+		}
+	}()
+
+	return c
 }
 
-func source(ctx context.Context, c chan<- int) {
-	now := time.Now()
-	fn := func(ctx context.Context) <-chan int {
-		defer func() {
-			log.Println("makesure goroutines is released")
-		}()
-		rand.Seed(time.Now().UnixNano())
+func fanIn(c ...chan string) <-chan string {
+	fi := make(chan string)
 
-		fmt.Println("call to source")
-		// try-send
-		ch := make(chan int, 1)
-
-		ra, rb := rand.Int(), rand.Intn(3)+1
-		select {
-		// simulate work load, we don't need to call when context is canceled
-		case <-time.After(time.Duration(rb) * time.Second):
-			defer func() {
-				log.Println("end call to source after:", time.Since(now))
-			}()
-			ch <- ra
-		case <-ctx.Done():
-		}
-
-		return ch
+	for _, v := range c {
+		go func(v chan string) {
+			for i := range v {
+				fi <- i
+			}
+		}(v)
 	}
 
-	select {
-	case <-ctx.Done():
-		log.Println(ctx.Err())
-	case v := <-fn(ctx):
-		select {
-		case c <- v:
-		default:
-		}
-	}
-
+	return fi
 }
