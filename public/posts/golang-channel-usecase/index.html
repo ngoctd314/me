@@ -378,7 +378,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	ch <span style="color:#ff79c6">&lt;-</span> pos
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Chú ý là phải dùng buffered channel để tránh ăn send block của channel nhé. Đoạn code trên còn vấn đề là chẳng hạn cà rốt chỉ đăng tin cho người nào đó xem thôi, người đó reply rồi thì cà rốt thêm một tin mới là đã tìm được người cần tìm rồi. Thế là bạn cũng không cần reply lại nữa. Vậy xử lý thế nào nhỉ?</p>
+</span></span></code></pre></div><p>Chú ý là phải dùng buffered channel để tránh ăn send block của channel nhé (goroutine leak problem). Đoạn code trên còn vấn đề là chẳng hạn cà rốt chỉ đăng tin cho người nào đó xem thôi, người đó reply rồi thì cà rốt thêm một tin mới là đã tìm được người cần tìm rồi. Thế là bạn cũng không cần reply lại nữa. Vậy xử lý thế nào nhỉ?</p>
 <p>Câu trả lời là dùng context</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
 </span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
@@ -485,10 +485,88 @@
 </span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;cnt: &#34;</span>, cnt)
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Đoạn code trên dùng channel để đảm bảo synchronize cho biến cnt. Channel phải là buffered channel với cap = 1 để đảm bảo lần lock đầu tiên không bị block. Nếu không sẽ bị deadlock do ông nào cũng đòi khóa mà không ai chịu trả khóa.</p>
-<p><strong>Sử dụng channels như Counting Semaphores</strong></p>
+<h2 id="sử-dụng-channels-như-counting-semaphores">Sử dụng channels như Counting Semaphores</h2>
 <p>Buffered channel có thể sử dụng để implement semaphores. Counting semaphore có thể xem là multi-owner locks. Nếu cap của một channel là N thì nó có thể xem là một cái khóa cho phép N người sử dụng tại một thời điểm. Counting semaphores thường được sử dụng để giới hạn số lượng tài nguyên như số lượng concurrent request tối đa &hellip;</p>
 <p>Ví dụ khi bạn vào quán cafe, quán chỉ phục vụ một số lượng chỗ ngồi nhất định, hết chỗ thì &hellip; mời bạn về. Dĩ nhiên rồi, chả nhẽ bạn lại đứng để uống cafe, mà có khi chỗ còn không có mà đứng ấy chứ. Thế làm sao để thông báo cho khách biết là đã hết chỗ rồi (ví dụ như khách đặt bàn online). Cách đơn giản là bạn phải duy trì một biến để đếm số lượng khách trong quán.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"></code></pre></div><h2 id="try-send-and-try-receive">Try-Send and Try-Receive</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Seat <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Bar <span style="color:#8be9fd;font-style:italic">chan</span> Seat
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (bar Bar) <span style="color:#50fa7b">ServeCustomer</span>(c <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Print</span>(<span style="color:#f1fa8c">&#34;customer#&#34;</span>, c, <span style="color:#f1fa8c">&#34; enters the bar&#34;</span>)
+</span></span><span style="display:flex;"><span>	seat <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>bar <span style="color:#6272a4">// receive value from bar
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	log.<span style="color:#50fa7b">Print</span>(<span style="color:#f1fa8c">&#34;++ customer#&#34;</span>, c, <span style="color:#f1fa8c">&#34;drinks at seat#&#34;</span>, seat)
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second <span style="color:#ff79c6">*</span> time.<span style="color:#50fa7b">Duration</span>(<span style="color:#bd93f9">10</span><span style="color:#ff79c6">+</span>rand.<span style="color:#50fa7b">Intn</span>(<span style="color:#bd93f9">6</span>)))
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Print</span>(<span style="color:#f1fa8c">&#34;-- customer#&#34;</span>, c, <span style="color:#f1fa8c">&#34; free seat#&#34;</span>, seat)
+</span></span><span style="display:flex;"><span>	bar <span style="color:#ff79c6">&lt;-</span> seat <span style="color:#6272a4">// release
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	bar24x7 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(Bar, <span style="color:#bd93f9">10</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> seatId <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; seatId &lt; <span style="color:#8be9fd;font-style:italic">cap</span>(bar24x7); seatId<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		bar24x7 <span style="color:#ff79c6">&lt;-</span> <span style="color:#50fa7b">Seat</span>(seatId)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> customerId <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; ; customerId<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;num goroutine: &#34;</span>, runtime.<span style="color:#50fa7b">NumGoroutine</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> bar24x7.<span style="color:#50fa7b">ServeCustomer</span>(customerId)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Đoạn code trên đảm bảo chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm. Mặc dù chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm, tuy nhiên có nhiều hơn 10 customers ở trong hàng đợi để chờ phục vụ (&gt; 10 goroutines), càng lâu thì số lượng goroutine này càng lớn. Từ đó sẽ bị tồn đọng và không bao giờ xử lý hết. Do tốc độ tạo mới nhiều hơn tốc độ consume.</p>
+<p>Vậy làm sao để giới hạn số lượng goroutine có thể tạo ra? Ý tưởng là dùng một buffered channel với cap là số lượng channel lớn nhất có thể tồn tại tại một thời điểm.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Seat <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Bar <span style="color:#8be9fd;font-style:italic">chan</span> Seat
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (bar Bar) <span style="color:#50fa7b">ServeCustomer</span>(c <span style="color:#8be9fd">int</span>, seat Seat) {
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Print</span>(<span style="color:#f1fa8c">&#34;++ customer#&#34;</span>, c, <span style="color:#f1fa8c">&#34;drinks at seat#&#34;</span>, seat)
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second <span style="color:#ff79c6">*</span> time.<span style="color:#50fa7b">Duration</span>(<span style="color:#bd93f9">2</span><span style="color:#ff79c6">+</span>rand.<span style="color:#50fa7b">Intn</span>(<span style="color:#bd93f9">6</span>)))
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Print</span>(<span style="color:#f1fa8c">&#34;-- customer#&#34;</span>, c, <span style="color:#f1fa8c">&#34; free seat#&#34;</span>, seat)
+</span></span><span style="display:flex;"><span>	bar <span style="color:#ff79c6">&lt;-</span> seat <span style="color:#6272a4">// free seat and leave the bar
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	bar24x7 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(Bar, <span style="color:#bd93f9">10</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> seatId <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; seatId &lt; <span style="color:#8be9fd;font-style:italic">cap</span>(bar24x7); seatId<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		bar24x7 <span style="color:#ff79c6">&lt;-</span> <span style="color:#50fa7b">Seat</span>(seatId)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> customerId <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; ; customerId<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;num goroutine: &#34;</span>, runtime.<span style="color:#50fa7b">NumGoroutine</span>())
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// Need a seed to serve next customer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		seat <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>bar24x7
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> bar24x7.<span style="color:#50fa7b">ServeCustomer</span>(customerId, seat)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Đoạn chương trình trên chỉ đảm bảo được có 10 goroutines tồn tại đồng thời. Tuy nhiên cần tạo rất nhiều goroutines trong quá trình hoạt động (mỗi khi free seat thì lại cần tạo một goroutine mới để xử lý).</p>
+<p>Để tối ưu hơn, cần viết một chương trình đảm bảo chỉ có tối đa 10 goroutines tồn tại đồng thời và tối đa 10 goroutines được tạo ra. Đoạn code dưới đây thực hiện yêu cầu này.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	maxServe <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">10</span>
+</span></span><span style="display:flex;"><span>	consumers <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; maxServe; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">serveCustomer</span>(consumers)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; ; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;num goroutines:&#34;</span>, runtime.<span style="color:#50fa7b">NumGoroutine</span>())
+</span></span><span style="display:flex;"><span>		consumers <span style="color:#ff79c6">&lt;-</span> i
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">serveCustomer</span>(consumers <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> consumer <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> consumers {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;++ customer#&#34;</span>, consumer, <span style="color:#f1fa8c">&#34;drinks at the bar&#34;</span>)
+</span></span><span style="display:flex;"><span>		time.<span style="color:#50fa7b">Sleep</span>(time.Second <span style="color:#ff79c6">*</span> time.<span style="color:#50fa7b">Duration</span>(<span style="color:#bd93f9">2</span><span style="color:#ff79c6">+</span>rand.<span style="color:#50fa7b">Intn</span>(<span style="color:#bd93f9">6</span>)))
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;-- customer#&#34;</span>, consumer, <span style="color:#f1fa8c">&#34;leaves the bar&#34;</span>)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="channel-encapsulated-in-channel">Channel Encapsulated in Channel</h2>
+<h2 id="try-send-và-try-receive-đến-channel">Try-Send và Try-Receive đến channel</h2>
 <p>Khi sử dụng select block với nhánh default và chỉ một nhánh case được gọi là try-send hoặc try-receive (tùy vào nhánh case triển khai ra sao). Try-send và try-receive không bao giờ block.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
 </span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">type</span> Book <span style="color:#8be9fd;font-style:italic">struct</span>{ id <span style="color:#8be9fd">int</span> }
@@ -524,7 +602,268 @@
 </span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">false</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><strong>Peak/burst limiting</strong></p>
-</div>
+<h2 id="các-cách-khác-để-implement-first-response-win">Các cách khác để implement first-response win</h2>
+<p>Ta có thể sử dụng select mechanism (try-send) với buffered channel có capacity bằng 1 (ít nhất 1) để implement first-response-win.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">5</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">source</span>(c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	rnd <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>c <span style="color:#6272a4">// only the first response win
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Println</span>(rnd)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">select</span> {}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">source</span>(c <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;end call to source after:&#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;call to source&#34;</span>)
+</span></span><span style="display:flex;"><span>	ra, rb <span style="color:#ff79c6">:=</span> rand.<span style="color:#50fa7b">Int</span>(), rand.<span style="color:#50fa7b">Intn</span>(<span style="color:#bd93f9">3</span>)<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// Sleep 1s, 2s, 3s
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	time.<span style="color:#50fa7b">Sleep</span>(time.<span style="color:#50fa7b">Duration</span>(rb) <span style="color:#ff79c6">*</span> time.Second)
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// try send
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> c <span style="color:#ff79c6">&lt;-</span> ra:
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Phiên bản trên kết quả thì đúng nhưng sử dụng tài nguyên là thừa thãi. Do khi đã có first-response rồi thì không cần phải tiếp tục thực thi việc gọi đến source nữa.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	ctx, cancel <span style="color:#ff79c6">:=</span> context.<span style="color:#50fa7b">WithCancel</span>(context.<span style="color:#50fa7b">Background</span>())
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">5</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">source</span>(ctx, c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	rnd <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>c <span style="color:#6272a4">// only the first response win
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#50fa7b">cancel</span>()
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;winner: &#34;</span>, rnd)
+</span></span><span style="display:flex;"><span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;number of goroutines:&#34;</span>, runtime.<span style="color:#50fa7b">NumGoroutine</span>())
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">source</span>(ctx context.Context, c <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	now <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	fn <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">func</span>(ctx context.Context) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>		rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;call to source&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// try-send
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		ch <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		ra, rb <span style="color:#ff79c6">:=</span> rand.<span style="color:#50fa7b">Int</span>(), rand.<span style="color:#50fa7b">Intn</span>(<span style="color:#bd93f9">3</span>)<span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// simulate work load, we don&#39;t need to call when context is canceled
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>time.<span style="color:#50fa7b">After</span>(time.<span style="color:#50fa7b">Duration</span>(rb) <span style="color:#ff79c6">*</span> time.Second):
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>				log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;end call to source after:&#34;</span>, time.<span style="color:#50fa7b">Since</span>(now))
+</span></span><span style="display:flex;"><span>			}()
+</span></span><span style="display:flex;"><span>			ch <span style="color:#ff79c6">&lt;-</span> ra
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ctx.<span style="color:#50fa7b">Done</span>():
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> ch
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ctx.<span style="color:#50fa7b">Done</span>():
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(ctx.<span style="color:#50fa7b">Err</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span><span style="color:#50fa7b">fn</span>(ctx):
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">case</span> c <span style="color:#ff79c6">&lt;-</span> v:
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="rate-limiting">Rate Limiting</h2>
+<p>We can also use try-send to do rate limiting . In practice, rate-limit is often to avoid quota exceeding and resource exhaustion.</p>
+<h2 id="fan-in">Fan-in</h2>
+<p>Bạn cân viết một chương trình đi crawl data từ một source sau đó in ra console.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// forward to another source
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">5</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">crawl</span>() <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; ; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>			c <span style="color:#ff79c6">&lt;-</span> fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;crawl %d&#34;</span>, i)
+</span></span><span style="display:flex;"><span>			time.<span style="color:#50fa7b">Sleep</span>(time.<span style="color:#50fa7b">Duration</span>(rand.<span style="color:#50fa7b">Intn</span>(<span style="color:#bd93f9">1e3</span>)) <span style="color:#ff79c6">*</span> time.Millisecond)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> c
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Yêu cầu mới là bạn phải crawl từ 2 source khác nhau, sau đó in ra console.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	c1 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>(<span style="color:#f1fa8c">&#34;crawl1&#34;</span>, time.Second)
+</span></span><span style="display:flex;"><span>	c2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>(<span style="color:#f1fa8c">&#34;crawl2&#34;</span>, time.Second<span style="color:#ff79c6">*</span><span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// forward to another source
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">10</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>c1)
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>c2)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">crawl</span>(id <span style="color:#8be9fd">string</span>, sleepTime time.Duration) <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; ; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>			c <span style="color:#ff79c6">&lt;-</span> fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;crawl for %s: %d&#34;</span>, id, i)
+</span></span><span style="display:flex;"><span>			time.<span style="color:#50fa7b">Sleep</span>(sleepTime)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> c
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Kết quả trả ra là một kết quả tuần tự crawl1,crawl2,crawl1,crawl2&hellip; crawl1 phải đợi crawl2 đi crawl xong thì mới được chạy.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>2023/04/04 16:35:06 crawl for crawl1: 0
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:06 crawl for crawl2: 0
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:07 crawl for crawl1: 1
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:11 crawl for crawl2: 1
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:11 crawl for crawl1: 2
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:16 crawl for crawl2: 2
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:16 crawl for crawl1: 3
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:21 crawl for crawl2: 3
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:21 crawl for crawl1: 4
+</span></span></code></pre></div><p>Sếp yêu cầu kết quả bạn crawl phải là realtime. Fan-in chính là giải pháp</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	c1 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>(<span style="color:#f1fa8c">&#34;crawl1&#34;</span>, time.Second)
+</span></span><span style="display:flex;"><span>	c2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>(<span style="color:#f1fa8c">&#34;crawl2&#34;</span>, time.Second<span style="color:#ff79c6">*</span><span style="color:#bd93f9">5</span>)
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">fanIn</span>(c1, c2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// forward to another source
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">10</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">crawl</span>(id <span style="color:#8be9fd">string</span>, sleepTime time.Duration) <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; ; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>			c <span style="color:#ff79c6">&lt;-</span> fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;crawl for %s: %d&#34;</span>, id, i)
+</span></span><span style="display:flex;"><span>			time.<span style="color:#50fa7b">Sleep</span>(sleepTime)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> c
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">fanIn</span>(c <span style="color:#ff79c6">...</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	fi <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> _, v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> c {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>(v <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> v {
+</span></span><span style="display:flex;"><span>				fi <span style="color:#ff79c6">&lt;-</span> i
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}(v)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> fi
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Kết quả đa số kết quả sẽ từ crawl1 vì crawl1 chạy nhanh hơn.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>2023/04/04 16:35:57 crawl for crawl1: 0
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:57 crawl for crawl2: 0
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:58 crawl for crawl1: 1
+</span></span><span style="display:flex;"><span>2023/04/04 16:35:59 crawl for crawl1: 2
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:00 crawl for crawl1: 3
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:01 crawl for crawl1: 4
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:02 crawl for crawl2: 1
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:02 crawl for crawl1: 5
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:03 crawl for crawl1: 6
+</span></span><span style="display:flex;"><span>2023/04/04 16:36:04 crawl for crawl1: 7
+</span></span></code></pre></div><p>Để sử dụng fan-in, luồng dữ liệu phải không phụ thuộc lẫn nhau</p>
+<p>Đoạn code bên trên chưa graceful close channel và có goroutine leak. Chú ý phần này.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	rand.<span style="color:#50fa7b">Seed</span>(time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">UnixNano</span>())
+</span></span><span style="display:flex;"><span>	ctx, cancel <span style="color:#ff79c6">:=</span> context.<span style="color:#50fa7b">WithCancel</span>(context.<span style="color:#50fa7b">Background</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	c1 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>(ctx, <span style="color:#f1fa8c">&#34;crawl1&#34;</span>, time.Millisecond<span style="color:#ff79c6">*</span><span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	c2 <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">crawl</span>(ctx, <span style="color:#f1fa8c">&#34;crawl2&#34;</span>, time.Millisecond<span style="color:#ff79c6">*</span><span style="color:#bd93f9">2</span>)
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">fanIn</span>(ctx, c1, c2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// forward to another source
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">2</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		log.<span style="color:#50fa7b">Println</span>(<span style="color:#ff79c6">&lt;-</span>c)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#50fa7b">cancel</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// _ = cancel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	time.<span style="color:#50fa7b">Sleep</span>(time.Second <span style="color:#ff79c6">*</span> <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;num goroutines:&#34;</span>, runtime.<span style="color:#50fa7b">NumGoroutine</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">crawl</span>(ctx context.Context, id <span style="color:#8be9fd">string</span>, sleepTime time.Duration) <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>			log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;exit crawl goroutine&#34;</span>)
+</span></span><span style="display:flex;"><span>		}()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">case</span> c <span style="color:#ff79c6">&lt;-</span> fmt.<span style="color:#50fa7b">Sprintf</span>(<span style="color:#f1fa8c">&#34;crawl for %s&#34;</span>, id):
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ctx.<span style="color:#50fa7b">Done</span>():
+</span></span><span style="display:flex;"><span>				log.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;close %s\n&#34;</span>, id)
+</span></span><span style="display:flex;"><span>				<span style="color:#8be9fd;font-style:italic">close</span>(c)
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> c
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">fanIn</span>(ctx context.Context, c <span style="color:#ff79c6">...</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>) <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	fi <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	wg <span style="color:#ff79c6">:=</span> sync.WaitGroup{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> _, v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> c {
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Add</span>(<span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>(v <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>				wg.<span style="color:#50fa7b">Done</span>()
+</span></span><span style="display:flex;"><span>				log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;exit fanIn goroutine&#34;</span>)
+</span></span><span style="display:flex;"><span>			}()
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> v {
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">case</span> fi <span style="color:#ff79c6">&lt;-</span> i:
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ctx.<span style="color:#50fa7b">Done</span>():
+</span></span><span style="display:flex;"><span>					<span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}(v)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>			log.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;exit wg goroutine&#34;</span>)
+</span></span><span style="display:flex;"><span>		}()
+</span></span><span style="display:flex;"><span>		wg.<span style="color:#50fa7b">Wait</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">close</span>(fi)
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> fi
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></div>
 </article>
 
 
