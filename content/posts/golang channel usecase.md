@@ -278,9 +278,6 @@ func main() {
 }
 ```
 Đoạn code trên đảm bảo chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm. Mặc dù chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm, tuy nhiên có nhiều hơn 10 customers ở trong hàng đợi để chờ phục vụ (> 10 goroutines), càng lâu thì số lượng goroutine này càng lớn. Từ đó sẽ bị tồn đọng và không bao giờ xử lý hết. Do tốc độ tạo mới nhiều hơn tốc độ consume.
-<<<<<<< HEAD
-## Try-Send and Try-Receive
-=======
 
 Vậy làm sao để giới hạn số lượng goroutine có thể tạo ra? Ý tưởng là dùng một buffered channel với cap là số lượng channel lớn nhất có thể tồn tại tại một thời điểm.
 
@@ -344,7 +341,6 @@ func serveCustomer(consumers chan int) {
 
 
 ## Try-Send và Try-Receive đến channel
->>>>>>> 9e279c678789113547379ee616152df813a55d15
 
 Khi sử dụng select block với nhánh default và chỉ một nhánh case được gọi là try-send hoặc try-receive (tùy vào nhánh case triển khai ra sao). Try-send và try-receive không bao giờ block.
 
