@@ -280,7 +280,6 @@ func main() {
 }
 ```
 Đoạn code trên đảm bảo chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm. Mặc dù chỉ có nhiều nhất 10 người được phục vụ tại một thời điểm, tuy nhiên có nhiều hơn 10 customers ở trong hàng đợi để chờ phục vụ (> 10 goroutines), càng lâu thì số lượng goroutine này càng lớn. Từ đó sẽ bị tồn đọng và không bao giờ xử lý hết. Do tốc độ tạo mới nhiều hơn tốc độ consume.
-
 ## Try-Send and Try-Receive
 
 Khi sử dụng select block với nhánh default và chỉ một nhánh case được gọi là try-send hoặc try-receive (tùy vào nhánh case triển khai ra sao). Try-send và try-receive không bao giờ block.
