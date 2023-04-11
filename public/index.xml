@@ -6,7 +6,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Fri, 03 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
+    <lastBuildDate>Tue, 11 Apr 2023 14:09:50 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/index.xml" rel="self" type="application/rss+xml" /><icon>https://idev-blog.web.app/logo.png</icon>
+    
+    
+    <item>
+      <title>Awesome resources collector</title>
+      <link>https://idev-blog.web.app/posts/awesome-resource-collector/</link>
+      <pubDate>Tue, 11 Apr 2023 14:09:50 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/awesome-resource-collector/</guid>
+      <description><![CDATA[<h2 id="data-race-patterns-in-go">Data Race Patterns in Go</h2>
+<p>A data race is a concurrency bug that occurs when two or more goroutines access the same datum, at least one of them is write, and there is no ordering between them. Data races are insidious bug and must be avoided at all costs.</p>
+<p><a href="https://www.uber.com/en-VN/blog/data-race-patterns-in-go/">https://www.uber.com/en-VN/blog/data-race-patterns-in-go/</a></p>
+]]></description>
+      
+    </item>
+    
     
     
     <item>
@@ -586,7 +601,32 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> fi
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>]]></description>
+</span></span></code></pre></div><h2 id="the-tee-channel">The tee-channel</h2>
+<h2 id="switches">Switches</h2>
+<p>Thao tác gửi hay nhận trên một nil channel đều bị block. Với tính chất này ta có thể kiểm soát được cơ chế selection trong select block.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"></code></pre></div><h2 id="control-code-execution-possibility-weights">Control code execution possibility weights</h2>
+<p>Ta có thể duplicate nhánh case trong select code block để tăng khả năng thực hiện đoạn code tương ứng.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>	foo, bar <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}), <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{})
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">close</span>(foo)
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">close</span>(bar)
+</span></span><span style="display:flex;"><span>	x, y <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0.0</span>, <span style="color:#bd93f9">0.0</span>
+</span></span><span style="display:flex;"><span>	f <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">func</span>() { x<span style="color:#ff79c6">++</span> }
+</span></span><span style="display:flex;"><span>	g <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">func</span>() { y<span style="color:#ff79c6">++</span> }
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">0</span>; i &lt; <span style="color:#bd93f9">10000</span>; i<span style="color:#ff79c6">++</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>foo:
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">f</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>foo:
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">f</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>bar:
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">g</span>()
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Println</span>(x <span style="color:#ff79c6">/</span> y) <span style="color:#6272a4">// about 2
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><h2 id="data-flow-manipulations">Data Flow Manipulations</h2>
+]]></description>
       
     </item>
     
@@ -840,30 +880,6 @@ If one channel value is assigned to another, the two channels share the same und
 <p>Dành trọn nhiệt huyết nồng</p>
 <p>Tháp sáng ước mơ to.</p>
 ]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title></title>
-      <link>https://idev-blog.web.app/posts/how-to-create-awesome-http-client-in-golang/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/how-to-create-awesome-http-client-in-golang/</guid>
-      <description><![CDATA[]]></description>
-      
-    </item>
-    
-    
-    
-    <item>
-      <title></title>
-      <link>https://idev-blog.web.app/posts/write-supper-log-in-golang/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/write-supper-log-in-golang/</guid>
-      <description><![CDATA[]]></description>
       
     </item>
     

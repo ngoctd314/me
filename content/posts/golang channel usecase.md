@@ -1,8 +1,8 @@
 ---
 title: "Một vài cách sử dụng channel trong golang"
 date: 2023-03-03
-authors: ["ngoctd"]
 draft: false
+authors: ["ngoctd"]
 tags: ["golang", "channel", "concurrency"]
 ---
 
@@ -680,3 +680,40 @@ func fanIn(ctx context.Context, c ...chan string) <-chan string {
 	return fi
 }
 ```
+## The tee-channel
+
+
+## Switches
+
+Thao tác gửi hay nhận trên một nil channel đều bị block. Với tính chất này ta có thể kiểm soát được cơ chế selection trong select block.
+
+```go
+```
+
+## Control code execution possibility weights
+
+Ta có thể duplicate nhánh case trong select code block để tăng khả năng thực hiện đoạn code tương ứng.
+
+```go
+func main() {
+	foo, bar := make(chan struct{}), make(chan struct{})
+	close(foo)
+	close(bar)
+	x, y := 0.0, 0.0
+	f := func() { x++ }
+	g := func() { y++ }
+	for i := 0; i < 10000; i++ {
+		select {
+		case <-foo:
+			f()
+		case <-foo:
+			f()
+		case <-bar:
+			g()
+		}
+	}
+	fmt.Println(x / y) // about 2
+}
+```
+
+## Data Flow Manipulations

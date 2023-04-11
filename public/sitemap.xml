@@ -3,7 +3,19 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://idev-blog.web.app/authors/</loc>
-    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
+    <lastmod>2023-04-11T14:09:50+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/awesome-resource-collector/</loc>
+    <lastmod>2023-04-11T14:09:50+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/</loc>
+    <lastmod>2023-04-11T14:09:50+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/authors/ngoctd/</loc>
+    <lastmod>2023-04-11T14:09:50+07:00</lastmod>
+  </url><url>
+    <loc>https://idev-blog.web.app/posts/</loc>
+    <lastmod>2023-04-11T14:09:50+07:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/channel/</loc>
     <lastmod>2023-03-03T00:00:00+00:00</lastmod>
@@ -11,19 +23,10 @@
     <loc>https://idev-blog.web.app/tags/concurrency/</loc>
     <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://idev-blog.web.app/</loc>
-    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://idev-blog.web.app/tags/golang/</loc>
     <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/posts/golang-channel-usecase/</loc>
-    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/authors/ngoctd/</loc>
-    <lastmod>2023-03-03T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/</loc>
     <lastmod>2023-03-03T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://idev-blog.web.app/tags/</loc>
@@ -52,10 +55,6 @@
   </url><url>
     <loc>https://idev-blog.web.app/posts/poem-l%E1%BB%ADa-h%E1%BB%93ng/</loc>
     <lastmod>2021-11-20T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/how-to-create-awesome-http-client-in-golang/</loc>
-  </url><url>
-    <loc>https://idev-blog.web.app/posts/write-supper-log-in-golang/</loc>
   </url><url>
     <loc>https://idev-blog.web.app/manifest/index.json</loc>
   </url><url>

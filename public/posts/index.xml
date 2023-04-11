@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Tran Duc Ngoc</copyright>
-    <lastBuildDate>Fri, 03 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://idev-blog.web.app/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 11 Apr 2023 14:09:50 +0700</lastBuildDate><atom:link href="https://idev-blog.web.app/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Awesome resources collector</title>
+      <link>https://idev-blog.web.app/posts/awesome-resource-collector/</link>
+      <pubDate>Tue, 11 Apr 2023 14:09:50 +0700</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/awesome-resource-collector/</guid>
+      <description>Data Race Patterns in Go A data race is a concurrency bug that occurs when two or more goroutines access the same datum, at least one of them is write, and there is no ordering between them. Data races are insidious bug and must be avoided at all costs.</description>
+    </item>
+    
     <item>
       <title>Một vài cách sử dụng channel trong golang</title>
       <link>https://idev-blog.web.app/posts/golang-channel-usecase/</link>
@@ -75,24 +84,6 @@ Trôi mãi tận miền xa.</description>
 Thắp lên ngọn lửa hồng
 Dành trọn nhiệt huyết nồng
 Tháp sáng ước mơ to.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://idev-blog.web.app/posts/how-to-create-awesome-http-client-in-golang/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/how-to-create-awesome-http-client-in-golang/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://idev-blog.web.app/posts/write-supper-log-in-golang/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://idev-blog.web.app/posts/write-supper-log-in-golang/</guid>
-      <description></description>
     </item>
     
   </channel>
