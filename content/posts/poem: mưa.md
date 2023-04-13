@@ -1,7 +1,7 @@
 ---
 title: "Mưa"
 date: 2022-03-11
-author: "ngoctd"
+authors: ["ngoctd"]
 tags: ["thơ"]
 ---
 

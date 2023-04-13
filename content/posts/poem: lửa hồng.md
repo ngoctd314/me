@@ -1,7 +1,7 @@
 ---
 title: "Lửa Hồng"
 date: 2021-11-20
-author: "ngoctd"
+authors: ["ngoctd"]
 tags: ["thơ"]
 ---
 

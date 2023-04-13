@@ -45,5 +45,46 @@ In this article, i will introduce naive solution for automatic connect to VPN us
       <description>Channel is an important built-in feature in Go. It is one of the features makes Go unique. Channel makes concurrent programming convenient, fun and lowers the difficulties of concurrent programming. Channel mainly acts as a concurrency synchronization technique. To understand channels better, the internal structure of channels and some implementation details by the standard Go compiler/runtime are also simply described.</description>
     </item>
     
+    <item>
+      <title>Hai Đứa Trẻ</title>
+      <link>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</link>
+      <pubDate>Thu, 13 Oct 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/poem-hai-%C4%91%E1%BB%A9a-tr%E1%BA%BB/</guid>
+      <description>Hai đứa trẻ lớn lên nơi rừng núi
+Xung quanh nhà nào là cỏ, là cây
+Hai đứa trẻ là chị là em, và là bạn
+Bạn bè xung quanh, hiếm lắm ấy mà.
+Hai đứa trẻ nhiều đêm khó ngủ</description>
+    </item>
+    
+    <item>
+      <title>Mưa</title>
+      <link>https://idev-blog.web.app/posts/poem-m%C6%B0a/</link>
+      <pubDate>Fri, 11 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/poem-m%C6%B0a/</guid>
+      <description>Mưa,
+Mưa trên mái hiên nhà
+Đến tận cánh đồng xa
+Mưa,
+Mưa hoài, mưa xối xả
+Kìa ai đang thả thuyền lá
+Kí ức trôi
+Trôi mãi tận miền xa.</description>
+    </item>
+    
+    <item>
+      <title>Lửa Hồng</title>
+      <link>https://idev-blog.web.app/posts/poem-l%E1%BB%ADa-h%E1%BB%93ng/</link>
+      <pubDate>Sat, 20 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://idev-blog.web.app/posts/poem-l%E1%BB%ADa-h%E1%BB%93ng/</guid>
+      <description>Có một đốm than nhỏ
+Thắp lên ngọn lửa hồng
+Dành trọn nhiệt huyết nồng
+Tháp sáng ước mơ to.</description>
+    </item>
+    
   </channel>
 </rss>

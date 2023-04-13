@@ -2,7 +2,7 @@
 title: "Q.L.C"
 date: 2023-04-14T01:11:39+07:00
 draft: false
-author: ["Hưng Cao"]
+authors: ["Hưng Cao"]
 ---
 
 Trôi lang thang đôi chân, đưa tâm hồn cô liêu
